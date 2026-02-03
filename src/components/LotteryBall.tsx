@@ -2,13 +2,14 @@ import { cn } from "@/lib/utils";
 
 interface LotteryBallProps {
   number: number;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   variant?: "default" | "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena";
   animated?: boolean;
   delay?: number;
 }
 
 const sizeClasses = {
+  xs: "w-6 h-6 text-[10px]",
   sm: "w-8 h-8 text-xs",
   md: "w-11 h-11 text-sm",
   lg: "w-14 h-14 text-lg",
