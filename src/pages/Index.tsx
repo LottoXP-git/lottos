@@ -5,6 +5,7 @@ import { LotteryDetailModal } from "@/components/LotteryDetailModal";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { LotteryResult, lotteryResults as fallbackResults } from "@/data/lotteryData";
 import { useLotteryResults } from "@/hooks/useLotteryResults";
+import { usePrizeNotification } from "@/hooks/usePrizeNotification";
 import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ const Index = () => {
   const [modalOpen, setModalOpen] = useState(false);
  
    const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
- 
+
    // Use API data or fallback to static data
    const results = useMemo(() => {
      if (lotteryResults && lotteryResults.length > 0) {
@@ -22,7 +23,10 @@ const Index = () => {
      }
      return fallbackResults;
    }, [lotteryResults]);
- 
+
+   // Trigger sound notification for mega prizes (> R$ 50M)
+   usePrizeNotification(results);
+
    const isLiveData = lotteryResults && lotteryResults.length > 0;
 
   const handleCardClick = (lottery: LotteryResult) => {
