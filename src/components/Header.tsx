@@ -1,6 +1,7 @@
-import { Sparkles, Home, History } from "lucide-react";
+import { Home, History } from "lucide-react";
 import { NavLink } from "./NavLink";
 import { ThemeToggle } from "./ThemeToggle";
+import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -9,11 +10,8 @@ export function Header() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse-glow">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gradient">Loterias Brasil</h1>
+            <Logo />
+            <div className="hidden sm:block">
               <p className="text-xs text-muted-foreground">Resultados & Estatísticas</p>
             </div>
           </div>
