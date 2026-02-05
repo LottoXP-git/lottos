@@ -6,61 +6,66 @@
 
 @layer base {
   :root {
-    --background: 222 47% 6%;
-    --foreground: 45 100% 96%;
+    /* Caixa Dark Theme - Modern Digital */
+    --background: 220 25% 5%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 45 100% 96%;
+    --card: 220 25% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 45 100% 96%;
+    --popover: 220 25% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 45 93% 58%;
-    --primary-foreground: 222 47% 6%;
+    /* Caixa Orange as Primary */
+    --primary: 25 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 30% 15%;
-    --secondary-foreground: 45 100% 96%;
+    --secondary: 220 20% 14%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 222 30% 18%;
-    --muted-foreground: 220 15% 55%;
+    --muted: 220 15% 16%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 152 69% 40%;
-    --accent-foreground: 45 100% 96%;
+    /* Caixa Blue as Accent */
+    --accent: 210 100% 45%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 45 100% 96%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
-    --ring: 45 93% 58%;
+    --border: 220 15% 15%;
+    --input: 220 15% 15%;
+    --ring: 25 100% 50%;
 
     --radius: 0.75rem;
 
-    /* Custom lottery colors */
-    --lottery-megasena: 152 69% 40%;
-    --lottery-lotofacil: 280 65% 55%;
-    --lottery-quina: 220 80% 55%;
-    --lottery-lotomania: 25 95% 55%;
-    --lottery-duplasena: 340 75% 55%;
-    --lottery-timemania: 45 93% 58%;
+    /* Official Caixa Lottery Colors */
+    --lottery-megasena: 160 70% 38%;
+    --lottery-lotofacil: 310 80% 35%;
+    --lottery-quina: 250 85% 30%;
+    --lottery-lotomania: 28 95% 48%;
+    --lottery-duplasena: 350 75% 40%;
+    --lottery-timemania: 85 70% 40%;
 
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(45, 93%, 58%) 0%, hsl(35, 90%, 50%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(222, 47%, 8%) 100%);
-    --gradient-glow: radial-gradient(ellipse at center, hsl(45, 93%, 58%, 0.15) 0%, transparent 70%);
+    /* Modern Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(25, 100%, 50%) 0%, hsl(35, 100%, 55%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220, 25%, 10%) 0%, hsl(220, 25%, 6%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(25, 100%, 50%, 0.12) 0%, transparent 70%);
+    --gradient-blue: linear-gradient(135deg, hsl(210, 100%, 45%) 0%, hsl(220, 100%, 55%) 100%);
 
     /* Shadows */
-    --shadow-glow: 0 0 40px -10px hsl(45, 93%, 58%, 0.3);
-    --shadow-card: 0 10px 40px -15px hsl(222, 47%, 3%, 0.5);
+    --shadow-glow: 0 0 50px -10px hsl(25, 100%, 50%, 0.4);
+    --shadow-card: 0 8px 32px -8px hsl(220, 25%, 2%, 0.8);
+    --shadow-blue: 0 0 40px -10px hsl(210, 100%, 45%, 0.3);
 
-    --sidebar-background: 222 47% 6%;
-    --sidebar-foreground: 45 100% 96%;
-    --sidebar-primary: 45 93% 58%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 222 30% 15%;
-    --sidebar-accent-foreground: 45 100% 96%;
-    --sidebar-border: 222 30% 18%;
-    --sidebar-ring: 45 93% 58%;
+    --sidebar-background: 220 25% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 25 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 14%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 220 15% 15%;
+    --sidebar-ring: 25 100% 50%;
   }
 
   .dark {
@@ -87,7 +92,7 @@
 @layer components {
   .lottery-ball {
     @apply w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-lg shadow-lg transition-all duration-300;
-    background: var(--gradient-gold);
+    background: var(--gradient-primary);
     color: hsl(var(--primary-foreground));
   }
 
@@ -101,27 +106,40 @@
   }
 
   .lottery-ball-megasena {
-    background: linear-gradient(135deg, hsl(152, 69%, 45%) 0%, hsl(152, 69%, 35%) 100%);
+    background: linear-gradient(135deg, hsl(160, 70%, 42%) 0%, hsl(160, 70%, 30%) 100%);
   }
 
   .lottery-ball-lotofacil {
-    background: linear-gradient(135deg, hsl(280, 65%, 60%) 0%, hsl(280, 65%, 45%) 100%);
+    background: linear-gradient(135deg, hsl(310, 80%, 42%) 0%, hsl(310, 80%, 28%) 100%);
   }
 
   .lottery-ball-quina {
-    background: linear-gradient(135deg, hsl(220, 80%, 60%) 0%, hsl(220, 80%, 45%) 100%);
+    background: linear-gradient(135deg, hsl(250, 85%, 40%) 0%, hsl(250, 85%, 25%) 100%);
+  }
+
+  .lottery-ball-lotomania {
+    background: linear-gradient(135deg, hsl(28, 95%, 52%) 0%, hsl(28, 95%, 40%) 100%);
+  }
+
+  .lottery-ball-duplasena {
+    background: linear-gradient(135deg, hsl(350, 75%, 45%) 0%, hsl(350, 75%, 32%) 100%);
+  }
+
+  .lottery-ball-timemania {
+    background: linear-gradient(135deg, hsl(85, 70%, 45%) 0%, hsl(85, 70%, 35%) 100%);
   }
 
   .card-glass {
     @apply relative overflow-hidden;
     background: var(--gradient-card);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(220, 15%, 18%);
   }
 
   .card-glass::before {
     content: '';
-    @apply absolute inset-0 opacity-50;
-    background: linear-gradient(135deg, hsl(222, 47%, 15%, 0.5) 0%, transparent 50%);
+    @apply absolute inset-0 opacity-30;
+    background: linear-gradient(145deg, hsl(220, 25%, 18%, 0.4) 0%, transparent 40%);
     pointer-events: none;
   }
 
@@ -146,11 +164,18 @@
 
   .stat-bar-fill {
     @apply h-full rounded-full transition-all duration-500;
-    background: var(--gradient-gold);
+    background: var(--gradient-primary);
   }
 
   .text-gradient {
-    background: var(--gradient-gold);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-blue {
+    background: var(--gradient-blue);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
