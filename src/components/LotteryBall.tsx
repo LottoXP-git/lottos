@@ -16,12 +16,12 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-  default: "bg-gradient-to-br from-primary to-yellow-600",
-  megasena: "bg-gradient-to-br from-emerald-500 to-emerald-700",
-  lotofacil: "bg-gradient-to-br from-purple-500 to-purple-700",
-  quina: "bg-gradient-to-br from-blue-500 to-blue-700",
-  lotomania: "bg-gradient-to-br from-orange-500 to-orange-700",
-  duplasena: "bg-gradient-to-br from-rose-500 to-rose-700",
+  default: "bg-gradient-to-br from-primary to-orange-600",
+  megasena: "bg-gradient-to-br from-lottery-megasena to-emerald-800",
+  lotofacil: "bg-gradient-to-br from-lottery-lotofacil to-fuchsia-900",
+  quina: "bg-gradient-to-br from-lottery-quina to-indigo-900",
+  lotomania: "bg-gradient-to-br from-lottery-lotomania to-orange-700",
+  duplasena: "bg-gradient-to-br from-lottery-duplasena to-rose-800",
 };
 
 export function LotteryBall({
