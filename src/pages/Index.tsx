@@ -1,13 +1,28 @@
-import { useState } from "react";
+ import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { LotteryCard } from "@/components/LotteryCard";
 import { LotteryDetailModal } from "@/components/LotteryDetailModal";
-import { lotteryResults, LotteryResult } from "@/data/lotteryData";
-import { Sparkles, TrendingUp, Trophy } from "lucide-react";
+ import { LotteryResult, lotteryResults as fallbackResults } from "@/data/lotteryData";
+ import { useLotteryResults } from "@/hooks/useLotteryResults";
+ import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
+ import { Skeleton } from "@/components/ui/skeleton";
+ import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+ 
+   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
+ 
+   // Use API data or fallback to static data
+   const results = useMemo(() => {
+     if (lotteryResults && lotteryResults.length > 0) {
+       return lotteryResults;
+     }
+     return fallbackResults;
+   }, [lotteryResults]);
+ 
+   const isLiveData = lotteryResults && lotteryResults.length > 0;
 
   const handleCardClick = (lottery: LotteryResult) => {
     setSelectedLottery(lottery);
@@ -15,7 +30,7 @@ const Index = () => {
   };
 
   // Calculate total prize pool
-  const totalPrize = lotteryResults.reduce((acc, lottery) => {
+   const totalPrize = results.reduce((acc, lottery) => {
     const value = parseFloat(lottery.nextPrize.replace(/[R$\s.]/g, '').replace(',', '.'));
     return acc + value;
   }, 0);
@@ -28,8 +43,17 @@ const Index = () => {
         {/* Hero Section */}
         <section className="text-center mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm text-primary font-medium">Resultados em tempo real</span>
+             {isLiveData ? (
+               <>
+                 <Wifi className="w-4 h-4 text-emerald-400" />
+                 <span className="text-sm text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
+               </>
+             ) : (
+               <>
+                 <WifiOff className="w-4 h-4 text-muted-foreground" />
+                 <span className="text-sm text-muted-foreground font-medium">Dados de exemplo</span>
+               </>
+             )}
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -74,25 +98,61 @@ const Index = () => {
 
         {/* Lottery Results Grid */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <span className="text-foreground">Últimos</span>
-            <span className="text-gradient">Resultados</span>
-          </h2>
+           <div className="flex items-center justify-between mb-6">
+             <h2 className="text-2xl font-bold flex items-center gap-2">
+               <span className="text-foreground">Últimos</span>
+               <span className="text-gradient">Resultados</span>
+             </h2>
+             <Button
+               variant="outline"
+               size="sm"
+               onClick={() => refetch()}
+               disabled={isFetching}
+               className="gap-2"
+             >
+               <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+               Atualizar
+             </Button>
+           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lotteryResults.map((lottery, idx) => (
-              <div
-                key={lottery.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <LotteryCard
-                  result={lottery}
-                  onClick={() => handleCardClick(lottery)}
-                />
-              </div>
-            ))}
-          </div>
+           {isLoading ? (
+             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {[...Array(5)].map((_, idx) => (
+                 <div key={idx} className="p-6 rounded-2xl border border-border bg-card">
+                   <Skeleton className="h-6 w-32 mb-4" />
+                   <Skeleton className="h-4 w-24 mb-4" />
+                   <div className="flex gap-2 mb-4">
+                     {[...Array(6)].map((_, i) => (
+                       <Skeleton key={i} className="h-10 w-10 rounded-full" />
+                     ))}
+                   </div>
+                   <Skeleton className="h-8 w-40" />
+                 </div>
+               ))}
+             </div>
+           ) : error ? (
+             <div className="text-center py-8">
+               <p className="text-destructive mb-4">Erro ao carregar resultados: {error.message}</p>
+               <Button onClick={() => refetch()} variant="outline">
+                 Tentar novamente
+               </Button>
+             </div>
+           ) : (
+             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {results.map((lottery, idx) => (
+                 <div
+                   key={lottery.id}
+                   className="animate-fade-in"
+                   style={{ animationDelay: `${idx * 100}ms` }}
+                 >
+                   <LotteryCard
+                     result={lottery}
+                     onClick={() => handleCardClick(lottery)}
+                   />
+                 </div>
+               ))}
+             </div>
+           )}
         </section>
 
         {/* Instructions */}
