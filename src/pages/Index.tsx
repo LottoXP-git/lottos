@@ -1,12 +1,13 @@
- import { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { LotteryCard } from "@/components/LotteryCard";
 import { LotteryDetailModal } from "@/components/LotteryDetailModal";
- import { LotteryResult, lotteryResults as fallbackResults } from "@/data/lotteryData";
- import { useLotteryResults } from "@/hooks/useLotteryResults";
- import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
- import { Skeleton } from "@/components/ui/skeleton";
- import { Button } from "@/components/ui/button";
+import { RegistrationForm } from "@/components/RegistrationForm";
+import { LotteryResult, lotteryResults as fallbackResults } from "@/data/lotteryData";
+import { useLotteryResults } from "@/hooks/useLotteryResults";
+import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
@@ -153,6 +154,42 @@ const Index = () => {
                ))}
              </div>
            )}
+        </section>
+
+        {/* Registration Section */}
+        <section className="mb-12">
+          <div className="grid lg:grid-cols-2 gap-8 items-start">
+            <div>
+              <h2 className="text-2xl font-bold mb-4">
+                <span className="text-foreground">Receba </span>
+                <span className="text-gradient">Novidades</span>
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Cadastre-se para receber resultados, estatísticas e dicas exclusivas 
+                diretamente no seu WhatsApp ou email. Fique por dentro dos maiores 
+                prêmios e não perca nenhum sorteio!
+              </p>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  Resultados em tempo real
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  Análises estatísticas exclusivas
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  Dicas e palpites inteligentes
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  Alertas de prêmios acumulados
+                </li>
+              </ul>
+            </div>
+            <RegistrationForm />
+          </div>
         </section>
 
         {/* Instructions */}
