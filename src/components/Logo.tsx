@@ -10,47 +10,32 @@ export function Logo({ className = "" }: { className?: string }) {
         xmlns="http://www.w3.org/2000/svg"
         className="drop-shadow-md"
       >
-        {/* Center petal - Orange */}
+        {/* Top leaf - Green */}
         <path
-          d="M22 6C22 6 26 12 26 18C26 24 22 28 22 28C22 28 18 24 18 18C18 12 22 6 22 6Z"
-          fill="url(#orangeGradient)"
+          d="M22 4C22 4 16 10 16 16C16 19 18 22 22 22C26 22 28 19 28 16C28 10 22 4 22 4Z"
+          fill="#00A19A"
         />
         
-        {/* Left petal - Teal */}
+        {/* Right leaf - Blue */}
         <path
-          d="M10 16C10 16 16 16 20 20C24 24 24 30 24 30C24 30 18 30 14 26C10 22 10 16 10 16Z"
-          fill="url(#tealGradient)"
+          d="M40 22C40 22 34 16 28 16C25 16 22 18 22 22C22 26 25 28 28 28C34 28 40 22 40 22Z"
+          fill="#0056A4"
         />
         
-        {/* Right petal - Blue */}
+        {/* Bottom leaf - Orange */}
         <path
-          d="M34 16C34 16 28 16 24 20C20 24 20 30 20 30C20 30 26 30 30 26C34 22 34 16 34 16Z"
-          fill="url(#blueGradient)"
+          d="M22 40C22 40 28 34 28 28C28 25 26 22 22 22C18 22 16 25 16 28C16 34 22 40 22 40Z"
+          fill="#F7941D"
         />
         
-        {/* Bottom left accent - Orange */}
-        <circle cx="14" cy="32" r="3" fill="#F7941D" opacity="0.9" />
+        {/* Left leaf - Yellow/Gold */}
+        <path
+          d="M4 22C4 22 10 28 16 28C19 28 22 26 22 22C22 18 19 16 16 16C10 16 4 22 4 22Z"
+          fill="#FFD700"
+        />
         
-        {/* Bottom right accent - Blue */}
-        <circle cx="30" cy="32" r="3" fill="#0056A4" opacity="0.9" />
-        
-        {/* Center dot */}
-        <circle cx="22" cy="22" r="3" fill="#00A19A" />
-        
-        <defs>
-          <linearGradient id="orangeGradient" x1="22" y1="6" x2="22" y2="28" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#FFB347" />
-            <stop offset="1" stopColor="#F7941D" />
-          </linearGradient>
-          <linearGradient id="tealGradient" x1="10" y1="16" x2="24" y2="30" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#00C9B8" />
-            <stop offset="1" stopColor="#00A19A" />
-          </linearGradient>
-          <linearGradient id="blueGradient" x1="34" y1="16" x2="20" y2="30" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#4A90D9" />
-            <stop offset="1" stopColor="#0056A4" />
-          </linearGradient>
-        </defs>
+        {/* Center circle */}
+        <circle cx="22" cy="22" r="4" fill="white" />
       </svg>
       
       {/* Logo Text */}
