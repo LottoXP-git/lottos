@@ -9,6 +9,7 @@ import { usePrizeNotification } from "@/hooks/usePrizeNotification";
 import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { ShareButton } from "@/components/ShareButton";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
@@ -104,21 +105,30 @@ const Index = () => {
         {/* Lottery Results Grid */}
         <section className="mb-12">
            <div className="flex items-center justify-between mb-6">
-             <h2 className="text-2xl font-bold flex items-center gap-2">
-               <span className="text-foreground">Últimos</span>
-               <span className="text-gradient">Resultados</span>
-             </h2>
-             <Button
-               variant="outline"
-               size="sm"
-               onClick={() => refetch()}
-               disabled={isFetching}
-               className="gap-2"
-             >
-               <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-               Atualizar
-             </Button>
-           </div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <span className="text-foreground">Últimos</span>
+                <span className="text-gradient">Resultados</span>
+              </h2>
+              <div className="flex items-center gap-2">
+                <ShareButton
+                  title="Resultados das Loterias Caixa"
+                  text={`🎰 Resultados das Loterias Caixa\n\n💰 Prêmios acumulados: R$ ${(totalPrize / 1000000).toFixed(0)}M+\n🎯 ${results.length} loterias disponíveis\n\nConfira os últimos resultados!`}
+                  variant="outline"
+                  size="sm"
+                  className="h-9 w-9"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                  className="gap-2"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                  Atualizar
+                </Button>
+              </div>
+            </div>
           
            {isLoading ? (
              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

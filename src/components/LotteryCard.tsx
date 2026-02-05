@@ -4,6 +4,7 @@ import { LotteryBall } from "./LotteryBall";
 import { LotteryResult } from "@/data/lotteryData";
 import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ShareButton } from "./ShareButton";
 
 interface LotteryCardProps {
   result: LotteryResult;
@@ -55,6 +56,8 @@ export function LotteryCard({ result, onClick }: LotteryCardProps) {
   const nextPrizeValue = parsePrizeValue(result.nextPrize);
   const isHighPrize = nextPrizeValue >= 20000000; // R$ 20 milhões
 
+  const shareText = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🔢 Números: ${result.numbers.join(", ")}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
+
   return (
     <Card
       className={cn(
@@ -78,9 +81,16 @@ export function LotteryCard({ result, onClick }: LotteryCardProps) {
           <CardTitle className="text-xl font-bold text-foreground">
             {result.name}
           </CardTitle>
-          <Badge variant="outline" className={cn("font-mono", badgeColorMap[result.color])}>
-            Concurso {result.concurso}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <ShareButton
+              title={`${result.name} - Concurso ${result.concurso}`}
+              text={shareText}
+              className="h-8 w-8"
+            />
+            <Badge variant="outline" className={cn("font-mono", badgeColorMap[result.color])}>
+              Concurso {result.concurso}
+            </Badge>
+          </div>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="w-4 h-4" />
