@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_registrations: {
+        Row: {
+          accept_email_marketing: boolean
+          accept_whatsapp_marketing: boolean
+          birth_date: string
+          created_at: string
+          email: string
+          favorite_lotteries: string[]
+          full_name: string
+          id: string
+          phone: string
+          updated_at: string
+        }
+        Insert: {
+          accept_email_marketing?: boolean
+          accept_whatsapp_marketing?: boolean
+          birth_date: string
+          created_at?: string
+          email: string
+          favorite_lotteries?: string[]
+          full_name: string
+          id?: string
+          phone: string
+          updated_at?: string
+        }
+        Update: {
+          accept_email_marketing?: boolean
+          accept_whatsapp_marketing?: boolean
+          birth_date?: string
+          created_at?: string
+          email?: string
+          favorite_lotteries?: string[]
+          full_name?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
