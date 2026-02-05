@@ -16,6 +16,9 @@ const colorMap: Record<string, string> = {
   "lottery-quina": "border-blue-500/30 hover:border-blue-500/60",
   "lottery-lotomania": "border-orange-500/30 hover:border-orange-500/60",
   "lottery-duplasena": "border-rose-500/30 hover:border-rose-500/60",
+  "lottery-diadesorte": "border-amber-500/30 hover:border-amber-500/60",
+  "lottery-supersete": "border-lime-500/30 hover:border-lime-500/60",
+  "lottery-maismilionaria": "border-indigo-500/30 hover:border-indigo-500/60",
 };
 
 const badgeColorMap: Record<string, string> = {
@@ -24,14 +27,22 @@ const badgeColorMap: Record<string, string> = {
   "lottery-quina": "bg-blue-500/20 text-blue-400 border-blue-500/30",
   "lottery-lotomania": "bg-orange-500/20 text-orange-400 border-orange-500/30",
   "lottery-duplasena": "bg-rose-500/20 text-rose-400 border-rose-500/30",
+  "lottery-diadesorte": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  "lottery-supersete": "bg-lime-500/20 text-lime-400 border-lime-500/30",
+  "lottery-maismilionaria": "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
 };
 
-const variantMap: Record<string, "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena"> = {
+type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria";
+
+const variantMap: Record<string, LotteryVariant> = {
   "lottery-megasena": "megasena",
   "lottery-lotofacil": "lotofacil",
   "lottery-quina": "quina",
   "lottery-lotomania": "lotomania",
   "lottery-duplasena": "duplasena",
+  "lottery-diadesorte": "diadesorte",
+  "lottery-supersete": "supersete",
+  "lottery-maismilionaria": "maismilionaria",
 };
 
 export function LotteryCard({ result, onClick }: LotteryCardProps) {

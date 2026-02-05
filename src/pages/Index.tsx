@@ -82,7 +82,7 @@ const Index = () => {
             <div className="p-4 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-emerald-400" />
-                <span className="text-2xl font-bold text-emerald-400">5</span>
+                <span className="text-2xl font-bold text-emerald-400">8</span>
               </div>
               <p className="text-xs text-muted-foreground">Loterias Disponíveis</p>
             </div>
