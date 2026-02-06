@@ -72,15 +72,39 @@
      maxNumber: 10,
      selectCount: 7,
    },
-   {
-     id: "maismilionaria",
-     name: "+Milionária",
-     apiName: "maismilionaria",
-     color: "lottery-maismilionaria",
-     maxNumber: 50,
-     selectCount: 6,
-   },
- ];
+  {
+    id: "maismilionaria",
+    name: "+Milionária",
+    apiName: "maismilionaria",
+    color: "lottery-maismilionaria",
+    maxNumber: 50,
+    selectCount: 6,
+  },
+  {
+    id: "timemania",
+    name: "Timemania",
+    apiName: "timemania",
+    color: "lottery-timemania",
+    maxNumber: 80,
+    selectCount: 7,
+  },
+  {
+    id: "federal",
+    name: "Federal",
+    apiName: "federal",
+    color: "lottery-federal",
+    maxNumber: 99999,
+    selectCount: 5,
+  },
+  {
+    id: "loteca",
+    name: "Loteca",
+    apiName: "loteca",
+    color: "lottery-loteca",
+    maxNumber: 3,
+    selectCount: 14,
+  },
+];
  
  async function fetchLotteryResult(config: LotteryConfig, concurso?: number) {
    // Using loterias-api - open source API for Brazilian lotteries
