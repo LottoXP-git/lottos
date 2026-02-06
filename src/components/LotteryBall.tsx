@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 interface LotteryBallProps {
   number: number;
   size?: "xs" | "sm" | "md" | "lg";
-  variant?: "default" | "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria";
+  variant?: "default" | "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
   animated?: boolean;
   delay?: number;
 }
@@ -25,6 +25,9 @@ const variantClasses = {
   diadesorte: "bg-gradient-to-br from-amber-500 to-amber-700",
   supersete: "bg-gradient-to-br from-lime-500 to-lime-700",
   maismilionaria: "bg-gradient-to-br from-indigo-500 to-indigo-800",
+  timemania: "bg-gradient-to-br from-lime-500 to-lime-700",
+  federal: "bg-gradient-to-br from-sky-500 to-sky-700",
+  loteca: "bg-gradient-to-br from-red-500 to-red-800",
 };
 
 export function LotteryBall({

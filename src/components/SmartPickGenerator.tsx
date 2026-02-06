@@ -20,12 +20,18 @@ const strategies: { id: Strategy; label: string; icon: React.ReactNode; descript
   { id: 'balanced', label: 'Equilibrado', icon: <Scale className="w-4 h-4" />, description: 'Mix de quentes e frias' },
 ];
 
-const variantMap: Record<string, "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena"> = {
+const variantMap: Record<string, "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca"> = {
   "lottery-megasena": "megasena",
   "lottery-lotofacil": "lotofacil",
   "lottery-quina": "quina",
   "lottery-lotomania": "lotomania",
   "lottery-duplasena": "duplasena",
+  "lottery-diadesorte": "diadesorte",
+  "lottery-supersete": "supersete",
+  "lottery-maismilionaria": "maismilionaria",
+  "lottery-timemania": "timemania",
+  "lottery-federal": "federal",
+  "lottery-loteca": "loteca",
 };
 
 export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGeneratorProps) {

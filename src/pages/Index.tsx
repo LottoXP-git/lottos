@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { LotteryCard } from "@/components/LotteryCard";
 import { LotteryDetailModal } from "@/components/LotteryDetailModal";
 import { RegistrationForm } from "@/components/RegistrationForm";
+import { QuickBetGenerator } from "@/components/QuickBetGenerator";
 import { LotteryResult, lotteryResults as fallbackResults } from "@/data/lotteryData";
 import { useLotteryResults } from "@/hooks/useLotteryResults";
 import { usePrizeNotification } from "@/hooks/usePrizeNotification";
@@ -168,6 +169,17 @@ const Index = () => {
                ))}
              </div>
            )}
+        </section>
+
+        {/* Quick Bet Generator */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">
+            <span className="text-foreground">Gerador de </span>
+            <span className="text-gradient">Apostas</span>
+          </h2>
+          <div className="max-w-md mx-auto">
+            <QuickBetGenerator lotteries={results} />
+          </div>
         </section>
 
         {/* Registration Section */}

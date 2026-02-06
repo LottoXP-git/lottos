@@ -20,6 +20,9 @@ const colorMap: Record<string, string> = {
   "lottery-diadesorte": "border-amber-500/30 hover:border-amber-500/60",
   "lottery-supersete": "border-lime-500/30 hover:border-lime-500/60",
   "lottery-maismilionaria": "border-indigo-500/30 hover:border-indigo-500/60",
+  "lottery-timemania": "border-lime-500/30 hover:border-lime-500/60",
+  "lottery-federal": "border-sky-500/30 hover:border-sky-500/60",
+  "lottery-loteca": "border-red-500/30 hover:border-red-500/60",
 };
 
 const badgeColorMap: Record<string, string> = {
@@ -31,9 +34,12 @@ const badgeColorMap: Record<string, string> = {
   "lottery-diadesorte": "bg-amber-500/20 text-amber-400 border-amber-500/30",
   "lottery-supersete": "bg-lime-500/20 text-lime-400 border-lime-500/30",
   "lottery-maismilionaria": "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+  "lottery-timemania": "bg-lime-500/20 text-lime-400 border-lime-500/30",
+  "lottery-federal": "bg-sky-500/20 text-sky-400 border-sky-500/30",
+  "lottery-loteca": "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
-type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria";
+type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
 
 const variantMap: Record<string, LotteryVariant> = {
   "lottery-megasena": "megasena",
@@ -44,6 +50,9 @@ const variantMap: Record<string, LotteryVariant> = {
   "lottery-diadesorte": "diadesorte",
   "lottery-supersete": "supersete",
   "lottery-maismilionaria": "maismilionaria",
+  "lottery-timemania": "timemania",
+  "lottery-federal": "federal",
+  "lottery-loteca": "loteca",
 };
 
 // Helper to parse prize value from string like "R$ 42.350.000,00"
