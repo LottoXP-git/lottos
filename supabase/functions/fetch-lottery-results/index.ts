@@ -96,14 +96,6 @@
     maxNumber: 99999,
     selectCount: 5,
   },
-  {
-    id: "loteca",
-    name: "Loteca",
-    apiName: "loteca",
-    color: "lottery-loteca",
-    maxNumber: 3,
-    selectCount: 14,
-  },
 ];
  
  async function fetchLotteryResult(config: LotteryConfig, concurso?: number) {

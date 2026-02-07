@@ -161,20 +161,6 @@ export const lotteryResults: LotteryResult[] = [
     maxNumber: 99999,
     selectCount: 5,
   },
-  {
-    id: "loteca",
-    name: "Loteca",
-    concurso: 1102,
-    date: "03/02/2025",
-    numbers: [1, 1, 2, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 1],
-    prize: "R$ 350.000,00",
-    winners: 0,
-    nextPrize: "R$ 600.000,00",
-    nextDate: "10/02/2025",
-    color: "lottery-loteca",
-    maxNumber: 3,
-    selectCount: 14,
-  },
 ];
 
 // Simulated historical frequency data (last 100 draws)
