@@ -11,6 +11,7 @@ import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-r
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ShareButton";
+import { PrizeRanking } from "@/components/PrizeRanking";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
@@ -169,6 +170,11 @@ const Index = () => {
                ))}
              </div>
            )}
+        </section>
+
+        {/* Prize Ranking */}
+        <section className="mb-12">
+          <PrizeRanking lotteries={results} />
         </section>
 
         {/* Quick Bet Generator */}
