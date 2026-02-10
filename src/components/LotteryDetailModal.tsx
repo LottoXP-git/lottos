@@ -4,8 +4,9 @@ import { LotteryResult, NumberFrequency, generateFrequencyData } from "@/data/lo
 import { FrequencyChart } from "./FrequencyChart";
 import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
+import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
-import { BarChart3, Sparkles, History, Calendar } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock } from "lucide-react";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -62,8 +63,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </div>
           </div>
 
-          <Tabs defaultValue="stats" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-secondary/50">
+          <Tabs defaultValue="history" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 bg-secondary/50">
+              <TabsTrigger value="history" className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                <span className="hidden sm:inline">Histórico</span>
+              </TabsTrigger>
               <TabsTrigger value="stats" className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" />
                 <span className="hidden sm:inline">Estatísticas</span>
@@ -77,6 +82,10 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <span className="hidden sm:inline">Palpites</span>
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="history" className="mt-4">
+              <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
+            </TabsContent>
 
             <TabsContent value="stats" className="mt-4">
               <StatisticsPanel
