@@ -161,21 +161,28 @@
        return `R$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
      };
  
-     const result = {
-       id: config.id,
-       name: config.name,
-       concurso: data.concurso || data.numero || 0,
-       date: formatDate(data.data || data.dataApuracao || ""),
-       numbers: numbers.sort((a, b) => a - b),
-       prize: formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0),
-       winners: data.ganhadores || data.quantidadeGanhadores || 0,
-       nextPrize: formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0),
-       nextDate: formatDate(data.dataProximoConcurso || ""),
-       color: config.color,
-       maxNumber: config.maxNumber,
-       selectCount: config.selectCount,
-       accumulated: data.acumulado || data.acumulou || false,
-     };
+      // Extract trevos for +Milionária
+      let trevos: number[] = [];
+      if (config.id === "maismilionaria" && data.trevos) {
+        trevos = data.trevos.map((t: string | number) => typeof t === 'string' ? parseInt(t, 10) : t);
+      }
+
+      const result = {
+        id: config.id,
+        name: config.name,
+        concurso: data.concurso || data.numero || 0,
+        date: formatDate(data.data || data.dataApuracao || ""),
+        numbers: numbers.sort((a, b) => a - b),
+        trevos,
+        prize: formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0),
+        winners: data.ganhadores || data.quantidadeGanhadores || 0,
+        nextPrize: formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0),
+        nextDate: formatDate(data.dataProximoConcurso || ""),
+        color: config.color,
+        maxNumber: config.maxNumber,
+        selectCount: config.selectCount,
+        accumulated: data.acumulado || data.acumulou || false,
+      };
  
      return result;
    } catch (error) {

@@ -4,6 +4,7 @@ export interface LotteryResult {
   concurso: number;
   date: string;
   numbers: number[];
+  trevos?: number[];
   prize: string;
   winners: number;
   nextPrize: string;
