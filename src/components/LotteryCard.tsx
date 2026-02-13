@@ -90,7 +90,24 @@ export function LotteryCard({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-2 justify-center py-2">
-          {result.numbers.map((num, idx) => <LotteryBall key={num} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)}
+          {result.id === "duplasena" ? (
+            <>
+              <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {result.numbers.slice(0, 6).map((num, idx) => (
+                  <LotteryBall key={`s1-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={idx * 80} />
+                ))}
+              </div>
+              <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {result.numbers.slice(6).map((num, idx) => (
+                  <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
+                ))}
+              </div>
+            </>
+          ) : (
+            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-2">
