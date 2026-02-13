@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult } from "@/data/lotteryData";
-import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover } from "lucide-react";
+import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ShareButton } from "./ShareButton";
 interface LotteryCardProps {
@@ -133,6 +133,23 @@ export function LotteryCard({
             result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)
           )}
         </div>
+
+        {/* Time do Coração - Timemania */}
+        {result.id === "timemania" && result.timeCoracao && (
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-lime-500/10 border border-lime-500/30">
+            <Heart className="w-4 h-4 text-lime-400 fill-lime-400" />
+            <span className="text-sm font-semibold text-lime-400">{result.timeCoracao}</span>
+          </div>
+        )}
+
+        {/* Mês da Sorte - Dia de Sorte */}
+        {result.id === "diadesorte" && result.mesSorte && (
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+            <CalendarDays className="w-4 h-4 text-amber-400" />
+            <span className="text-sm text-muted-foreground">Mês da Sorte:</span>
+            <span className="text-sm font-semibold text-amber-400">{result.mesSorte}</span>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="flex items-center gap-2 text-sm">
