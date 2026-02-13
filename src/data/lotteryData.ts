@@ -22,6 +22,7 @@ export interface LotteryResult {
   color: string;
   maxNumber: number;
   selectCount: number;
+  accumulated?: boolean;
 }
 
 export interface NumberFrequency {
