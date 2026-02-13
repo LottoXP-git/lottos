@@ -7,7 +7,7 @@ import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
 import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy } from "lucide-react";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -124,6 +124,43 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             )}
           </div>
 
+          {/* Prize Tiers */}
+          {lottery.premiacoes && lottery.premiacoes.length > 0 && (
+            <div className="p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
+                <Trophy className="w-4 h-4 text-primary" />
+                <span>Faixas de Premiação</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
+                      <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
+                      <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lottery.premiacoes.map((p, idx) => (
+                      <tr key={idx} className="border-b border-border/50 last:border-0">
+                        <td className="py-2 px-2 text-foreground">{p.descricao}</td>
+                        <td className="py-2 px-2 text-center">
+                          <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
+                            {p.ganhadores}
+                          </span>
+                        </td>
+                        <td className="py-2 px-2 text-right font-mono text-foreground">
+                          {typeof p.valorPremio === 'number'
+                            ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                            : p.valorPremio}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
           <Tabs defaultValue="history" className="w-full">
             <TabsList className="grid w-full grid-cols-5 bg-secondary/50">
               <TabsTrigger value="history" className="flex items-center gap-2">
