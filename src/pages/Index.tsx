@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LotteryCard } from "@/components/LotteryCard";
@@ -156,30 +157,44 @@ const Index = () => {
                </Button>
              </div>
            ) : (
-             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-               {results.map((lottery, idx) => (
-                 <div
-                   key={lottery.id}
-                   className="animate-fade-in"
-                   style={{ animationDelay: `${idx * 100}ms` }}
-                 >
-                   <LotteryCard
-                     result={lottery}
-                     onClick={() => handleCardClick(lottery)}
-                   />
-                 </div>
-               ))}
-             </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {results.map((lottery, idx) => (
+                  <motion.div
+                    key={lottery.id}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
+                  >
+                    <LotteryCard
+                      result={lottery}
+                      onClick={() => handleCardClick(lottery)}
+                    />
+                  </motion.div>
+                ))}
+              </div>
            )}
         </section>
 
         {/* Prize Ranking */}
-        <section className="mb-12">
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5 }}
+        >
           <PrizeRanking lotteries={results} />
-        </section>
+        </motion.section>
 
         {/* Quick Bet Generator */}
-        <section className="mb-12">
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <h2 className="text-2xl font-bold mb-6">
             <span className="text-foreground">Gerador de </span>
             <span className="text-gradient">Apostas</span>
@@ -187,10 +202,16 @@ const Index = () => {
           <div className="max-w-md mx-auto">
             <QuickBetGenerator lotteries={results} />
           </div>
-        </section>
+        </motion.section>
 
         {/* Registration Section */}
-        <section className="mb-12">
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <div>
               <h2 className="text-2xl font-bold mb-4">
@@ -223,7 +244,7 @@ const Index = () => {
             </div>
             <RegistrationForm />
           </div>
-        </section>
+        </motion.section>
 
         {/* Instructions */}
         <section className="text-center py-8 border-t border-border">
