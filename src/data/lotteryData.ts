@@ -172,6 +172,7 @@ export const lotteryResults: LotteryResult[] = [
     color: "lottery-federal",
     maxNumber: 99999,
     selectCount: 5,
+    accumulated: false,
   },
 ];
 

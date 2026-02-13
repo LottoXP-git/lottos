@@ -90,7 +90,16 @@ export function LotteryCard({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-2 justify-center py-2">
-          {result.id === "duplasena" ? (
+          {result.id === "federal" ? (
+            <div className="w-full space-y-2">
+              {result.numbers.map((num, idx) => (
+                <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                  <span className="text-xs font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                  <span className="font-mono font-bold text-sky-400 text-sm">{String(num).padStart(5, '0')}</span>
+                </div>
+              ))}
+            </div>
+          ) : result.id === "duplasena" ? (
             <>
               <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
               <div className="flex flex-wrap gap-2 justify-center">
@@ -154,25 +163,29 @@ export function LotteryCard({
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="flex items-center gap-2 text-sm">
             <Trophy className="w-4 h-4 text-primary" />
-            <span className="text-muted-foreground">Prêmio:</span>
+            <span className="text-muted-foreground">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
           </div>
           <span className="font-semibold text-primary text-right text-base">{result.prize}</span>
 
-          <div className="flex items-center gap-2 text-sm">
-            <Users className="w-4 h-4 text-accent" />
-            <span className="text-muted-foreground">Ganhadores:</span>
-          </div>
-          <span className="text-sm font-semibold text-right">
-            {result.winners === 0 ? "Acumulou!" : result.winners}
-          </span>
+          {result.id !== "federal" && (
+            <>
+              <div className="flex items-center gap-2 text-sm">
+                <Users className="w-4 h-4 text-accent" />
+                <span className="text-muted-foreground">Ganhadores:</span>
+              </div>
+              <span className="text-sm font-semibold text-right">
+                {result.winners === 0 ? "Acumulou!" : result.winners}
+              </span>
 
-          <div className="flex items-center gap-2 text-sm">
-            <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-500" : "text-emerald-400")} />
-            <span className="text-muted-foreground">Próximo:</span>
-          </div>
-          <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-500 text-base animate-pulse" : "text-emerald-400")}>
-            {result.nextPrize}
-          </span>
+              <div className="flex items-center gap-2 text-sm">
+                <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-500" : "text-emerald-400")} />
+                <span className="text-muted-foreground">Próximo:</span>
+              </div>
+              <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-500 text-base animate-pulse" : "text-emerald-400")}>
+                {result.nextPrize}
+              </span>
+            </>
+          )}
         </div>
 
         {/* High Prize Highlight */}
