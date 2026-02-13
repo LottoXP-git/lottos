@@ -7,7 +7,7 @@ import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
 import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays } from "lucide-react";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -16,12 +16,20 @@ interface LotteryDetailModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const variantMap: Record<string, "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena"> = {
+type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
+
+const variantMap: Record<string, LotteryVariant> = {
   "lottery-megasena": "megasena",
   "lottery-lotofacil": "lotofacil",
   "lottery-quina": "quina",
   "lottery-lotomania": "lotomania",
   "lottery-duplasena": "duplasena",
+  "lottery-diadesorte": "diadesorte",
+  "lottery-supersete": "supersete",
+  "lottery-maismilionaria": "maismilionaria",
+  "lottery-timemania": "timemania",
+  "lottery-federal": "federal",
+  "lottery-loteca": "loteca",
 };
 
 export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetailModalProps) {
@@ -51,17 +59,69 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <Calendar className="w-4 h-4" />
               <span>Resultado de {lottery.date}</span>
             </div>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {lottery.numbers.map((num, idx) => (
-                <LotteryBall
-                  key={num}
-                  number={num}
-                  size={lottery.numbers.length > 10 ? "sm" : "lg"}
-                  variant={variantMap[lottery.color]}
-                  delay={idx * 50}
-                />
-              ))}
-            </div>
+            {lottery.id === "duplasena" ? (
+              <>
+                <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {lottery.numbers.slice(0, 6).map((num, idx) => (
+                    <LotteryBall key={`s1-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={idx * 50} />
+                  ))}
+                </div>
+                <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {lottery.numbers.slice(6).map((num, idx) => (
+                    <LotteryBall key={`s2-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={(idx + 6) * 50} />
+                  ))}
+                </div>
+              </>
+            ) : lottery.id === "maismilionaria" ? (
+              <>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {lottery.numbers.map((num, idx) => (
+                    <LotteryBall key={`n-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={idx * 50} />
+                  ))}
+                </div>
+                {lottery.trevos && lottery.trevos.length > 0 && (
+                  <>
+                    <div className="w-full flex items-center justify-center gap-1.5 mt-2 mb-1">
+                      <Clover className="w-3.5 h-3.5 text-emerald-500" />
+                      <span className="text-xs text-center text-emerald-500 font-medium">Trevos</span>
+                      <Clover className="w-3.5 h-3.5 text-emerald-500" />
+                    </div>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {lottery.trevos.map((trevo, idx) => (
+                        <div key={`t-${idx}`} className="w-12 h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-base font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(lottery.numbers.length + idx) * 50}ms` }}>
+                          {trevo}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="flex flex-wrap gap-2 justify-center">
+                {lottery.numbers.map((num, idx) => (
+                  <LotteryBall key={`n-${idx}`} number={num} size={lottery.numbers.length > 10 ? "sm" : "lg"} variant={variantMap[lottery.color]} delay={idx * 50} />
+                ))}
+              </div>
+            )}
+
+            {/* Time do Coração - Timemania */}
+            {lottery.id === "timemania" && lottery.timeCoracao && (
+              <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-green-500/10 border border-green-500/30 mt-2">
+                <Heart className="w-4 h-4 text-green-400 fill-green-400" />
+                <span className="text-sm font-semibold text-green-400">{lottery.timeCoracao}</span>
+              </div>
+            )}
+
+            {/* Mês da Sorte - Dia de Sorte */}
+            {lottery.id === "diadesorte" && lottery.mesSorte && (
+              <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mt-2">
+                <CalendarDays className="w-4 h-4 text-amber-400" />
+                <span className="text-sm text-muted-foreground">Mês da Sorte:</span>
+                <span className="text-sm font-semibold text-amber-400">{lottery.mesSorte}</span>
+              </div>
+            )}
           </div>
 
           <Tabs defaultValue="history" className="w-full">

@@ -11,7 +11,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 interface PrizeEvolutionChartProps {
   lottery: LotteryResult;
-  variant?: "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena";
+  variant?: "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
 }
 
 const variantColors: Record<string, string> = {
@@ -20,6 +20,12 @@ const variantColors: Record<string, string> = {
   quina: "hsl(220, 70%, 50%)",
   lotomania: "hsl(24, 95%, 53%)",
   duplasena: "hsl(348, 83%, 47%)",
+  diadesorte: "hsl(38, 92%, 50%)",
+  supersete: "hsl(85, 70%, 45%)",
+  maismilionaria: "hsl(230, 60%, 55%)",
+  timemania: "hsl(142, 70%, 40%)",
+  federal: "hsl(200, 70%, 50%)",
+  loteca: "hsl(0, 70%, 50%)",
 };
 
 function parsePrizeValue(prize: string): number {

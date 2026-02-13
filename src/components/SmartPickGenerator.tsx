@@ -113,7 +113,7 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
             <div className="flex flex-wrap gap-2 justify-center py-4">
               {picks.map((num, idx) => (
                 <LotteryBall
-                  key={num}
+                  key={`${idx}-${num}`}
                   number={num}
                   size={picks.length > 10 ? "sm" : "lg"}
                   variant={variantMap[lottery.color]}
