@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LotteryResult, NumberFrequency, generateFrequencyData } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
@@ -7,6 +7,7 @@ import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
 import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
+import { ShareButton } from "./ShareButton";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame } from "lucide-react";
 import { useMemo } from "react";
 
@@ -44,12 +45,22 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold flex items-center gap-3">
-            {lottery.name}
-            <span className="text-sm font-normal text-muted-foreground">
-              Concurso {lottery.concurso}
-            </span>
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+              {lottery.name}
+              <span className="text-sm font-normal text-muted-foreground">
+                Concurso {lottery.concurso}
+              </span>
+            </DialogTitle>
+            <ShareButton
+              title={`${lottery.name} - Concurso ${lottery.concurso}`}
+              text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
+              className="h-9 w-9"
+            />
+          </div>
+          <DialogDescription className="sr-only">
+            Detalhes do resultado {lottery.name} concurso {lottery.concurso}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
