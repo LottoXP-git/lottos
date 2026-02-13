@@ -70,7 +70,16 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <Calendar className="w-4 h-4" />
               <span>Resultado de {lottery.date}</span>
             </div>
-            {lottery.id === "duplasena" ? (
+            {lottery.id === "federal" ? (
+              <div className="space-y-2">
+                {lottery.numbers.map((num, idx) => (
+                  <div key={idx} className="flex items-center justify-between px-4 py-2 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                    <span className="text-sm font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                    <span className="font-mono font-bold text-sky-400 text-lg">{String(num).padStart(5, '0')}</span>
+                  </div>
+                ))}
+              </div>
+            ) : lottery.id === "duplasena" ? (
               <>
                 <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
                 <div className="flex flex-wrap gap-2 justify-center">

@@ -182,24 +182,55 @@
         }));
       }
 
+      // Federal lottery has special handling
+      let prize: string;
+      let winners: number;
+      let nextPrize: string;
+      let nextDate: string;
+      let accumulated: boolean;
+
+      if (config.id === "federal") {
+        // Federal: prize is the 1st prize value from premiacoes
+        const firstPrize = premiacoes.length > 0 ? premiacoes[0].valorPremio : 500000;
+        prize = formatPrize(firstPrize);
+        // Federal always has winners
+        winners = premiacoes.reduce((sum, p) => sum + (p.ganhadores || 1), 0);
+        // Federal always has fixed next prize of R$ 500.000
+        nextPrize = "R$ 500.000,00";
+        nextDate = formatDate(data.dataProximoConcurso || "");
+        accumulated = false; // Federal never accumulates
+        // Don't sort Federal numbers - they are bilhete numbers in draw order
+        numbers = data.dezenas 
+          ? data.dezenas.map((d: string) => parseInt(d, 10))
+          : data.dezenasOrdemSorteio 
+            ? data.dezenasOrdemSorteio.map((d: string) => parseInt(d, 10))
+            : numbers;
+      } else {
+        prize = formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
+        winners = data.ganhadores || data.quantidadeGanhadores || 0;
+        nextPrize = formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0);
+        nextDate = formatDate(data.dataProximoConcurso || "");
+        accumulated = data.acumulado || data.acumulou || false;
+      }
+
       const result = {
         id: config.id,
         name: config.name,
         concurso: data.concurso || data.numero || 0,
         date: formatDate(data.data || data.dataApuracao || ""),
-        numbers: numbers.sort((a, b) => a - b),
+        numbers: config.id === "federal" ? numbers : numbers.sort((a, b) => a - b),
         trevos,
         timeCoracao: timeCoracao || undefined,
         mesSorte: mesSorte || undefined,
         premiacoes,
-        prize: formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0),
-        winners: data.ganhadores || data.quantidadeGanhadores || 0,
-        nextPrize: formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0),
-        nextDate: formatDate(data.dataProximoConcurso || ""),
+        prize,
+        winners,
+        nextPrize,
+        nextDate,
         color: config.color,
         maxNumber: config.maxNumber,
         selectCount: config.selectCount,
-        accumulated: data.acumulado || data.acumulou || false,
+        accumulated,
       };
  
      return result;
