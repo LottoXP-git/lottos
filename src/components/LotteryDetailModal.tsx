@@ -6,7 +6,8 @@ import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
-import { BarChart3, Sparkles, History, Calendar, Clock } from "lucide-react";
+import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp } from "lucide-react";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -64,7 +65,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </div>
 
           <Tabs defaultValue="history" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-secondary/50">
+            <TabsList className="grid w-full grid-cols-5 bg-secondary/50">
               <TabsTrigger value="history" className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 <span className="hidden sm:inline">Histórico</span>
@@ -76,6 +77,10 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <TabsTrigger value="frequency" className="flex items-center gap-2">
                 <History className="w-4 h-4" />
                 <span className="hidden sm:inline">Frequências</span>
+              </TabsTrigger>
+              <TabsTrigger value="evolution" className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                <span className="hidden sm:inline">Evolução</span>
               </TabsTrigger>
               <TabsTrigger value="picks" className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
@@ -103,6 +108,10 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                   title={`Mapa de Frequência - ${lottery.name}`}
                 />
               </div>
+            </TabsContent>
+
+            <TabsContent value="evolution" className="mt-4">
+              <PrizeEvolutionChart lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
             <TabsContent value="picks" className="mt-4">
