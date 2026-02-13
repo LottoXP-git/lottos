@@ -55,7 +55,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             <ShareButton
               title={`${lottery.name} - Concurso ${lottery.concurso}`}
               text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
-              className="h-9 w-9"
+              className="h-9 w-9 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
           </div>
           <DialogDescription className="sr-only">
@@ -198,23 +198,23 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           <Tabs defaultValue="history" className="w-full">
             <TabsList className="grid w-full grid-cols-5 bg-secondary/50">
-              <TabsTrigger value="history" className="flex items-center gap-2">
+              <TabsTrigger value="history" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <Clock className="w-4 h-4" />
                 <span className="hidden sm:inline">Histórico</span>
               </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-2">
+              <TabsTrigger value="stats" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <BarChart3 className="w-4 h-4" />
                 <span className="hidden sm:inline">Estatísticas</span>
               </TabsTrigger>
-              <TabsTrigger value="frequency" className="flex items-center gap-2">
+              <TabsTrigger value="frequency" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <History className="w-4 h-4" />
                 <span className="hidden sm:inline">Frequências</span>
               </TabsTrigger>
-              <TabsTrigger value="evolution" className="flex items-center gap-2">
+              <TabsTrigger value="evolution" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <TrendingUp className="w-4 h-4" />
                 <span className="hidden sm:inline">Evolução</span>
               </TabsTrigger>
-              <TabsTrigger value="picks" className="flex items-center gap-2">
+              <TabsTrigger value="picks" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <Sparkles className="w-4 h-4" />
                 <span className="hidden sm:inline">Palpites</span>
               </TabsTrigger>
