@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LotteryResult, NumberFrequency, generateFrequencyData } from "@/data/lotteryData";
+import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
 import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
@@ -8,7 +8,7 @@ import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
 import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
 import { ShareButton } from "./ShareButton";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -72,12 +72,34 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </div>
             {lottery.id === "federal" ? (
               <div className="space-y-2">
-                {lottery.numbers.map((num, idx) => (
-                  <div key={idx} className="flex items-center justify-between px-4 py-2 rounded-lg bg-sky-500/10 border border-sky-500/20">
-                    <span className="text-sm font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
-                    <span className="font-mono font-bold text-sky-400 text-lg">{String(num).padStart(5, '0')}</span>
-                  </div>
-                ))}
+                {lottery.numbers.map((num, idx) => {
+                  const location = lottery.localGanhadores?.find(l => l.posicao === idx + 1);
+                  const premio = lottery.premiacoes?.[idx];
+                  return (
+                    <div key={idx} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                        {location && (
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-sky-400/70" />
+                            <span className="text-xs text-muted-foreground/80">{location.nomeLoteria}</span>
+                          </div>
+                        )}
+                        {location && (
+                          <span className="text-[10px] text-muted-foreground/60 ml-4">{location.municipio}/{location.uf}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-0.5">
+                        <span className="font-mono font-bold text-sky-400 text-lg">{String(num).padStart(5, '0')}</span>
+                        {premio && (
+                          <span className="text-xs font-medium text-primary">
+                            R$ {premio.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ) : lottery.id === "duplasena" ? (
               <>
