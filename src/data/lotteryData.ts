@@ -5,6 +5,13 @@ export interface PrizeTier {
   valorPremio: number;
 }
 
+export interface WinnerLocation {
+  posicao: number;
+  municipio: string;
+  uf: string;
+  nomeLoteria: string;
+}
+
 export interface LotteryResult {
   id: string;
   name: string;
@@ -15,6 +22,7 @@ export interface LotteryResult {
   timeCoracao?: string;
   mesSorte?: string;
   premiacoes?: PrizeTier[];
+  localGanhadores?: WinnerLocation[];
   prize: string;
   winners: number;
   nextPrize: string;

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
-import { LotteryResult } from "@/data/lotteryData";
+import { LotteryResult, WinnerLocation } from "@/data/lotteryData";
 import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ShareButton } from "./ShareButton";
@@ -92,12 +92,22 @@ export function LotteryCard({
         <div className="flex flex-wrap gap-2 justify-center py-2">
           {result.id === "federal" ? (
             <div className="w-full space-y-2">
-              {result.numbers.map((num, idx) => (
-                <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
-                  <span className="text-xs font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
-                  <span className="font-mono font-bold text-sky-400 text-sm">{String(num).padStart(5, '0')}</span>
-                </div>
-              ))}
+              {result.numbers.map((num, idx) => {
+                const location = result.localGanhadores?.find(l => l.posicao === idx + 1);
+                return (
+                  <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                      {location && (
+                        <span className="text-[10px] text-muted-foreground/70 truncate max-w-[140px]">
+                          {location.municipio}/{location.uf}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono font-bold text-sky-400 text-sm">{String(num).padStart(5, '0')}</span>
+                  </div>
+                );
+              })}
             </div>
           ) : result.id === "duplasena" ? (
             <>

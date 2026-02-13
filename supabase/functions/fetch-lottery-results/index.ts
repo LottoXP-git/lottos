@@ -182,6 +182,19 @@
         }));
       }
 
+      // Extract winner locations for Federal
+      let localGanhadores: { posicao: number; municipio: string; uf: string; nomeLoteria: string }[] = [];
+      if (config.id === "federal" && data.localGanhadores && Array.isArray(data.localGanhadores)) {
+        localGanhadores = data.localGanhadores
+          .map((l: any) => ({
+            posicao: l.posicao || 0,
+            municipio: l.municipio || "",
+            uf: l.uf || "",
+            nomeLoteria: l.nomeFatansiaUL || l.nomeFantasiaUL || "",
+          }))
+          .sort((a: any, b: any) => a.posicao - b.posicao);
+      }
+
       // Federal lottery has special handling
       let prize: string;
       let winners: number;
@@ -190,16 +203,12 @@
       let accumulated: boolean;
 
       if (config.id === "federal") {
-        // Federal: prize is the 1st prize value from premiacoes
         const firstPrize = premiacoes.length > 0 ? premiacoes[0].valorPremio : 500000;
         prize = formatPrize(firstPrize);
-        // Federal always has winners
         winners = premiacoes.reduce((sum, p) => sum + (p.ganhadores || 1), 0);
-        // Federal always has fixed next prize of R$ 500.000
         nextPrize = "R$ 500.000,00";
         nextDate = formatDate(data.dataProximoConcurso || "");
-        accumulated = false; // Federal never accumulates
-        // Don't sort Federal numbers - they are bilhete numbers in draw order
+        accumulated = false;
         numbers = data.dezenas 
           ? data.dezenas.map((d: string) => parseInt(d, 10))
           : data.dezenasOrdemSorteio 
@@ -223,6 +232,7 @@
         timeCoracao: timeCoracao || undefined,
         mesSorte: mesSorte || undefined,
         premiacoes,
+        localGanhadores: localGanhadores.length > 0 ? localGanhadores : undefined,
         prize,
         winners,
         nextPrize,
