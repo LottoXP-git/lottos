@@ -1,11 +1,11 @@
 import { LotteryResult } from "@/data/lotteryData";
 import { LotteryBall } from "./LotteryBall";
-import { Calendar, Loader2 } from "lucide-react";
+import { Calendar, Loader2, Clover, Heart, CalendarDays } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 interface DrawHistoryProps {
   lottery: LotteryResult;
-  variant?: "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena";
+  variant?: "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
 }
 
 async function fetchRecentDraws(lotteryId: string): Promise<LotteryResult[]> {
@@ -72,15 +72,45 @@ export function DrawHistory({ lottery, variant }: DrawHistoryProps) {
           </div>
 
           <div className="flex flex-wrap gap-1.5 mb-2">
-            {draw.numbers.map((num, idx) => (
-              <LotteryBall
-                key={`${draw.concurso}-${idx}`}
-                number={num}
-                size="sm"
-                variant={variant}
-              />
-            ))}
+            {lottery.id === "duplasena" ? (
+              <>
+                <div className="w-full text-[10px] text-muted-foreground font-medium">1º Sorteio</div>
+                {draw.numbers.slice(0, 6).map((num, idx) => (
+                  <LotteryBall key={`${draw.concurso}-s1-${idx}`} number={num} size="sm" variant={variant} />
+                ))}
+                <div className="w-full text-[10px] text-muted-foreground font-medium mt-1">2º Sorteio</div>
+                {draw.numbers.slice(6).map((num, idx) => (
+                  <LotteryBall key={`${draw.concurso}-s2-${idx}`} number={num} size="sm" variant={variant} />
+                ))}
+              </>
+            ) : (
+              draw.numbers.map((num, idx) => (
+                <LotteryBall key={`${draw.concurso}-${idx}`} number={num} size="sm" variant={variant} />
+              ))
+            )}
+            {lottery.id === "maismilionaria" && draw.trevos && draw.trevos.length > 0 && (
+              <>
+                <Clover className="w-3 h-3 text-emerald-500 ml-1" />
+                {draw.trevos.map((t, idx) => (
+                  <div key={`${draw.concurso}-t-${idx}`} className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-[10px] font-bold text-emerald-400">
+                    {t}
+                  </div>
+                ))}
+              </>
+            )}
           </div>
+          {lottery.id === "timemania" && draw.timeCoracao && (
+            <div className="flex items-center gap-1 mb-1">
+              <Heart className="w-3 h-3 text-green-400 fill-green-400" />
+              <span className="text-[10px] font-semibold text-green-400">{draw.timeCoracao}</span>
+            </div>
+          )}
+          {lottery.id === "diadesorte" && draw.mesSorte && (
+            <div className="flex items-center gap-1 mb-1">
+              <CalendarDays className="w-3 h-3 text-amber-400" />
+              <span className="text-[10px] font-semibold text-amber-400">{draw.mesSorte}</span>
+            </div>
+          )}
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>Prêmio: {draw.prize}</span>

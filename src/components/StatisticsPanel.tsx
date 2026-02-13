@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
 
 interface StatisticsPanelProps {
   frequencyData: NumberFrequency[];
-  variant: "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena";
+  variant: "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
   showCount?: number;
 }
 
