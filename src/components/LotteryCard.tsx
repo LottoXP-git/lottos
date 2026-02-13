@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult } from "@/data/lotteryData";
-import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles } from "lucide-react";
+import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ShareButton } from "./ShareButton";
 interface LotteryCardProps {
@@ -104,6 +104,30 @@ export function LotteryCard({
                   <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
                 ))}
               </div>
+            </>
+          ) : result.id === "maismilionaria" ? (
+            <>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {result.numbers.map((num, idx) => (
+                  <LotteryBall key={`n-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={idx * 80} />
+                ))}
+              </div>
+              {result.trevos && result.trevos.length > 0 && (
+                <>
+                  <div className="w-full flex items-center justify-center gap-1.5 mt-2 mb-1">
+                    <Clover className="w-3.5 h-3.5 text-emerald-500" />
+                    <span className="text-xs text-center text-emerald-500 font-medium">Trevos</span>
+                    <Clover className="w-3.5 h-3.5 text-emerald-500" />
+                  </div>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {result.trevos.map((trevo, idx) => (
+                      <div key={`t-${idx}`} className="w-10 h-10 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-sm font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
+                        {trevo}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </>
           ) : (
             result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)
