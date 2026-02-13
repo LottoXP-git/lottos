@@ -25,7 +25,7 @@ const variantClasses = {
   diadesorte: "bg-gradient-to-br from-amber-500 to-amber-700",
   supersete: "bg-gradient-to-br from-lime-500 to-lime-700",
   maismilionaria: "bg-gradient-to-br from-indigo-500 to-indigo-800",
-  timemania: "bg-gradient-to-br from-lime-500 to-lime-700",
+  timemania: "bg-gradient-to-br from-green-500 to-green-700",
   federal: "bg-gradient-to-br from-sky-500 to-sky-700",
   loteca: "bg-gradient-to-br from-red-500 to-red-800",
 };

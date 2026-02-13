@@ -18,7 +18,7 @@ const colorMap: Record<string, string> = {
   "lottery-diadesorte": "border-amber-500/30 hover:border-amber-500/60",
   "lottery-supersete": "border-lime-500/30 hover:border-lime-500/60",
   "lottery-maismilionaria": "border-indigo-500/30 hover:border-indigo-500/60",
-  "lottery-timemania": "border-lime-500/30 hover:border-lime-500/60",
+  "lottery-timemania": "border-green-500/30 hover:border-green-500/60",
   "lottery-federal": "border-sky-500/30 hover:border-sky-500/60",
   "lottery-loteca": "border-red-500/30 hover:border-red-500/60"
 };
@@ -31,7 +31,7 @@ const badgeColorMap: Record<string, string> = {
   "lottery-diadesorte": "bg-amber-500/20 text-amber-400 border-amber-500/30",
   "lottery-supersete": "bg-lime-500/20 text-lime-400 border-lime-500/30",
   "lottery-maismilionaria": "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-  "lottery-timemania": "bg-lime-500/20 text-lime-400 border-lime-500/30",
+  "lottery-timemania": "bg-green-500/20 text-green-400 border-green-500/30",
   "lottery-federal": "bg-sky-500/20 text-sky-400 border-sky-500/30",
   "lottery-loteca": "bg-red-500/20 text-red-400 border-red-500/30"
 };
@@ -136,9 +136,9 @@ export function LotteryCard({
 
         {/* Time do Coração - Timemania */}
         {result.id === "timemania" && result.timeCoracao && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-lime-500/10 border border-lime-500/30">
-            <Heart className="w-4 h-4 text-lime-400 fill-lime-400" />
-            <span className="text-sm font-semibold text-lime-400">{result.timeCoracao}</span>
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-green-500/10 border border-green-500/30">
+            <Heart className="w-4 h-4 text-green-400 fill-green-400" />
+            <span className="text-sm font-semibold text-green-400">{result.timeCoracao}</span>
           </div>
         )}
 
