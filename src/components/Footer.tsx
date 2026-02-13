@@ -1,0 +1,108 @@
+import { Logo } from "./Logo";
+import { Heart, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
+
+const usefulLinks = [
+  { label: "Loterias Caixa", href: "https://loterias.caixa.gov.br", external: true },
+  { label: "Resultados Oficiais", href: "https://loterias.caixa.gov.br/Paginas/default.aspx", external: true },
+  { label: "Como Jogar", href: "https://loterias.caixa.gov.br/Paginas/Como-Jogar.aspx", external: true },
+  { label: "Probabilidades", href: "https://loterias.caixa.gov.br/Paginas/Probabilidades.aspx", external: true },
+];
+
+const lotteryLinks = [
+  { label: "Mega-Sena", href: "https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx", external: true },
+  { label: "Lotofácil", href: "https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx", external: true },
+  { label: "Quina", href: "https://loterias.caixa.gov.br/Paginas/Quina.aspx", external: true },
+  { label: "+Milionária", href: "https://loterias.caixa.gov.br/Paginas/Mais-Milionaria.aspx", external: true },
+];
+
+export function Footer() {
+  return (
+    <footer className="border-t border-border bg-card/80 backdrop-blur-sm mt-12">
+      <div className="container mx-auto px-4 py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="space-y-4">
+            <Logo />
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>Feito com</span>
+              <Heart className="w-3 h-3 text-primary fill-primary" />
+              <span>no Brasil</span>
+            </div>
+          </div>
+
+          {/* Links Úteis */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground">Links Úteis</h3>
+            <ul className="space-y-2.5">
+              {usefulLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+                  >
+                    {link.label}
+                    {link.external && <ExternalLink className="w-3 h-3" />}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Loterias */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground">Loterias</h3>
+            <ul className="space-y-2.5">
+              {lotteryLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+                  >
+                    {link.label}
+                    {link.external && <ExternalLink className="w-3 h-3" />}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contato */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground">Contato</h3>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Phone className="w-4 h-4 text-primary shrink-0" />
+                <span>0800 726 0101</span>
+              </li>
+              <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Mail className="w-4 h-4 text-primary shrink-0" />
+                <span>contato@lotus.com.br</span>
+              </li>
+              <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <span>Brasília, DF - Brasil</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Lotus. Todos os direitos reservados.
+          </p>
+          <p className="text-xs text-muted-foreground text-center">
+            Este site não possui vínculo oficial com a Caixa Econômica Federal.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
