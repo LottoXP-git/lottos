@@ -171,6 +171,17 @@
       const timeCoracao = config.id === "timemania" ? (data.timeCoracao || data.nomeTimeCoracaoMesSorte || "") : "";
       const mesSorte = config.id === "diadesorte" ? (data.mesSorte || data.nomeTimeCoracaoMesSorte || "") : "";
 
+      // Extract prize tiers (premiacoes)
+      let premiacoes: { descricao: string; faixa: number; ganhadores: number; valorPremio: number }[] = [];
+      if (data.premiacoes && Array.isArray(data.premiacoes)) {
+        premiacoes = data.premiacoes.map((p: any) => ({
+          descricao: p.descricao || p.acertos || "",
+          faixa: p.faixa || 0,
+          ganhadores: p.ganhadores || 0,
+          valorPremio: p.valorPremio || p.premio || 0,
+        }));
+      }
+
       const result = {
         id: config.id,
         name: config.name,
@@ -180,6 +191,7 @@
         trevos,
         timeCoracao: timeCoracao || undefined,
         mesSorte: mesSorte || undefined,
+        premiacoes,
         prize: formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0),
         winners: data.ganhadores || data.quantidadeGanhadores || 0,
         nextPrize: formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0),

@@ -1,3 +1,10 @@
+export interface PrizeTier {
+  descricao: string;
+  faixa: number;
+  ganhadores: number;
+  valorPremio: number;
+}
+
 export interface LotteryResult {
   id: string;
   name: string;
@@ -7,6 +14,7 @@ export interface LotteryResult {
   trevos?: number[];
   timeCoracao?: string;
   mesSorte?: string;
+  premiacoes?: PrizeTier[];
   prize: string;
   winners: number;
   nextPrize: string;
