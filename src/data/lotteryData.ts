@@ -5,6 +5,8 @@ export interface LotteryResult {
   date: string;
   numbers: number[];
   trevos?: number[];
+  timeCoracao?: string;
+  mesSorte?: string;
   prize: string;
   winners: number;
   nextPrize: string;

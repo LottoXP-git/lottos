@@ -167,6 +167,10 @@
         trevos = data.trevos.map((t: string | number) => typeof t === 'string' ? parseInt(t, 10) : t);
       }
 
+      // Extract special fields
+      const timeCoracao = config.id === "timemania" ? (data.timeCoracao || data.nomeTimeCoracaoMesSorte || "") : "";
+      const mesSorte = config.id === "diadesorte" ? (data.mesSorte || data.nomeTimeCoracaoMesSorte || "") : "";
+
       const result = {
         id: config.id,
         name: config.name,
@@ -174,6 +178,8 @@
         date: formatDate(data.data || data.dataApuracao || ""),
         numbers: numbers.sort((a, b) => a - b),
         trevos,
+        timeCoracao: timeCoracao || undefined,
+        mesSorte: mesSorte || undefined,
         prize: formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0),
         winners: data.ganhadores || data.quantidadeGanhadores || 0,
         nextPrize: formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0),
