@@ -183,7 +183,7 @@
       }
 
       // Extract winner locations for all lotteries
-      let localGanhadores: { posicao: number; municipio: string; uf: string; nomeLoteria: string }[] = [];
+      let localGanhadores: { posicao: number; municipio: string; uf: string; nomeLoteria: string; ganhadores: number }[] = [];
       if (data.localGanhadores && Array.isArray(data.localGanhadores)) {
         localGanhadores = data.localGanhadores
           .map((l: any) => ({
@@ -191,6 +191,7 @@
             municipio: l.municipio || "",
             uf: l.uf || "",
             nomeLoteria: l.nomeFatansiaUL || l.nomeFantasiaUL || "",
+            ganhadores: l.ganhadores || 0,
           }))
           .sort((a: any, b: any) => a.posicao - b.posicao);
       }
