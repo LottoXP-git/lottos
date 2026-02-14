@@ -166,6 +166,27 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             )}
           </div>
 
+          {/* Winner Locations - All lotteries except Federal (already shown inline) */}
+          {lottery.id !== "federal" && lottery.localGanhadores && lottery.localGanhadores.length > 0 && (
+            <div className="p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
+                <MapPin className="w-4 h-4 text-primary" />
+                <span>Locais dos Ganhadores</span>
+              </div>
+              <div className="space-y-2">
+                {lottery.localGanhadores.map((loc, idx) => (
+                  <div key={idx} className="flex items-start gap-3 px-3 py-2 rounded-lg bg-primary/5 border border-primary/10">
+                    <MapPin className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-sm font-medium text-foreground truncate">{loc.nomeLoteria || "Lotérica"}</span>
+                      <span className="text-xs text-muted-foreground">{loc.municipio}/{loc.uf}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Prize Tiers */}
           {lottery.premiacoes && lottery.premiacoes.length > 0 && (
             <div className="p-4 rounded-xl bg-secondary/30 border border-border">

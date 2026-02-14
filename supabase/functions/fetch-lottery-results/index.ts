@@ -182,9 +182,9 @@
         }));
       }
 
-      // Extract winner locations for Federal
+      // Extract winner locations for all lotteries
       let localGanhadores: { posicao: number; municipio: string; uf: string; nomeLoteria: string }[] = [];
-      if (config.id === "federal" && data.localGanhadores && Array.isArray(data.localGanhadores)) {
+      if (data.localGanhadores && Array.isArray(data.localGanhadores)) {
         localGanhadores = data.localGanhadores
           .map((l: any) => ({
             posicao: l.posicao || 0,
