@@ -203,34 +203,75 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <Trophy className="w-4 h-4 text-primary" />
                 <span>Faixas de Premiação</span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
-                      <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
-                      <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {lottery.premiacoes.map((p, idx) => (
-                      <tr key={idx} className="border-b border-border/50 last:border-0">
-                        <td className="py-2 px-2 text-foreground">{p.descricao}</td>
-                        <td className="py-2 px-2 text-center">
-                          <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
-                            {p.ganhadores}
-                          </span>
-                        </td>
-                        <td className="py-2 px-2 text-right font-mono text-foreground">
-                          {typeof p.valorPremio === 'number'
-                            ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                            : p.valorPremio}
-                        </td>
+              {lottery.id === "duplasena" ? (
+                <div className="space-y-4">
+                  {[
+                    { label: "1º Sorteio", items: lottery.premiacoes.slice(0, Math.ceil(lottery.premiacoes.length / 2)) },
+                    { label: "2º Sorteio", items: lottery.premiacoes.slice(Math.ceil(lottery.premiacoes.length / 2)) },
+                  ].map((group) => (
+                    <div key={group.label}>
+                      <div className="text-xs font-semibold text-muted-foreground text-center mb-2">{group.label}</div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-border">
+                              <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
+                              <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
+                              <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {group.items.map((p, idx) => (
+                              <tr key={idx} className="border-b border-border/50 last:border-0">
+                                <td className="py-2 px-2 text-foreground">{p.descricao}</td>
+                                <td className="py-2 px-2 text-center">
+                                  <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
+                                    {p.ganhadores}
+                                  </span>
+                                </td>
+                                <td className="py-2 px-2 text-right font-mono text-foreground">
+                                  {typeof p.valorPremio === 'number'
+                                    ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                    : p.valorPremio}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
+                        <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
+                        <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {lottery.premiacoes.map((p, idx) => (
+                        <tr key={idx} className="border-b border-border/50 last:border-0">
+                          <td className="py-2 px-2 text-foreground">{p.descricao}</td>
+                          <td className="py-2 px-2 text-center">
+                            <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
+                              {p.ganhadores}
+                            </span>
+                          </td>
+                          <td className="py-2 px-2 text-right font-mono text-foreground">
+                            {typeof p.valorPremio === 'number'
+                              ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                              : p.valorPremio}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
