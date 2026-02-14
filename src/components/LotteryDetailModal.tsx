@@ -8,6 +8,7 @@ import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
 import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
 import { ShareButton } from "./ShareButton";
+import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
 import { useMemo } from "react";
 
@@ -326,12 +327,13 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-4">
+            <TabsContent value="stats" className="mt-4 space-y-4">
               <StatisticsPanel
                 frequencyData={frequencyData}
                 variant={variantMap[lottery.color]}
                 showCount={lottery.selectCount > 10 ? 10 : lottery.selectCount}
               />
+              <SpecialStats lottery={lottery} />
             </TabsContent>
 
             <TabsContent value="frequency" className="mt-4">
