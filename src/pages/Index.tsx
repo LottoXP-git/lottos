@@ -110,7 +110,7 @@ const Index = () => {
         <section className="mb-12">
            <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <span className="text-foreground">Últimos</span>
+                <span className="text-accent">Últimos</span>
                 <span className="text-gradient">Resultados</span>
               </h2>
               <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ const Index = () => {
           transition={{ duration: 0.5, delay: 0.1 }}>
 
           <h2 className="text-2xl font-bold mb-6">
-            <span className="text-foreground">Gerador de </span>
+            <span className="text-accent">Gerador de </span>
             <span className="text-gradient">Apostas</span>
           </h2>
           <div className="max-w-md mx-auto">
@@ -215,7 +215,7 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <div>
               <h2 className="text-2xl font-bold mb-4">
-                <span className="text-foreground">Receba </span>
+                <span className="text-accent">Receba </span>
                 <span className="text-gradient">Novidades</span>
               </h2>
               <p className="text-muted-foreground mb-6">
