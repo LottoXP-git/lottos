@@ -10,6 +10,7 @@ export interface WinnerLocation {
   municipio: string;
   uf: string;
   nomeLoteria: string;
+  ganhadores: number;
 }
 
 export interface LotteryResult {
