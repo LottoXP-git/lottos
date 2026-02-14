@@ -2,7 +2,19 @@ import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { LotteryResult } from "@/data/lotteryData";
 
-const MEGA_PRIZE_THRESHOLD = 50000000; // R$ 50 milhões
+// Thresholds per lottery for mega prize notification
+const PRIZE_THRESHOLDS: Record<string, number> = {
+  megasena: 40000000,       // R$ 40 milhões
+  maismilionaria: 20000000, // R$ 20 milhões
+  lotofacil: 5000000,       // R$ 5 milhões
+  quina: 10000000,          // R$ 10 milhões
+  lotomania: 5000000,       // R$ 5 milhões
+  timemania: 5000000,       // R$ 5 milhões
+  duplasena: 3000000,       // R$ 3 milhões
+  diadesorte: 2000000,      // R$ 2 milhões
+  supersete: 2000000,       // R$ 2 milhões
+};
+const DEFAULT_THRESHOLD = 50000000;
 
 // Parse prize value from string like "R$ 42.350.000,00"
 function parsePrizeValue(prize: string): number {
@@ -81,7 +93,8 @@ export function usePrizeNotification(results: LotteryResult[] | undefined) {
     // Find lotteries with mega prizes
     const megaPrizeLotteries = results.filter(lottery => {
       const prizeValue = parsePrizeValue(lottery.nextPrize);
-      return prizeValue >= MEGA_PRIZE_THRESHOLD;
+      const threshold = PRIZE_THRESHOLDS[lottery.id] || DEFAULT_THRESHOLD;
+      return prizeValue >= threshold;
     });
 
     if (megaPrizeLotteries.length > 0 && !hasNotifiedRef.current) {
