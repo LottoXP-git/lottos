@@ -18,21 +18,21 @@ import { PrizeRanking } from "@/components/PrizeRanking";
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
- 
-   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
-   // Use API data or fallback to static data
-   const results = useMemo(() => {
-     if (lotteryResults && lotteryResults.length > 0) {
-       return lotteryResults;
-     }
-     return fallbackResults;
-   }, [lotteryResults]);
+  const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
-   // Trigger sound notification for mega prizes (> R$ 50M)
-   usePrizeNotification(results);
+  // Use API data or fallback to static data
+  const results = useMemo(() => {
+    if (lotteryResults && lotteryResults.length > 0) {
+      return lotteryResults;
+    }
+    return fallbackResults;
+  }, [lotteryResults]);
 
-   const isLiveData = lotteryResults && lotteryResults.length > 0;
+  // Trigger sound notification for mega prizes (> R$ 50M)
+  usePrizeNotification(results);
+
+  const isLiveData = lotteryResults && lotteryResults.length > 0;
 
   const handleCardClick = (lottery: LotteryResult) => {
     setSelectedLottery(lottery);
@@ -40,7 +40,7 @@ const Index = () => {
   };
 
   // Calculate total prize pool
-   const totalPrize = results.reduce((acc, lottery) => {
+  const totalPrize = results.reduce((acc, lottery) => {
     const value = parseFloat(lottery.nextPrize.replace(/[R$\s.]/g, '').replace(',', '.'));
     return acc + value;
   }, 0);
@@ -53,22 +53,22 @@ const Index = () => {
         {/* Hero Section */}
         <section className="text-center mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-             {isLiveData ? (
-               <>
+             {isLiveData ?
+            <>
                  <Wifi className="w-4 h-4 text-emerald-400" />
                  <span className="text-sm text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
-               </>
-             ) : (
-               <>
+               </> :
+
+            <>
                  <WifiOff className="w-4 h-4 text-muted-foreground" />
                  <span className="text-sm text-muted-foreground font-medium">Dados de exemplo</span>
                </>
-             )}
+            }
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-foreground">Loterias </span>
-            <span className="text-gradient">Caixa</span>
+            <span className="text-accent">Loterias </span>
+            <span className="text-gradient text-accent">Caixa</span>
           </h1>
           
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -115,65 +115,65 @@ const Index = () => {
               </h2>
               <div className="flex items-center gap-2">
                 <ShareButton
-                  title="Resultados das Loterias Caixa"
-                  text={`🎰 Resultados das Loterias Caixa\n\n💰 Prêmios acumulados: R$ ${(totalPrize / 1000000).toFixed(0)}M+\n🎯 ${results.length} loterias disponíveis\n\nConfira os últimos resultados!`}
-                  variant="outline"
-                  size="sm"
-                  className="h-9 w-9"
-                />
+                title="Resultados das Loterias Caixa"
+                text={`🎰 Resultados das Loterias Caixa\n\n💰 Prêmios acumulados: R$ ${(totalPrize / 1000000).toFixed(0)}M+\n🎯 ${results.length} loterias disponíveis\n\nConfira os últimos resultados!`}
+                variant="outline"
+                size="sm"
+                className="h-9 w-9" />
+
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => refetch()}
-                  disabled={isFetching}
-                  className="gap-2"
-                >
+                variant="outline"
+                size="sm"
+                onClick={() => refetch()}
+                disabled={isFetching}
+                className="gap-2">
+
                   <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
                   Atualizar
                 </Button>
               </div>
             </div>
           
-           {isLoading ? (
-             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-               {[...Array(5)].map((_, idx) => (
-                 <div key={idx} className="p-6 rounded-2xl border border-border bg-card">
+           {isLoading ?
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {[...Array(5)].map((_, idx) =>
+            <div key={idx} className="p-6 rounded-2xl border border-border bg-card">
                    <Skeleton className="h-6 w-32 mb-4" />
                    <Skeleton className="h-4 w-24 mb-4" />
                    <div className="flex gap-2 mb-4">
-                     {[...Array(6)].map((_, i) => (
-                       <Skeleton key={i} className="h-10 w-10 rounded-full" />
-                     ))}
+                     {[...Array(6)].map((_, i) =>
+                <Skeleton key={i} className="h-10 w-10 rounded-full" />
+                )}
                    </div>
                    <Skeleton className="h-8 w-40" />
                  </div>
-               ))}
-             </div>
-           ) : error ? (
-             <div className="text-center py-8">
+            )}
+             </div> :
+          error ?
+          <div className="text-center py-8">
                <p className="text-destructive mb-4">Erro ao carregar resultados: {error.message}</p>
                <Button onClick={() => refetch()} variant="outline">
                  Tentar novamente
                </Button>
-             </div>
-           ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {results.map((lottery, idx) => (
-                  <motion.div
-                    key={lottery.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
-                  >
+             </div> :
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {results.map((lottery, idx) =>
+            <motion.div
+              key={lottery.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}>
+
                     <LotteryCard
-                      result={lottery}
-                      onClick={() => handleCardClick(lottery)}
-                    />
+                result={lottery}
+                onClick={() => handleCardClick(lottery)} />
+
                   </motion.div>
-                ))}
+            )}
               </div>
-           )}
+          }
         </section>
 
         {/* Prize Ranking */}
@@ -182,8 +182,8 @@ const Index = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5 }}
-        >
+          transition={{ duration: 0.5 }}>
+
           <PrizeRanking lotteries={results} />
         </motion.section>
 
@@ -193,8 +193,8 @@ const Index = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+          transition={{ duration: 0.5, delay: 0.1 }}>
+
           <h2 className="text-2xl font-bold mb-6">
             <span className="text-foreground">Gerador de </span>
             <span className="text-gradient">Apostas</span>
@@ -210,8 +210,8 @@ const Index = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+          transition={{ duration: 0.5, delay: 0.1 }}>
+
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <div>
               <h2 className="text-2xl font-bold mb-4">
@@ -259,10 +259,10 @@ const Index = () => {
       <LotteryDetailModal
         lottery={selectedLottery}
         open={modalOpen}
-        onOpenChange={setModalOpen}
-      />
-    </div>
-  );
+        onOpenChange={setModalOpen} />
+
+    </div>);
+
 };
 
 export default Index;
