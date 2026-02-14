@@ -55,23 +55,47 @@ function parsePrizeValue(prize: string): number {
   const cleaned = prize.replace(/[R$\s.]/g, '').replace(',', '.');
   return parseFloat(cleaned) || 0;
 }
+
+// Check if concurso is a special draw
+function isSpecialDraw(id: string, concurso: number): boolean {
+  const lastDigit = concurso % 10;
+  if (id === "lotofacil" && lastDigit === 0) return true;
+  if (id === "quina" && lastDigit === 5) return true;
+  if (id === "megasena" && (lastDigit === 0 || lastDigit === 5)) return true;
+  return false;
+}
+
+function getSpecialDrawLabel(id: string): string {
+  if (id === "lotofacil") return "CONCURSO ESPECIAL DA LOTOFÁCIL!";
+  if (id === "quina") return "QUINA DE SÃO JOÃO / ESPECIAL!";
+  if (id === "megasena") return "MEGA DA VIRADA / ESPECIAL!";
+  return "CONCURSO ESPECIAL!";
+}
+
 export function LotteryCard({
   result,
   onClick
 }: LotteryCardProps) {
   const nextPrizeValue = parsePrizeValue(result.nextPrize);
   const isHighPrize = nextPrizeValue >= 20000000; // R$ 20 milhões
+  const isSpecial = isSpecialDraw(result.id, result.concurso);
 
   const shareText = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🔢 Números: ${result.numbers.join(", ")}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
-  return <Card className={cn("card-glass border-2 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 glow-effect relative overflow-hidden", colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]")} onClick={onClick}>
+  return <Card className={cn("card-glass border-2 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 glow-effect relative overflow-hidden", colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.2)]")} onClick={onClick}>
+      {/* Special Draw Banner */}
+      {isSpecial && !isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>{getSpecialDrawLabel(result.id)}</span>
+          <Sparkles className="w-3.5 h-3.5" />
+        </div>}
       {/* High Prize Banner */}
       {isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2 animate-pulse">
           <Flame className="w-3.5 h-3.5" />
-          <span>PRÊMIO ACUMULADO!</span>
+          <span>{isSpecial ? `ESPECIAL ACUMULADO!` : "PRÊMIO ACUMULADO!"}</span>
           <Sparkles className="w-3.5 h-3.5" />
         </div>}
 
-      <CardHeader className={cn("pb-3", isHighPrize && "pt-10")}>
+      <CardHeader className={cn("pb-3", (isHighPrize || isSpecial) && "pt-10")}>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-bold text-foreground">
             {result.name}
