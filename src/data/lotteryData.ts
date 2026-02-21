@@ -198,11 +198,11 @@ export const generateFrequencyData = (maxNumber: number): NumberFrequency[] => {
 };
 
 export const getMostFrequent = (data: NumberFrequency[], count: number): number[] => {
-  return data.slice(0, count).map(d => d.number).sort((a, b) => a - b);
+  return data.slice(0, count).map(d => d.number);
 };
 
 export const getLeastFrequent = (data: NumberFrequency[], count: number): number[] => {
-  return data.slice(-count).map(d => d.number).sort((a, b) => a - b);
+  return [...data].slice(-count).reverse().map(d => d.number);
 };
 
 export const generateSmartPicks = (
