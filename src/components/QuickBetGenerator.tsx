@@ -11,8 +11,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from
+"@/components/ui/select";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
@@ -29,7 +29,7 @@ const variantMap: Record<string, string> = {
   "lottery-maismilionaria": "maismilionaria",
   "lottery-timemania": "timemania",
   "lottery-federal": "federal",
-  "lottery-loteca": "loteca",
+  "lottery-loteca": "loteca"
 };
 
 function generateRandomNumbers(max: number, count: number): number[] {
@@ -74,14 +74,14 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const ballVariant = selected ? (variantMap[selected.color] as any) : "default";
+  const ballVariant = selected ? variantMap[selected.color] as any : "default";
 
   return (
     <Card className="card-glass border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Dices className="w-5 h-5 text-primary" />
-          <span>Gerador de Apostas Aleatórias</span>
+          <span>Gerador de Palpites Aleatórios</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -90,63 +90,63 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
             <SelectValue placeholder="Escolha a loteria" />
           </SelectTrigger>
           <SelectContent>
-            {lotteries
-              .filter((l) => l.id !== "federal" && l.id !== "loteca")
-              .map((l) => (
-                <SelectItem key={l.id} value={l.id}>
+            {lotteries.
+            filter((l) => l.id !== "federal" && l.id !== "loteca").
+            map((l) =>
+            <SelectItem key={l.id} value={l.id}>
                   {l.name}
                 </SelectItem>
-              ))}
+            )}
           </SelectContent>
         </Select>
 
         <Button
           onClick={generate}
           className="w-full bg-gradient-to-r from-primary to-yellow-600 hover:from-primary/90 hover:to-yellow-600/90 text-primary-foreground font-bold"
-          disabled={isSpinning || !selected || selected.id === "federal" || selected.id === "loteca"}
-        >
-          {isSpinning ? (
-            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <Dices className="w-4 h-4 mr-2" />
-          )}
+          disabled={isSpinning || !selected || selected.id === "federal" || selected.id === "loteca"}>
+
+          {isSpinning ?
+          <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> :
+
+          <Dices className="w-4 h-4 mr-2" />
+          }
           Gerar Aposta
         </Button>
 
-        {numbers.length > 0 && (
-          <div className="space-y-3 animate-fade-in">
+        {numbers.length > 0 &&
+        <div className="space-y-3 animate-fade-in">
             <div className="flex flex-wrap gap-2 justify-center py-3">
-              {numbers.map((num, idx) => (
-                <LotteryBall
-                  key={`${num}-${idx}`}
-                  number={num}
-                  size={numbers.length > 10 ? "sm" : "md"}
-                  variant={ballVariant}
-                  delay={idx * 80}
-                />
-              ))}
+              {numbers.map((num, idx) =>
+            <LotteryBall
+              key={`${num}-${idx}`}
+              number={num}
+              size={numbers.length > 10 ? "sm" : "md"}
+              variant={ballVariant}
+              delay={idx * 80} />
+
+            )}
             </div>
             <Button
-              onClick={copyNumbers}
-              variant="outline"
-              size="sm"
-              className="w-full border-primary/50 hover:bg-primary/10"
-            >
-              {copied ? (
-                <>
+            onClick={copyNumbers}
+            variant="outline"
+            size="sm"
+            className="w-full border-primary/50 hover:bg-primary/10">
+
+              {copied ?
+            <>
                   <Check className="w-4 h-4 mr-2 text-emerald-400" />
                   Copiado!
-                </>
-              ) : (
-                <>
+                </> :
+
+            <>
                   <Copy className="w-4 h-4 mr-2" />
                   Copiar Números
                 </>
-              )}
+            }
             </Button>
           </div>
-        )}
+        }
       </CardContent>
-    </Card>
-  );
+    </Card>);
+
 }

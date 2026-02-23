@@ -197,7 +197,7 @@ const Index = () => {
 
           <h2 className="text-2xl font-bold mb-6">
             <span className="text-accent">Gerador de </span>
-            <span className="text-gradient">Apostas</span>
+            <span className="text-gradient">Palpites</span>
           </h2>
           <div className="max-w-md mx-auto">
             <QuickBetGenerator lotteries={results} />
