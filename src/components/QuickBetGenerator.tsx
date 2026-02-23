@@ -81,7 +81,7 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Dices className="w-5 h-5 text-primary" />
-          <span>Gerador de Palpites Aleatórios</span>
+          <span>Gerador de Palpites Inteligentes</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
