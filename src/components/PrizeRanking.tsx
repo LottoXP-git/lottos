@@ -1,5 +1,6 @@
-import { Trophy, TrendingUp, Shield } from "lucide-react";
+import { Trophy, TrendingUp, Shield, Info } from "lucide-react";
 import { LotteryResult } from "@/data/lotteryData";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface PrizeRankingProps {
   lotteries: LotteryResult[];
@@ -23,17 +24,17 @@ const medalColors = [
 ];
 
 // Probabilidades reais de acertar o prêmio principal
-const difficultyMap: Record<string, { odds: string; level: "easy" | "medium" | "hard" | "extreme" }> = {
-  megasena:        { odds: "1 em 50.063.860", level: "extreme" },
-  lotofacil:       { odds: "1 em 3.268.760", level: "easy" },
-  quina:           { odds: "1 em 24.040.016", level: "hard" },
-  lotomania:       { odds: "1 em 11.372.635", level: "medium" },
-  timemania:       { odds: "1 em 26.472.637", level: "hard" },
-  diadesorte:      { odds: "1 em 2.629.575", level: "easy" },
-  supersete:       { odds: "1 em 10.000.000", level: "medium" },
-  maismilionaria:  { odds: "1 em 238.360.500", level: "extreme" },
-  federal:         { odds: "1 em 100.000", level: "easy" },
-  duplasena:       { odds: "1 em 15.890.700", level: "hard" },
+const difficultyMap: Record<string, { odds: string; level: "easy" | "medium" | "hard" | "extreme"; explain: string }> = {
+  megasena:        { odds: "1 em 50.063.860", level: "extreme", explain: "Acertar 6 números de 60. Combinação C(60,6)." },
+  lotofacil:       { odds: "1 em 3.268.760", level: "easy", explain: "Acertar 15 números de 25. Combinação C(25,15)." },
+  quina:           { odds: "1 em 24.040.016", level: "hard", explain: "Acertar 5 números de 80. Combinação C(80,5)." },
+  lotomania:       { odds: "1 em 11.372.635", level: "medium", explain: "Acertar 15 números de 50 (sorteiam 20). Combinação C(50,20)." },
+  timemania:       { odds: "1 em 26.472.637", level: "hard", explain: "Acertar 7 números de 80 + Time do Coração. Combinação C(80,7) × 80 times." },
+  diadesorte:      { odds: "1 em 2.629.575", level: "easy", explain: "Acertar 7 números de 31 + Mês da Sorte. Combinação C(31,7) × 12 meses." },
+  supersete:       { odds: "1 em 10.000.000", level: "medium", explain: "Acertar 7 colunas com dígitos de 0-9. Probabilidade 10⁷." },
+  maismilionaria:  { odds: "1 em 238.360.500", level: "extreme", explain: "Acertar 6 números de 50 + 2 trevos de 6. C(50,6) × C(6,2)." },
+  federal:         { odds: "1 em 100.000", level: "easy", explain: "Bilhete com 5 dígitos. 100.000 combinações possíveis." },
+  duplasena:       { odds: "1 em 15.890.700", level: "hard", explain: "Acertar 6 números de 50 em cada sorteio. Combinação C(50,6)." },
 };
 
 const levelConfig: Record<string, { label: string; color: string; bg: string }> = {
@@ -84,10 +85,28 @@ export function PrizeRanking({ lotteries }: PrizeRankingProps) {
                 </p>
                 {diff && lvl && (
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${lvl.bg} ${lvl.color}`}>
-                      <Shield className="w-2.5 h-2.5" />
-                      {lvl.label}
-                    </span>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full cursor-pointer hover:opacity-80 transition-opacity ${lvl.bg} ${lvl.color}`}>
+                          <Shield className="w-2.5 h-2.5" />
+                          {lvl.label}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-3" side="top">
+                        <div className="space-y-1.5">
+                          <p className={`text-xs font-bold ${lvl.color}`}>
+                            {lvl.label} — {diff.odds}
+                          </p>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {diff.explain}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground/70 flex items-center gap-1 pt-1 border-t border-border">
+                            <Info className="w-3 h-3" />
+                            Probabilidade para aposta mínima
+                          </p>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <span className="text-[10px] text-muted-foreground hidden sm:inline">
                       {diff.odds}
                     </span>
