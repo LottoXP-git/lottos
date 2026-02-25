@@ -6,6 +6,7 @@ import { LotteryResult } from "@/data/lotteryData";
 import { Dices, RefreshCw, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import confetti from "canvas-confetti";
 import {
   Select,
   SelectContent,
@@ -62,6 +63,14 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
       const nums = generateRandomNumbers(selected.maxNumber, selected.selectCount);
       setNumbers(nums);
       setIsSpinning(false);
+      
+      // Fire confetti 🎉
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'],
+      });
     }, 400);
   };
 
