@@ -106,6 +106,23 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Quick Bet Generator */}
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}>
+
+          <h2 className="text-2xl font-bold mb-6">
+            <span className="text-accent">Gerador de </span>
+            <span className="text-gradient">Palpites</span>
+          </h2>
+          <div className="max-w-md mx-auto">
+            <QuickBetGenerator lotteries={results} />
+          </div>
+        </motion.section>
+
         {/* Lottery Results Grid */}
         <section className="mb-12">
            <div className="flex items-center justify-between mb-6">
@@ -185,23 +202,6 @@ const Index = () => {
           transition={{ duration: 0.5 }}>
 
           <PrizeRanking lotteries={results} />
-        </motion.section>
-
-        {/* Quick Bet Generator */}
-        <motion.section
-          className="mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
-
-          <h2 className="text-2xl font-bold mb-6">
-            <span className="text-accent">Gerador de </span>
-            <span className="text-gradient">Palpites</span>
-          </h2>
-          <div className="max-w-md mx-auto">
-            <QuickBetGenerator lotteries={results} />
-          </div>
         </motion.section>
 
         {/* Registration Section */}
