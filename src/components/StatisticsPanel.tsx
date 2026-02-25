@@ -27,6 +27,7 @@ export function StatisticsPanel({ frequencyData, variant, showCount = 6 }: Stati
           <div className="flex flex-wrap gap-2 justify-center">
             {hotNumbers.map((num, idx) => (
               <div key={num} className="flex flex-col items-center gap-1">
+                <span className="text-[10px] font-bold text-emerald-400">#{idx + 1}</span>
                 <LotteryBall number={num} size="md" variant={variant} delay={idx * 80} />
                 <span className="text-xs text-muted-foreground font-mono">
                   {frequencyData.find(d => d.number === num)?.frequency}x
@@ -49,6 +50,7 @@ export function StatisticsPanel({ frequencyData, variant, showCount = 6 }: Stati
           <div className="flex flex-wrap gap-2 justify-center">
             {coldNumbers.map((num, idx) => (
               <div key={num} className="flex flex-col items-center gap-1">
+                <span className="text-[10px] font-bold text-blue-400">#{idx + 1}</span>
                 <LotteryBall number={num} size="md" variant={variant} delay={idx * 80} />
                 <span className="text-xs text-muted-foreground font-mono">
                   {frequencyData.find(d => d.number === num)?.frequency}x
