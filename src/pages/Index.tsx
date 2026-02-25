@@ -114,11 +114,7 @@ const Index = () => {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
-          <h2 className="text-2xl font-bold mb-6">
-            <span className="text-accent">Gerador de </span>
-            <span className="text-gradient">Palpites</span>
-          </h2>
-          <div className="max-w-md mx-auto">
+          <div className="max-w-lg mx-auto">
             <QuickBetGenerator lotteries={results} />
           </div>
         </motion.section>
