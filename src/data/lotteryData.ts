@@ -166,7 +166,7 @@ export const lotteryResults: LotteryResult[] = [
     nextDate: "04/02/2025",
     color: "lottery-timemania",
     maxNumber: 80,
-    selectCount: 7,
+    selectCount: 10,
   },
   {
     id: "federal",
