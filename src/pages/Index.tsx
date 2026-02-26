@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ShareButton";
 import { PrizeRanking } from "@/components/PrizeRanking";
+import { AdBanner } from "@/components/AdBanner";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
@@ -106,6 +107,9 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Ad - Leaderboard */}
+        <AdBanner format="leaderboard" className="mb-8 rounded-xl" />
+
         {/* Quick Bet Generator */}
         <motion.section
           className="mb-12"
@@ -189,6 +193,9 @@ const Index = () => {
           }
         </section>
 
+        {/* Ad - Inline */}
+        <AdBanner format="inline" className="mb-8" />
+
         {/* Prize Ranking */}
         <motion.section
           className="mb-12"
@@ -199,6 +206,9 @@ const Index = () => {
 
           <PrizeRanking lotteries={results} />
         </motion.section>
+
+        {/* Ad - Interstitial */}
+        <AdBanner format="interstitial" className="mb-8" />
 
         {/* Registration Section */}
         <motion.section
