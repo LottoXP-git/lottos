@@ -12,8 +12,9 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue } from
-"@/components/ui/select";
+  SelectValue,
+} from "@/components/ui/select";
+import { VideoAdModal } from "./VideoAdModal";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
@@ -72,13 +73,30 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
   const [mesSorte, setMesSorte] = useState<string>("");
   const [isSpinning, setIsSpinning] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [freeGenerations, setFreeGenerations] = useState(2);
+  const [showVideoAd, setShowVideoAd] = useState(false);
 
   const selected = lotteries.find((l) => l.id === selectedId);
 
   const generate = () => {
     if (!selected) return;
+    if (freeGenerations <= 0) {
+      setShowVideoAd(true);
+      return;
+    }
+    runGeneration();
+  };
+
+  const handleAdComplete = () => {
+    setShowVideoAd(false);
+    setFreeGenerations(2);
+    runGeneration();
+  };
+
+  const runGeneration = () => {
+    if (!selected) return;
     setIsSpinning(true);
-    setNumbers([]);
+    setFreeGenerations((prev) => prev - 1);
     setTrevos([]);
     setTimeCoracao("");
     setMesSorte("");
@@ -169,8 +187,16 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
           <RefreshCw className="w-5 h-5 mr-2 animate-spin" /> :
           <Dices className="w-5 h-5 mr-2" />
           }
-          Gerar Aposta
+          {freeGenerations > 0
+            ? `Gerar Aposta (${freeGenerations} restante${freeGenerations > 1 ? "s" : ""})`
+            : "Assistir Anúncio para Gerar"}
         </Button>
+
+        {freeGenerations <= 0 && numbers.length > 0 && (
+          <p className="text-xs text-center text-muted-foreground animate-pulse">
+            🎬 Assista um anúncio rápido para liberar mais 2 palpites gratuitos
+          </p>
+        )}
 
         {numbers.length > 0 &&
         <div className="space-y-4 animate-fade-in">
@@ -234,6 +260,8 @@ export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
             </Button>
           </div>
         }
+
+        <VideoAdModal open={showVideoAd} onComplete={handleAdComplete} />
       </CardContent>
     </Card>);
 
