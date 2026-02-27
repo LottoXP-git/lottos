@@ -10,6 +10,7 @@ import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
 import { ShareButton } from "./ShareButton";
 import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
+import { AdBanner } from "./AdBanner";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -299,6 +300,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </div>
           </div>
 
+          {/* Ad - Inline no modal */}
+          <AdBanner format="inline" className="mb-4" />
+
           <Tabs defaultValue="history" className="w-full">
             <TabsList className="grid w-full grid-cols-5 bg-secondary/50">
               <TabsTrigger value="history" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
@@ -357,6 +361,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               />
             </TabsContent>
           </Tabs>
+
+          {/* Ad - Sidebar no modal */}
+          <AdBanner format="sidebar" className="mt-4" />
         </div>
       </DialogContent>
     </Dialog>
