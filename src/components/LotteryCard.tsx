@@ -4,6 +4,7 @@ import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, WinnerLocation } from "@/data/lotteryData";
 import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isDuplaDePascoaActive } from "@/utils/easterDate";
 import { ShareButton } from "./ShareButton";
 interface LotteryCardProps {
   result: LotteryResult;
