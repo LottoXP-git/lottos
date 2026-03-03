@@ -306,6 +306,10 @@ const Index = () => {
         open={modalOpen}
         onOpenChange={setModalOpen} />
 
+      <SpecialDrawModal
+        open={specialDrawOpen}
+        onOpenChange={setSpecialDrawOpen} />
+
     </div>);
 
 };
