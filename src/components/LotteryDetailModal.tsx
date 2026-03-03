@@ -6,7 +6,7 @@ import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
-import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
+
 import { ShareButton } from "./ShareButton";
 import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
@@ -317,10 +317,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <History className="w-4 h-4" />
                 <span className="hidden sm:inline">Frequências</span>
               </TabsTrigger>
-              <TabsTrigger value="evolution" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
-                <TrendingUp className="w-4 h-4" />
-                <span className="hidden sm:inline">Evolução</span>
-              </TabsTrigger>
               <TabsTrigger value="picks" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <Sparkles className="w-4 h-4" />
                 <span className="hidden sm:inline">Palpites</span>
@@ -350,9 +346,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </div>
             </TabsContent>
 
-            <TabsContent value="evolution" className="mt-4">
-              <PrizeEvolutionChart lottery={lottery} variant={variantMap[lottery.color]} />
-            </TabsContent>
 
             <TabsContent value="picks" className="mt-4">
               <SmartPickGenerator
