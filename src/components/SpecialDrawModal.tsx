@@ -73,7 +73,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
   );
 }
 
-export function SpecialDrawModal({ open, onOpenChange }: SpecialDrawModalProps) {
+export function SpecialDrawModal({ open, onOpenChange, onGeneratePicks }: SpecialDrawModalProps) {
   const [countdown, setCountdown] = useState<CountdownValues>(getCountdown(SPECIAL_DRAW.date));
 
   useEffect(() => {
