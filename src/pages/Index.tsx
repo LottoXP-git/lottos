@@ -125,6 +125,43 @@ const Index = () => {
           </div>
         </motion.section>
 
+        {/* Special Draw Banner */}
+        <motion.section
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <button
+            onClick={() => setSpecialDrawOpen(true)}
+            className="w-full group relative overflow-hidden rounded-2xl border border-rose-500/30 bg-gradient-to-r from-rose-600/10 via-amber-500/10 to-violet-600/10 hover:from-rose-600/20 hover:via-amber-500/15 hover:to-violet-600/20 transition-all duration-300 p-4 sm:p-5"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-rose-500/5 via-transparent to-amber-500/5 group-hover:opacity-100 opacity-0 transition-opacity" />
+            <div className="relative flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-rose-400" />
+                </div>
+                <div className="text-left">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-rose-400">Concurso Especial</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-rose-500/20 text-[10px] font-bold text-rose-300 animate-pulse">AO VIVO</span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">Dupla de Páscoa</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">Clique para ver detalhes e contagem regressiva</p>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-xs text-muted-foreground">Prêmio estimado</span>
+                <div className="text-lg sm:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">
+                  R$ 35 Milhões
+                </div>
+              </div>
+            </div>
+          </button>
+        </motion.section>
+
         {/* Lottery Results Grid */}
         <section className="mb-12">
            <div className="flex items-center justify-between mb-6">
