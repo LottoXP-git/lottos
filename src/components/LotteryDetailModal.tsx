@@ -323,7 +323,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="history" className="mt-4">
+            <TabsContent value="history" className="mt-3 sm:mt-4">
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
