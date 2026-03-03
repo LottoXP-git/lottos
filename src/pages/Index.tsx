@@ -121,8 +121,8 @@ const Index = () => {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
-          <div className="max-w-lg mx-auto">
-            <QuickBetGenerator lotteries={results} />
+          <div id="quick-bet-generator" className="max-w-lg mx-auto">
+            <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
         </motion.section>
 
