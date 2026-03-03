@@ -60,7 +60,6 @@ function parsePrizeValue(prize: string): number {
 function isSpecialDraw(id: string, concurso: number): boolean {
   const lastDigit = concurso % 10;
   if (id === "lotofacil" && lastDigit === 0) return true;
-  if (id === "quina" && lastDigit === 5) return true;
   if (id === "megasena" && (lastDigit === 0 || lastDigit === 5)) return true;
   return false;
 }
