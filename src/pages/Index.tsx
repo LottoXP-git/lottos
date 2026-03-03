@@ -196,7 +196,7 @@ const Index = () => {
             </div>
           
            {isLoading ?
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                {[...Array(5)].map((_, idx) =>
             <div key={idx} className="p-6 rounded-2xl border border-border bg-card">
                    <Skeleton className="h-6 w-32 mb-4" />
