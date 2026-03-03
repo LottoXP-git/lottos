@@ -6,7 +6,7 @@ import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
-import { PrizeEvolutionChart } from "./PrizeEvolutionChart";
+
 import { ShareButton } from "./ShareButton";
 import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
