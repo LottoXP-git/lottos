@@ -327,7 +327,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-4 space-y-4">
+            <TabsContent value="stats" className="mt-3 sm:mt-4 space-y-3 sm:space-y-4">
               <StatisticsPanel
                 frequencyData={frequencyData}
                 variant={variantMap[lottery.color]}
