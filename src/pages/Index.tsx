@@ -309,7 +309,15 @@ const Index = () => {
 
       <SpecialDrawModal
         open={specialDrawOpen}
-        onOpenChange={setSpecialDrawOpen} />
+        onOpenChange={setSpecialDrawOpen}
+        onGeneratePicks={() => {
+          setSpecialDrawOpen(false);
+          setQuickBetPreselect("duplasena");
+          setTimeout(() => {
+            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }}
+      />
 
     </div>);
 
