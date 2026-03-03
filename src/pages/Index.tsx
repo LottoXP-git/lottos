@@ -113,7 +113,7 @@ const Index = () => {
         </section>
 
         {/* Ad - Leaderboard */}
-        <AdBanner format="leaderboard" className="mb-8 rounded-xl" />
+        <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
 
         {/* Quick Bet Generator */}
         <motion.section
