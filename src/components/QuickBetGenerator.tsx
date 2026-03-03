@@ -18,6 +18,7 @@ import { VideoAdModal } from "./VideoAdModal";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
+  preselectedId?: string;
 }
 
 const variantMap: Record<string, string> = {
