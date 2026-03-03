@@ -278,25 +278,25 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           )}
 
           {/* Next Draw Info */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-1">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <TrendingUp className="w-3.5 h-3.5" />
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-0.5 sm:gap-1">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>Próximo Prêmio</span>
               </div>
-              <span className="text-base font-bold text-primary">{lottery.nextPrize}</span>
+              <span className="text-sm sm:text-base font-bold text-primary">{lottery.nextPrize}</span>
               {lottery.accumulated && (
                 <span className="flex items-center gap-1 text-[10px] font-semibold text-yellow-500">
                   <Flame className="w-3 h-3" /> Acumulado!
                 </span>
               )}
             </div>
-            <div className="p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-1">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="w-3.5 h-3.5" />
+            <div className="p-2.5 sm:p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-0.5 sm:gap-1">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>Próximo Sorteio</span>
               </div>
-              <span className="text-base font-bold text-foreground">{lottery.nextDate || "A definir"}</span>
+              <span className="text-sm sm:text-base font-bold text-foreground">{lottery.nextDate || "A definir"}</span>
             </div>
           </div>
 
