@@ -21,6 +21,7 @@ const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
+  const [quickBetPreselect, setQuickBetPreselect] = useState<string | undefined>();
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
@@ -120,8 +121,8 @@ const Index = () => {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
-          <div className="max-w-lg mx-auto">
-            <QuickBetGenerator lotteries={results} />
+          <div id="quick-bet-generator" className="max-w-lg mx-auto">
+            <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
         </motion.section>
 
@@ -308,7 +309,15 @@ const Index = () => {
 
       <SpecialDrawModal
         open={specialDrawOpen}
-        onOpenChange={setSpecialDrawOpen} />
+        onOpenChange={setSpecialDrawOpen}
+        onGeneratePicks={() => {
+          setSpecialDrawOpen(false);
+          setQuickBetPreselect("duplasena");
+          setTimeout(() => {
+            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }}
+      />
 
     </div>);
 

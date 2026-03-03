@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotteryBall } from "./LotteryBall";
@@ -18,6 +18,7 @@ import { VideoAdModal } from "./VideoAdModal";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
+  preselectedId?: string;
 }
 
 const variantMap: Record<string, string> = {
@@ -65,8 +66,14 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
+export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGeneratorProps) {
   const [selectedId, setSelectedId] = useState(lotteries[0]?.id || "");
+
+  useEffect(() => {
+    if (preselectedId) {
+      setSelectedId(preselectedId);
+    }
+  }, [preselectedId]);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [trevos, setTrevos] = useState<number[]>([]);
   const [timeCoracao, setTimeCoracao] = useState<string>("");
