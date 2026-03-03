@@ -170,9 +170,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Winner Locations - All lotteries except Federal (already shown inline) */}
           {lottery.id !== "federal" && lottery.localGanhadores && lottery.localGanhadores.length > 0 && (
-            <div className="p-4 rounded-xl bg-secondary/30 border border-border">
-              <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
-                <MapPin className="w-4 h-4 text-primary" />
+            <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-foreground">
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Locais dos Ganhadores</span>
               </div>
               <div className="space-y-2">
