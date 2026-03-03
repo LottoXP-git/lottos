@@ -311,17 +311,19 @@ const Index = () => {
         open={modalOpen}
         onOpenChange={setModalOpen} />
 
-      <SpecialDrawModal
-        open={specialDrawOpen}
-        onOpenChange={setSpecialDrawOpen}
-        onGeneratePicks={() => {
-          setSpecialDrawOpen(false);
-          setQuickBetPreselect("duplasena");
-          setTimeout(() => {
-            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 100);
-        }}
-      />
+      {showDuplaDePascoa && (
+        <SpecialDrawModal
+          open={specialDrawOpen}
+          onOpenChange={setSpecialDrawOpen}
+          onGeneratePicks={() => {
+            setSpecialDrawOpen(false);
+            setQuickBetPreselect("duplasena");
+            setTimeout(() => {
+              document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 100);
+          }}
+        />
+      )}
 
     </div>);
 
