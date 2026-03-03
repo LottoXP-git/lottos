@@ -23,6 +23,7 @@ const Index = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
   const [quickBetPreselect, setQuickBetPreselect] = useState<string | undefined>();
+  const showDuplaDePascoa = isDuplaDePascoaActive();
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
