@@ -262,9 +262,9 @@ const Index = () => {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-start">
+           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             <div>
-              <h2 className="text-2xl font-bold mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
                 <span className="text-accent">Receba </span>
                 <span className="text-gradient">Novidades</span>
               </h2>
