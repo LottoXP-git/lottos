@@ -16,6 +16,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
+import { isDuplaDePascoaActive } from "@/utils/easterDate";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
