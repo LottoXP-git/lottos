@@ -45,19 +45,19 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-border">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+       <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-card border-border p-3 sm:p-6 mx-1 sm:mx-auto">
+        <DialogHeader className="space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center gap-2 sm:gap-3 flex-wrap">
               {lottery.name}
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-xs sm:text-sm font-normal text-muted-foreground">
                 Concurso {lottery.concurso}
               </span>
             </DialogTitle>
             <ShareButton
               title={`${lottery.name} - Concurso ${lottery.concurso}`}
               text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
-              className="h-9 w-9 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
+              className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
           </div>
           <DialogDescription className="sr-only">
@@ -65,11 +65,11 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Current Result */}
-          <div className="p-4 rounded-xl bg-secondary/30 border border-border">
-            <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-              <Calendar className="w-4 h-4" />
+          <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm text-muted-foreground">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Resultado de {lottery.date}</span>
             </div>
             {lottery.id === "federal" ? (
@@ -170,9 +170,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Winner Locations - All lotteries except Federal (already shown inline) */}
           {lottery.id !== "federal" && lottery.localGanhadores && lottery.localGanhadores.length > 0 && (
-            <div className="p-4 rounded-xl bg-secondary/30 border border-border">
-              <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
-                <MapPin className="w-4 h-4 text-primary" />
+            <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-foreground">
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Locais dos Ganhadores</span>
               </div>
               <div className="space-y-2">
@@ -200,9 +200,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Prize Tiers */}
           {lottery.premiacoes && lottery.premiacoes.length > 0 && (
-            <div className="p-4 rounded-xl bg-secondary/30 border border-border">
-              <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
-                <Trophy className="w-4 h-4 text-primary" />
+            <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-foreground">
+                <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Faixas de Premiação</span>
               </div>
               {lottery.id === "duplasena" ? (
@@ -278,30 +278,30 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           )}
 
           {/* Next Draw Info */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-1">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <TrendingUp className="w-3.5 h-3.5" />
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-0.5 sm:gap-1">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>Próximo Prêmio</span>
               </div>
-              <span className="text-base font-bold text-primary">{lottery.nextPrize}</span>
+              <span className="text-sm sm:text-base font-bold text-primary">{lottery.nextPrize}</span>
               {lottery.accumulated && (
                 <span className="flex items-center gap-1 text-[10px] font-semibold text-yellow-500">
                   <Flame className="w-3 h-3" /> Acumulado!
                 </span>
               )}
             </div>
-            <div className="p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-1">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="w-3.5 h-3.5" />
+            <div className="p-2.5 sm:p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-0.5 sm:gap-1">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>Próximo Sorteio</span>
               </div>
-              <span className="text-base font-bold text-foreground">{lottery.nextDate || "A definir"}</span>
+              <span className="text-sm sm:text-base font-bold text-foreground">{lottery.nextDate || "A definir"}</span>
             </div>
           </div>
 
           {/* Ad - Inline no modal */}
-          <AdBanner format="inline" className="mb-4" />
+          <AdBanner format="inline" className="mb-2 sm:mb-4" />
 
           <Tabs defaultValue="history" className="w-full">
             <TabsList className="flex w-full overflow-x-auto gap-1 bg-secondary/50 p-1 rounded-lg scrollbar-hide">
@@ -323,11 +323,11 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="history" className="mt-4">
+            <TabsContent value="history" className="mt-3 sm:mt-4">
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-4 space-y-4">
+            <TabsContent value="stats" className="mt-3 sm:mt-4 space-y-3 sm:space-y-4">
               <StatisticsPanel
                 frequencyData={frequencyData}
                 variant={variantMap[lottery.color]}
@@ -336,8 +336,8 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <SpecialStats lottery={lottery} />
             </TabsContent>
 
-            <TabsContent value="frequency" className="mt-4">
-              <div className="p-4 rounded-xl bg-secondary/30 border border-border">
+            <TabsContent value="frequency" className="mt-3 sm:mt-4">
+              <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
                 <FrequencyChart
                   data={frequencyData}
                   maxNumber={lottery.maxNumber}
@@ -347,7 +347,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </TabsContent>
 
 
-            <TabsContent value="picks" className="mt-4">
+            <TabsContent value="picks" className="mt-3 sm:mt-4">
               <SmartPickGenerator
                 lottery={lottery}
                 frequencyData={frequencyData}

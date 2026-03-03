@@ -55,75 +55,75 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Hero Section */}
-        <section className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
+        <section className="text-center mb-8 sm:mb-12 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-3 sm:mb-4">
              {isLiveData ?
             <>
-                 <Wifi className="w-4 h-4 text-emerald-400" />
-                 <span className="text-sm text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
+                 <Wifi className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+                 <span className="text-xs text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
                </> :
 
             <>
-                 <WifiOff className="w-4 h-4 text-muted-foreground" />
-                 <span className="text-sm text-muted-foreground font-medium">Dados de exemplo</span>
+                 <WifiOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                 <span className="text-xs text-muted-foreground font-medium">Dados de exemplo</span>
                </>
             }
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
             <span className="text-accent">Loterias </span>
             <span className="text-gradient text-accent">Caixa</span>
           </h1>
           
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
             Acompanhe os resultados de todas as loterias, analise estatísticas de frequência 
             e gere palpites inteligentes baseados em dados históricos.
           </p>
 
           {/* Stats Overview */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            <div className="p-4 rounded-xl bg-card border border-border">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Trophy className="w-5 h-5 text-primary" />
-                <span className="text-2xl font-bold text-gradient">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto">
+            <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                <span className="text-lg sm:text-2xl font-bold text-gradient">
                   R$ {(totalPrize / 1000000).toFixed(0)}M+
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">Prêmios Acumulados</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Prêmios Acumulados</p>
             </div>
             
-            <div className="p-4 rounded-xl bg-card border border-border">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5 text-emerald-400" />
-                <span className="text-2xl font-bold text-emerald-400">10</span>
+            <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+                <span className="text-lg sm:text-2xl font-bold text-emerald-400">10</span>
               </div>
-              <p className="text-xs text-muted-foreground">Loterias Disponíveis</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Loterias Disponíveis</p>
             </div>
             
-            <div className="p-4 rounded-xl bg-card border border-border">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-purple-400" />
-                <span className="text-2xl font-bold text-purple-400">100+</span>
+            <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+                <span className="text-lg sm:text-2xl font-bold text-purple-400">100+</span>
               </div>
-              <p className="text-xs text-muted-foreground">Sorteios Analisados</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Sorteios Analisados</p>
             </div>
           </div>
         </section>
 
         {/* Ad - Leaderboard */}
-        <AdBanner format="leaderboard" className="mb-8 rounded-xl" />
+        <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
 
         {/* Quick Bet Generator */}
         <motion.section
-          className="mb-12"
+          className="mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
-          <div id="quick-bet-generator" className="max-w-lg mx-auto">
+          <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
         </motion.section>
@@ -168,9 +168,9 @@ const Index = () => {
         )}
 
         {/* Lottery Results Grid */}
-        <section className="mb-12">
-           <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
+        <section className="mb-8 sm:mb-12">
+           <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
                 <span className="text-accent">Últimos</span>
                 <span className="text-gradient">Resultados</span>
               </h2>
@@ -196,7 +196,7 @@ const Index = () => {
             </div>
           
            {isLoading ?
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                {[...Array(5)].map((_, idx) =>
             <div key={idx} className="p-6 rounded-2xl border border-border bg-card">
                    <Skeleton className="h-6 w-32 mb-4" />
@@ -218,7 +218,7 @@ const Index = () => {
                </Button>
              </div> :
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {results.map((lottery, idx) =>
             <motion.div
               key={lottery.id}
@@ -262,9 +262,9 @@ const Index = () => {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-start">
+           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             <div>
-              <h2 className="text-2xl font-bold mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
                 <span className="text-accent">Receba </span>
                 <span className="text-gradient">Novidades</span>
               </h2>
