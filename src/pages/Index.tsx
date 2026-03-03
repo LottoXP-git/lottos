@@ -168,9 +168,9 @@ const Index = () => {
         )}
 
         {/* Lottery Results Grid */}
-        <section className="mb-12">
-           <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
+        <section className="mb-8 sm:mb-12">
+           <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
                 <span className="text-accent">Últimos</span>
                 <span className="text-gradient">Resultados</span>
               </h2>
