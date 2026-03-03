@@ -20,6 +20,7 @@ import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
