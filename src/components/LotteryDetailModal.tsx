@@ -317,10 +317,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <History className="w-4 h-4" />
                 <span className="hidden sm:inline">Frequências</span>
               </TabsTrigger>
-              <TabsTrigger value="evolution" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
-                <TrendingUp className="w-4 h-4" />
-                <span className="hidden sm:inline">Evolução</span>
-              </TabsTrigger>
               <TabsTrigger value="picks" className="flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:bg-primary/10">
                 <Sparkles className="w-4 h-4" />
                 <span className="hidden sm:inline">Palpites</span>
