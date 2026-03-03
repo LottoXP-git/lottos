@@ -16,12 +16,14 @@ import { ShareButton } from "@/components/ShareButton";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
+import { isDuplaDePascoaActive } from "@/utils/easterDate";
 
 const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
   const [quickBetPreselect, setQuickBetPreselect] = useState<string | undefined>();
+  const showDuplaDePascoa = isDuplaDePascoaActive();
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
@@ -127,6 +129,7 @@ const Index = () => {
         </motion.section>
 
         {/* Special Draw Banner */}
+        {showDuplaDePascoa && (
         <motion.section
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
@@ -162,6 +165,7 @@ const Index = () => {
             </div>
           </button>
         </motion.section>
+        )}
 
         {/* Lottery Results Grid */}
         <section className="mb-12">
@@ -307,17 +311,19 @@ const Index = () => {
         open={modalOpen}
         onOpenChange={setModalOpen} />
 
-      <SpecialDrawModal
-        open={specialDrawOpen}
-        onOpenChange={setSpecialDrawOpen}
-        onGeneratePicks={() => {
-          setSpecialDrawOpen(false);
-          setQuickBetPreselect("duplasena");
-          setTimeout(() => {
-            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 100);
-        }}
-      />
+      {showDuplaDePascoa && (
+        <SpecialDrawModal
+          open={specialDrawOpen}
+          onOpenChange={setSpecialDrawOpen}
+          onGeneratePicks={() => {
+            setSpecialDrawOpen(false);
+            setQuickBetPreselect("duplasena");
+            setTimeout(() => {
+              document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 100);
+          }}
+        />
+      )}
 
     </div>);
 
