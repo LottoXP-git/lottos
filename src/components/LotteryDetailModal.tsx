@@ -301,7 +301,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </div>
 
           {/* Ad - Inline no modal */}
-          <AdBanner format="inline" className="mb-4" />
+          <AdBanner format="inline" className="mb-2 sm:mb-4" />
 
           <Tabs defaultValue="history" className="w-full">
             <TabsList className="flex w-full overflow-x-auto gap-1 bg-secondary/50 p-1 rounded-lg scrollbar-hide">
