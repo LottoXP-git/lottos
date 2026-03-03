@@ -66,8 +66,14 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export function QuickBetGenerator({ lotteries }: QuickBetGeneratorProps) {
+export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGeneratorProps) {
   const [selectedId, setSelectedId] = useState(lotteries[0]?.id || "");
+
+  useEffect(() => {
+    if (preselectedId) {
+      setSelectedId(preselectedId);
+    }
+  }, [preselectedId]);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [trevos, setTrevos] = useState<number[]>([]);
   const [timeCoracao, setTimeCoracao] = useState<string>("");
