@@ -129,6 +129,7 @@ const Index = () => {
         </motion.section>
 
         {/* Special Draw Banner */}
+        {showDuplaDePascoa && (
         <motion.section
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
@@ -164,6 +165,7 @@ const Index = () => {
             </div>
           </button>
         </motion.section>
+        )}
 
         {/* Lottery Results Grid */}
         <section className="mb-12">
