@@ -197,7 +197,7 @@ export function SpecialDrawModal({ open, onOpenChange, onGeneratePicks }: Specia
           {/* CTA */}
           <Button
             className="w-full h-12 text-base font-bold gap-2 bg-gradient-to-r from-rose-500 via-primary to-amber-500 hover:from-rose-600 hover:via-primary hover:to-amber-600 text-primary-foreground shadow-lg"
-            onClick={() => onOpenChange(false)}
+            onClick={() => onGeneratePicks ? onGeneratePicks() : onOpenChange(false)}
           >
             <Sparkles className="w-5 h-5" />
             Gerar Palpites para a Dupla de Páscoa
