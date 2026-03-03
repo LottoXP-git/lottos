@@ -200,9 +200,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Prize Tiers */}
           {lottery.premiacoes && lottery.premiacoes.length > 0 && (
-            <div className="p-4 rounded-xl bg-secondary/30 border border-border">
-              <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
-                <Trophy className="w-4 h-4 text-primary" />
+            <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-foreground">
+                <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Faixas de Premiação</span>
               </div>
               {lottery.id === "duplasena" ? (
