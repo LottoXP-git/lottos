@@ -65,11 +65,11 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Current Result */}
-          <div className="p-4 rounded-xl bg-secondary/30 border border-border">
-            <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-              <Calendar className="w-4 h-4" />
+          <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm text-muted-foreground">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Resultado de {lottery.date}</span>
             </div>
             {lottery.id === "federal" ? (
