@@ -45,19 +45,19 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-border">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+       <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-card border-border p-3 sm:p-6 mx-1 sm:mx-auto">
+        <DialogHeader className="space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center gap-2 sm:gap-3 flex-wrap">
               {lottery.name}
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-xs sm:text-sm font-normal text-muted-foreground">
                 Concurso {lottery.concurso}
               </span>
             </DialogTitle>
             <ShareButton
               title={`${lottery.name} - Concurso ${lottery.concurso}`}
               text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
-              className="h-9 w-9 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
+              className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
           </div>
           <DialogDescription className="sr-only">
