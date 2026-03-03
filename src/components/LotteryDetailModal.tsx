@@ -346,9 +346,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </div>
             </TabsContent>
 
-            <TabsContent value="evolution" className="mt-4">
-              <PrizeEvolutionChart lottery={lottery} variant={variantMap[lottery.color]} />
-            </TabsContent>
 
             <TabsContent value="picks" className="mt-4">
               <SmartPickGenerator
