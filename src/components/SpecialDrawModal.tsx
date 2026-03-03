@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 interface SpecialDrawModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onGeneratePicks?: () => void;
 }
 
 interface CountdownValues {
