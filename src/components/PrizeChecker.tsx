@@ -6,9 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+
+const MESES_DIA_DE_SORTE = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+];
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const TIMEMANIA_TEAMS = [
