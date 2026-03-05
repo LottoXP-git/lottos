@@ -134,7 +134,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                     </div>
                     <div className="flex flex-wrap gap-2 justify-center">
                       {lottery.trevos.map((trevo, idx) => (
-                        <div key={`t-${idx}`} className="w-12 h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-base font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(lottery.numbers.length + idx) * 50}ms` }}>
+                        <div key={`t-${idx}`} className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-sm sm:text-base font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(lottery.numbers.length + idx) * 50}ms` }}>
                           {trevo}
                         </div>
                       ))}
