@@ -263,6 +263,7 @@ export function PrizeChecker() {
   const handleReset = () => {
     setResult(null);
     setNumbersInput("");
+    setTrevosInput("");
     setConcurso("");
   };
 
