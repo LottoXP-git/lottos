@@ -336,8 +336,8 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <SpecialStats lottery={lottery} />
             </TabsContent>
 
-            <TabsContent value="frequency" className="mt-3 sm:mt-4">
-              <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+            <TabsContent value="frequency" className="mt-2 sm:mt-4">
+              <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
                 <FrequencyChart
                   data={frequencyData}
                   maxNumber={lottery.maxNumber}
