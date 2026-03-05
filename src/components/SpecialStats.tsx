@@ -20,20 +20,20 @@ function RankingList({ items, icon, accentClass, borderClass, bgClass }: {
   borderClass: string;
   bgClass: string;
 }) {
-  if (items.length === 0) return <p className="text-sm text-muted-foreground text-center">Dados insuficientes</p>;
+  if (items.length === 0) return <p className="text-xs sm:text-sm text-muted-foreground text-center">Dados insuficientes</p>;
   const max = items[0].count;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5 sm:space-y-2">
       {items.map((item, idx) => (
-        <div key={item.name} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${bgClass} border ${borderClass}`}>
-          <span className={`text-sm font-bold ${accentClass} w-6 text-center`}>{idx + 1}º</span>
+        <div key={item.name} className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg ${bgClass} border ${borderClass}`}>
+          <span className={`text-xs sm:text-sm font-bold ${accentClass} w-5 sm:w-6 text-center`}>{idx + 1}º</span>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium text-foreground truncate">{item.name}</span>
-              <span className={`text-xs font-mono font-semibold ${accentClass}`}>{item.count}x</span>
+            <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+              <span className="text-xs sm:text-sm font-medium text-foreground truncate">{item.name}</span>
+              <span className={`text-[10px] sm:text-xs font-mono font-semibold ${accentClass}`}>{item.count}x</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-secondary">
+            <div className="w-full h-1 sm:h-1.5 rounded-full bg-secondary">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${accentClass.replace("text-", "bg-")}`}
                 style={{ width: `${(item.count / max) * 100}%` }}
@@ -117,7 +117,7 @@ export function SpecialStats({ lottery }: SpecialStatsProps) {
     timemania: {
       title: "Times Mais Sorteados",
       subtitle: `Últimos ${stats.total} concursos`,
-      icon: <Heart className="w-5 h-5 text-green-400 fill-green-400" />,
+      icon: <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 fill-green-400" />,
       accentClass: "text-green-400",
       borderClass: "border-green-500/20",
       bgClass: "bg-green-500/5",
@@ -125,7 +125,7 @@ export function SpecialStats({ lottery }: SpecialStatsProps) {
     diadesorte: {
       title: "Meses Mais Sorteados",
       subtitle: `Últimos ${stats.total} concursos`,
-      icon: <CalendarDays className="w-5 h-5 text-amber-400" />,
+      icon: <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />,
       accentClass: "text-amber-400",
       borderClass: "border-amber-500/20",
       bgClass: "bg-amber-500/5",
@@ -133,7 +133,7 @@ export function SpecialStats({ lottery }: SpecialStatsProps) {
     maismilionaria: {
       title: "Trevos Mais Sorteados",
       subtitle: `Últimos ${stats.total} concursos`,
-      icon: <Clover className="w-5 h-5 text-emerald-400" />,
+      icon: <Clover className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />,
       accentClass: "text-emerald-400",
       borderClass: "border-emerald-500/20",
       bgClass: "bg-emerald-500/5",
@@ -144,14 +144,14 @@ export function SpecialStats({ lottery }: SpecialStatsProps) {
 
   return (
     <Card className={`card-glass ${c.borderClass}`}>
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-lg">
+      <CardHeader className="pb-1 sm:pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+        <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-lg">
           {c.icon}
           <span className={c.accentClass}>{c.title}</span>
         </CardTitle>
-        <p className="text-xs text-muted-foreground">{c.subtitle}</p>
+        <p className="text-[10px] sm:text-xs text-muted-foreground">{c.subtitle}</p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
         <RankingList
           items={stats.items}
           icon={c.icon}
