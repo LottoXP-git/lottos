@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
 import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays } from "lucide-react";
+import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
@@ -313,6 +314,12 @@ export function PrizeChecker() {
 
       if (bestDraw.prizeTier) {
         toast.success(`Parabéns! Você acertou ${bestDraw.totalMatches} números${draws.length > 1 ? ` no melhor sorteio` : ""}!`);
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'],
+        });
       }
     } catch (err: any) {
       toast.error(err.message || "Erro ao buscar resultado. Verifique o concurso.");
