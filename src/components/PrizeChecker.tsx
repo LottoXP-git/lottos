@@ -30,9 +30,8 @@ const LOTTERIES: LotteryOption[] = [
 
 type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania";
 
-interface CheckResult {
-  concurso: number;
-  date: string;
+interface DrawResult {
+  label?: string;
   drawnNumbers: number[];
   matchedNumbers: number[];
   unmatchedNumbers: number[];
@@ -40,19 +39,10 @@ interface CheckResult {
   prizeTier: string | null;
 }
 
-function getPrizeTier(lotteryId: string, matches: number, totalDrawn: number): string | null {
-  const tiers: Record<string, Record<number, string>> = {
-    megasena: { 6: "Sena (1ª Faixa) 🏆", 5: "Quina (2ª Faixa)", 4: "Quadra (3ª Faixa)" },
-    lotofacil: { 15: "15 acertos 🏆", 14: "14 acertos", 13: "13 acertos", 12: "12 acertos", 11: "11 acertos" },
-    quina: { 5: "Quina (1ª Faixa) 🏆", 4: "Quadra (2ª Faixa)", 3: "Terno (3ª Faixa)", 2: "Duque (4ª Faixa)" },
-    lotomania: { 20: "20 acertos 🏆", 19: "19 acertos", 18: "18 acertos", 17: "17 acertos", 16: "16 acertos", 15: "15 acertos", 0: "0 acertos" },
-    duplasena: { 6: "Sena 🏆", 5: "Quina", 4: "Quadra", 3: "Terno" },
-    diadesorte: { 7: "7 acertos 🏆", 6: "6 acertos", 5: "5 acertos", 4: "4 acertos" },
-    supersete: { 7: "7 acertos 🏆", 6: "6 acertos", 5: "5 acertos", 4: "4 acertos", 3: "3 acertos" },
-    maismilionaria: { 6: "6 acertos 🏆", 5: "5 acertos", 4: "4 acertos", 3: "3 acertos", 2: "2 acertos" },
-    timemania: { 7: "7 acertos 🏆", 6: "6 acertos", 5: "5 acertos", 4: "4 acertos", 3: "3 acertos" },
-  };
-  return tiers[lotteryId]?.[matches] || null;
+interface CheckResult {
+  concurso: number;
+  date: string;
+  draws: DrawResult[];
 }
 
 export function PrizeChecker() {
