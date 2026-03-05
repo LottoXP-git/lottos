@@ -92,7 +92,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                         )}
                       </div>
                       <div className="flex flex-col items-end gap-0.5">
-                        <span className="font-mono font-bold text-sky-400 text-lg">{String(num).padStart(5, '0')}</span>
+                        <span className="font-mono font-bold text-sky-400 text-sm sm:text-lg">{String(num).padStart(5, '0')}</span>
                         {premio && (
                           <span className="text-xs font-medium text-primary">
                             R$ {premio.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
