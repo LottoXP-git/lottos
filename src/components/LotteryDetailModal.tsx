@@ -45,19 +45,19 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-       <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-card border-border p-3 sm:p-6 mx-1 sm:mx-auto">
-        <DialogHeader className="space-y-1">
-          <div className="flex items-center justify-between gap-2">
-            <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center gap-2 sm:gap-3 flex-wrap">
+       <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-card border-border p-2.5 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-1rem)] sm:w-auto rounded-xl">
+        <DialogHeader className="space-y-0.5 sm:space-y-1">
+          <div className="flex items-center justify-between gap-1.5">
+            <DialogTitle className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-3 flex-wrap leading-tight">
               {lottery.name}
-              <span className="text-xs sm:text-sm font-normal text-muted-foreground">
-                Concurso {lottery.concurso}
+              <span className="text-[10px] sm:text-sm font-normal text-muted-foreground">
+                #{lottery.concurso}
               </span>
             </DialogTitle>
             <ShareButton
               title={`${lottery.name} - Concurso ${lottery.concurso}`}
               text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
-              className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
+              className="h-7 w-7 sm:h-9 sm:w-9 shrink-0 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
           </div>
           <DialogDescription className="sr-only">
@@ -65,12 +65,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3 sm:space-y-6">
           {/* Current Result */}
-          <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
-            <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm text-muted-foreground">
-              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>Resultado de {lottery.date}</span>
+          <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
+            <div className="flex items-center gap-1.5 mb-2 text-[10px] sm:text-sm text-muted-foreground">
+              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>{lottery.date}</span>
             </div>
             {lottery.id === "federal" ? (
               <div className="space-y-2">
@@ -78,9 +78,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                   const location = lottery.localGanhadores?.find(l => l.posicao === idx + 1);
                   const premio = lottery.premiacoes?.[idx];
                   return (
-                    <div key={idx} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                    <div key={idx} className="flex items-center justify-between px-2.5 sm:px-4 py-2 rounded-lg bg-sky-500/10 border border-sky-500/20">
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                        <span className="text-xs font-medium text-muted-foreground">{idx + 1}º</span>
                         {location && (
                           <div className="flex items-center gap-1">
                             <MapPin className="w-3 h-3 text-sky-400/70" />
@@ -92,7 +92,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                         )}
                       </div>
                       <div className="flex flex-col items-end gap-0.5">
-                        <span className="font-mono font-bold text-sky-400 text-lg">{String(num).padStart(5, '0')}</span>
+                        <span className="font-mono font-bold text-sky-400 text-sm sm:text-lg">{String(num).padStart(5, '0')}</span>
                         {premio && (
                           <span className="text-xs font-medium text-primary">
                             R$ {premio.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
@@ -106,23 +106,23 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             ) : lottery.id === "duplasena" ? (
               <>
                 <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {lottery.numbers.slice(0, 6).map((num, idx) => (
-                    <LotteryBall key={`s1-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={idx * 50} />
+                    <LotteryBall key={`s1-${idx}`} number={num} size="md" variant={variantMap[lottery.color]} delay={idx * 50} />
                   ))}
                 </div>
                 <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {lottery.numbers.slice(6).map((num, idx) => (
-                    <LotteryBall key={`s2-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={(idx + 6) * 50} />
+                    <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[lottery.color]} delay={(idx + 6) * 50} />
                   ))}
                 </div>
               </>
             ) : lottery.id === "maismilionaria" ? (
               <>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {lottery.numbers.map((num, idx) => (
-                    <LotteryBall key={`n-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={idx * 50} />
+                    <LotteryBall key={`n-${idx}`} number={num} size="md" variant={variantMap[lottery.color]} delay={idx * 50} />
                   ))}
                 </div>
                 {lottery.trevos && lottery.trevos.length > 0 && (
@@ -134,7 +134,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                     </div>
                     <div className="flex flex-wrap gap-2 justify-center">
                       {lottery.trevos.map((trevo, idx) => (
-                        <div key={`t-${idx}`} className="w-12 h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-base font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(lottery.numbers.length + idx) * 50}ms` }}>
+                        <div key={`t-${idx}`} className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-sm sm:text-base font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(lottery.numbers.length + idx) * 50}ms` }}>
                           {trevo}
                         </div>
                       ))}
@@ -143,9 +143,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 )}
               </>
             ) : (
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                 {lottery.numbers.map((num, idx) => (
-                  <LotteryBall key={`n-${idx}`} number={num} size={lottery.numbers.length > 10 ? "sm" : "lg"} variant={variantMap[lottery.color]} delay={idx * 50} />
+                  <LotteryBall key={`n-${idx}`} number={num} size={lottery.numbers.length > 10 ? "sm" : "md"} variant={variantMap[lottery.color]} delay={idx * 50} />
                 ))}
               </div>
             )}
@@ -170,7 +170,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Winner Locations - All lotteries except Federal (already shown inline) */}
           {lottery.id !== "federal" && lottery.localGanhadores && lottery.localGanhadores.length > 0 && (
-            <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+            <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
               <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-foreground">
                 <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Locais dos Ganhadores</span>
@@ -200,7 +200,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Prize Tiers */}
           {lottery.premiacoes && lottery.premiacoes.length > 0 && (
-            <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+             <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
               <div className="flex items-center gap-2 mb-2 sm:mb-3 text-xs sm:text-sm font-semibold text-foreground">
                 <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span>Faixas de Premiação</span>
@@ -214,24 +214,24 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                     <div key={group.label}>
                       <div className="text-xs font-semibold text-muted-foreground text-center mb-2">{group.label}</div>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full text-xs sm:text-sm">
                           <thead>
                             <tr className="border-b border-border">
-                              <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
-                              <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
-                              <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
+                              <th className="text-left py-1.5 px-1.5 sm:py-2 sm:px-2 text-muted-foreground font-medium">Faixa</th>
+                              <th className="text-center py-1.5 px-1 sm:py-2 sm:px-2 text-muted-foreground font-medium">Ganh.</th>
+                              <th className="text-right py-1.5 px-1.5 sm:py-2 sm:px-2 text-muted-foreground font-medium">Prêmio</th>
                             </tr>
                           </thead>
                           <tbody>
                             {group.items.map((p, idx) => (
                               <tr key={idx} className="border-b border-border/50 last:border-0">
-                                <td className="py-2 px-2 text-foreground">{p.descricao}</td>
-                                <td className="py-2 px-2 text-center">
+                                <td className="py-1.5 px-1.5 sm:py-2 sm:px-2 text-foreground">{p.descricao}</td>
+                                <td className="py-1.5 px-1 sm:py-2 sm:px-2 text-center">
                                   <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
                                     {p.ganhadores}
                                   </span>
                                 </td>
-                                <td className="py-2 px-2 text-right font-mono text-foreground">
+                                <td className="py-1.5 px-1.5 sm:py-2 sm:px-2 text-right font-mono text-foreground">
                                   {typeof p.valorPremio === 'number'
                                     ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                     : p.valorPremio}
@@ -246,24 +246,24 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full text-xs sm:text-sm">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
-                        <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
-                        <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
+                        <th className="text-left py-1.5 px-1.5 sm:py-2 sm:px-2 text-muted-foreground font-medium">Faixa</th>
+                        <th className="text-center py-1.5 px-1 sm:py-2 sm:px-2 text-muted-foreground font-medium">Ganh.</th>
+                        <th className="text-right py-1.5 px-1.5 sm:py-2 sm:px-2 text-muted-foreground font-medium">Prêmio</th>
                       </tr>
                     </thead>
                     <tbody>
                       {lottery.premiacoes.map((p, idx) => (
                         <tr key={idx} className="border-b border-border/50 last:border-0">
-                          <td className="py-2 px-2 text-foreground">{p.descricao}</td>
-                          <td className="py-2 px-2 text-center">
+                          <td className="py-1.5 px-1.5 sm:py-2 sm:px-2 text-foreground">{p.descricao}</td>
+                          <td className="py-1.5 px-1 sm:py-2 sm:px-2 text-center">
                             <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
                               {p.ganhadores}
                             </span>
                           </td>
-                          <td className="py-2 px-2 text-right font-mono text-foreground">
+                          <td className="py-1.5 px-1.5 sm:py-2 sm:px-2 text-right font-mono text-foreground">
                             {typeof p.valorPremio === 'number'
                               ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                               : p.valorPremio}
@@ -278,7 +278,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           )}
 
           {/* Next Draw Info */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
             <div className="p-2.5 sm:p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-0.5 sm:gap-1">
               <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
                 <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -304,30 +304,30 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           <AdBanner format="inline" className="mb-2 sm:mb-4" />
 
           <Tabs defaultValue="history" className="w-full">
-            <TabsList className="flex w-full overflow-x-auto gap-1 bg-secondary/50 p-1 rounded-lg scrollbar-hide">
-              <TabsTrigger value="history" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <Clock className="w-4 h-4 shrink-0" />
+            <TabsList className="flex w-full overflow-x-auto gap-0.5 sm:gap-1 bg-secondary/50 p-0.5 sm:p-1 rounded-lg scrollbar-hide">
+              <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Histórico</span>
               </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <BarChart3 className="w-4 h-4 shrink-0" />
+              <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Estatísticas</span>
               </TabsTrigger>
-              <TabsTrigger value="frequency" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <History className="w-4 h-4 shrink-0" />
+              <TabsTrigger value="frequency" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Frequências</span>
               </TabsTrigger>
-              <TabsTrigger value="picks" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <Sparkles className="w-4 h-4 shrink-0" />
+              <TabsTrigger value="picks" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Palpites</span>
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="history" className="mt-3 sm:mt-4">
+            <TabsContent value="history" className="mt-2 sm:mt-4">
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-3 sm:mt-4 space-y-3 sm:space-y-4">
+            <TabsContent value="stats" className="mt-2 sm:mt-4 space-y-3 sm:space-y-4">
               <StatisticsPanel
                 frequencyData={frequencyData}
                 variant={variantMap[lottery.color]}
@@ -336,8 +336,8 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <SpecialStats lottery={lottery} />
             </TabsContent>
 
-            <TabsContent value="frequency" className="mt-3 sm:mt-4">
-              <div className="p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border">
+            <TabsContent value="frequency" className="mt-2 sm:mt-4">
+              <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
                 <FrequencyChart
                   data={frequencyData}
                   maxNumber={lottery.maxNumber}
@@ -347,7 +347,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </TabsContent>
 
 
-            <TabsContent value="picks" className="mt-3 sm:mt-4">
+            <TabsContent value="picks" className="mt-2 sm:mt-4">
               <SmartPickGenerator
                 lottery={lottery}
                 frequencyData={frequencyData}
