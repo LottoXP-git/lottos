@@ -388,6 +388,58 @@ export function PrizeChecker() {
             {result.draws?.map((draw, idx) => (
               <DrawResultBlock key={idx} draw={draw} variant={selectedLottery as LotteryVariant} />
             ))}
+
+            {/* Trevos result for +Milionária */}
+            {result.trevos && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground">Trevos</p>
+                <div>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-1.5">Trevos sorteados:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {result.trevos.drawnTrevos.map((t, i) => (
+                      <span key={i} className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-800 text-white text-xs sm:text-sm font-bold shadow-lg">
+                        🍀{t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-lg p-3 bg-secondary/50 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-semibold text-sm sm:text-base">
+                      {result.trevos.matchedTrevos.length} trevo{result.trevos.matchedTrevos.length !== 1 ? "s" : ""} acertado{result.trevos.matchedTrevos.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {result.trevos.matchedTrevos.length > 0 && (
+                    <div className="mb-2">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <Check className="w-3 h-3 text-emerald-400" /> Acertos:
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {result.trevos.matchedTrevos.map(t => (
+                          <span key={t} className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] sm:text-xs font-bold">
+                            🍀{t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {result.trevos.unmatchedTrevos.length > 0 && (
+                    <div>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <X className="w-3 h-3 text-destructive" /> Erros:
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {result.trevos.unmatchedTrevos.map(t => (
+                          <span key={t} className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-destructive/10 border border-destructive/30 text-destructive text-[10px] sm:text-xs font-bold">
+                            🍀{t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
