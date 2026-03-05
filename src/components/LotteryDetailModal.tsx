@@ -78,9 +78,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                   const location = lottery.localGanhadores?.find(l => l.posicao === idx + 1);
                   const premio = lottery.premiacoes?.[idx];
                   return (
-                    <div key={idx} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                    <div key={idx} className="flex items-center justify-between px-2.5 sm:px-4 py-2 rounded-lg bg-sky-500/10 border border-sky-500/20">
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                        <span className="text-xs font-medium text-muted-foreground">{idx + 1}º</span>
                         {location && (
                           <div className="flex items-center gap-1">
                             <MapPin className="w-3 h-3 text-sky-400/70" />
