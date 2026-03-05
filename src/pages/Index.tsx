@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ShareButton";
 import { PrizeRanking } from "@/components/PrizeRanking";
+import { PrizeChecker } from "@/components/PrizeChecker";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
