@@ -196,7 +196,7 @@ export function LotteryCard({
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2 text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-sm">
             <Trophy className="w-4 h-4 text-primary" />
             <span className="text-muted-foreground">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
