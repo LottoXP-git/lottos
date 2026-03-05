@@ -223,12 +223,31 @@ export function PrizeChecker() {
         draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers));
       }
 
+      // Handle trevos for +Milionária
+      let trevosResult: TrevoResult | undefined;
+      if (selectedLottery === "maismilionaria") {
+        const drawnTrevos: number[] = (apiData.trevos || [])
+          .map((t: string | number) => typeof t === "string" ? parseInt(t, 10) : t);
+        const parsedTrevos = trevosInput
+          .split(/[\s,;]+/)
+          .map(n => parseInt(n.trim(), 10))
+          .filter(n => !isNaN(n));
+        if (drawnTrevos.length > 0 && parsedTrevos.length > 0) {
+          trevosResult = {
+            drawnTrevos,
+            matchedTrevos: parsedTrevos.filter(t => drawnTrevos.includes(t)).sort((a, b) => a - b),
+            unmatchedTrevos: parsedTrevos.filter(t => !drawnTrevos.includes(t)).sort((a, b) => a - b),
+          };
+        }
+      }
+
       const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
 
       setResult({
         concurso: apiData.concurso || apiData.numero || 0,
         date: apiData.data || apiData.dataApuracao || "",
         draws,
+        trevos: trevosResult,
       });
 
       if (bestDraw.prizeTier) {
