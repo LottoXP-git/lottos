@@ -6,8 +6,35 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart } from "lucide-react";
 import { toast } from "sonner";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const TIMEMANIA_TEAMS = [
+  "ABC", "América (MG)", "América (RN)", "Aparecidense", "Associação Ferroviária",
+  "Atlético Acreano", "Atlético Goianiense", "Atlético Mineiro", "Altos (PI)", "Avaí",
+  "Boa Esporte", "Boavista", "Botafogo (PB)", "Botafogo (RJ)", "Botafogo (SP)",
+  "Bragantino", "Brasiliense", "Brasil de Pelotas", "Brusque",
+  "Campinense", "Ceará", "Chapecoense", "Cianorte", "Confiança",
+  "Corinthians", "Coritiba", "CRB", "Criciúma", "Cruzeiro", "CSA", "Cuiabá",
+  "Figueirense", "Flamengo", "Floresta", "Fluminense",
+  "Ferroviário (CE)", "Fortaleza", "Atlético Cearense",
+  "Goiás", "Grêmio", "Guarani",
+  "Imperatriz", "Internacional", "Ituano",
+  "Jacuipense", "Joinville", "Juazeirense", "Juventude",
+  "Londrina", "Luverdense",
+  "Manaus", "Mirassol", "Moto Club",
+  "Náutico", "Novorizontino",
+  "Oeste", "Operário (PR)",
+  "Palmeiras", "Paraná Clube", "Athletico Paranaense", "Paysandu", "Ponte Preta",
+  "Remo",
+  "Sampaio Corrêa", "Santa Cruz", "Santos", "São Bento", "São José (RS)",
+  "São Paulo", "São Raimundo (RR)", "Caxias do Sul", "Sport",
+  "Tombense", "Treze",
+  "Vasco", "Vila Nova", "Vitória", "Volta Redonda",
+  "Ypiranga (RS)", "Bahia",
+];
 
 interface LotteryOption {
   id: string;
