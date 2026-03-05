@@ -347,7 +347,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </TabsContent>
 
 
-            <TabsContent value="picks" className="mt-3 sm:mt-4">
+            <TabsContent value="picks" className="mt-2 sm:mt-4">
               <SmartPickGenerator
                 lottery={lottery}
                 frequencyData={frequencyData}
