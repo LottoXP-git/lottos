@@ -106,9 +106,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             ) : lottery.id === "duplasena" ? (
               <>
                 <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {lottery.numbers.slice(0, 6).map((num, idx) => (
-                    <LotteryBall key={`s1-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={idx * 50} />
+                    <LotteryBall key={`s1-${idx}`} number={num} size="md" variant={variantMap[lottery.color]} delay={idx * 50} />
                   ))}
                 </div>
                 <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
