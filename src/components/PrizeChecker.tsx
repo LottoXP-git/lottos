@@ -271,6 +271,17 @@ export function PrizeChecker() {
         }
       }
 
+      // Handle Time do Coração for Timemania
+      let timeCoracaoResult: { drawn: string; selected: string; matched: boolean } | undefined;
+      if (selectedLottery === "timemania" && selectedTeam) {
+        const drawnTeam = apiData.timeCoracao || apiData.nomeTimeCoracao || "";
+        timeCoracaoResult = {
+          drawn: drawnTeam,
+          selected: selectedTeam,
+          matched: drawnTeam.toLowerCase().includes(selectedTeam.toLowerCase()) || selectedTeam.toLowerCase().includes(drawnTeam.toLowerCase()),
+        };
+      }
+
       const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
 
       setResult({
@@ -278,6 +289,7 @@ export function PrizeChecker() {
         date: apiData.data || apiData.dataApuracao || "",
         draws,
         trevos: trevosResult,
+        timeCoracao: timeCoracaoResult,
       });
 
       if (bestDraw.prizeTier) {
