@@ -51,10 +51,17 @@ interface DrawResult {
   prizeTier: string | null;
 }
 
+interface TrevoResult {
+  drawnTrevos: number[];
+  matchedTrevos: number[];
+  unmatchedTrevos: number[];
+}
+
 interface CheckResult {
   concurso: number;
   date: string;
   draws: DrawResult[];
+  trevos?: TrevoResult;
 }
 
 function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
@@ -144,6 +151,7 @@ export function PrizeChecker() {
   const [selectedLottery, setSelectedLottery] = useState("");
   const [concurso, setConcurso] = useState("");
   const [numbersInput, setNumbersInput] = useState("");
+  const [trevosInput, setTrevosInput] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
@@ -215,12 +223,31 @@ export function PrizeChecker() {
         draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers));
       }
 
+      // Handle trevos for +Milionária
+      let trevosResult: TrevoResult | undefined;
+      if (selectedLottery === "maismilionaria") {
+        const drawnTrevos: number[] = (apiData.trevos || [])
+          .map((t: string | number) => typeof t === "string" ? parseInt(t, 10) : t);
+        const parsedTrevos = trevosInput
+          .split(/[\s,;]+/)
+          .map(n => parseInt(n.trim(), 10))
+          .filter(n => !isNaN(n));
+        if (drawnTrevos.length > 0 && parsedTrevos.length > 0) {
+          trevosResult = {
+            drawnTrevos,
+            matchedTrevos: parsedTrevos.filter(t => drawnTrevos.includes(t)).sort((a, b) => a - b),
+            unmatchedTrevos: parsedTrevos.filter(t => !drawnTrevos.includes(t)).sort((a, b) => a - b),
+          };
+        }
+      }
+
       const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
 
       setResult({
         concurso: apiData.concurso || apiData.numero || 0,
         date: apiData.data || apiData.dataApuracao || "",
         draws,
+        trevos: trevosResult,
       });
 
       if (bestDraw.prizeTier) {
@@ -236,6 +263,7 @@ export function PrizeChecker() {
   const handleReset = () => {
     setResult(null);
     setNumbersInput("");
+    setTrevosInput("");
     setConcurso("");
   };
 
@@ -305,6 +333,25 @@ export function PrizeChecker() {
           )}
         </div>
 
+        {/* Trevos Input - only for +Milionária */}
+        {selectedLottery === "maismilionaria" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs sm:text-sm">
+              Trevos apostados
+              <span className="text-muted-foreground ml-1">(1 a 6)</span>
+            </Label>
+            <Input
+              placeholder="Ex: 2, 5"
+              value={trevosInput}
+              onChange={e => setTrevosInput(e.target.value)}
+              className="h-9 sm:h-10 text-xs sm:text-sm"
+            />
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Aposta padrão: 2 trevos • Separe por vírgula ou espaço
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
@@ -341,6 +388,58 @@ export function PrizeChecker() {
             {result.draws?.map((draw, idx) => (
               <DrawResultBlock key={idx} draw={draw} variant={selectedLottery as LotteryVariant} />
             ))}
+
+            {/* Trevos result for +Milionária */}
+            {result.trevos && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground">Trevos</p>
+                <div>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-1.5">Trevos sorteados:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {result.trevos.drawnTrevos.map((t, i) => (
+                      <span key={i} className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-800 text-white text-xs sm:text-sm font-bold shadow-lg">
+                        🍀{t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-lg p-3 bg-secondary/50 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-semibold text-sm sm:text-base">
+                      {result.trevos.matchedTrevos.length} trevo{result.trevos.matchedTrevos.length !== 1 ? "s" : ""} acertado{result.trevos.matchedTrevos.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {result.trevos.matchedTrevos.length > 0 && (
+                    <div className="mb-2">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <Check className="w-3 h-3 text-emerald-400" /> Acertos:
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {result.trevos.matchedTrevos.map(t => (
+                          <span key={t} className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] sm:text-xs font-bold">
+                            🍀{t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {result.trevos.unmatchedTrevos.length > 0 && (
+                    <div>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <X className="w-3 h-3 text-destructive" /> Erros:
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {result.trevos.unmatchedTrevos.map(t => (
+                          <span key={t} className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-destructive/10 border border-destructive/30 text-destructive text-[10px] sm:text-xs font-bold">
+                            🍀{t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
