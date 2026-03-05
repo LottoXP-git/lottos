@@ -533,6 +533,36 @@ export function PrizeChecker() {
                 </div>
               </div>
             )}
+
+            {/* Time do Coração result for Timemania */}
+            {result.timeCoracao && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <Heart className="w-4 h-4 text-primary fill-primary" />
+                  Time do Coração
+                </p>
+                <div className={`rounded-lg p-3 border ${result.timeCoracao.matched ? "bg-emerald-500/10 border-emerald-500/30" : "bg-destructive/5 border-destructive/20"}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    {result.timeCoracao.matched ? (
+                      <Check className="w-5 h-5 text-emerald-400" />
+                    ) : (
+                      <X className="w-5 h-5 text-destructive" />
+                    )}
+                    <span className={`font-semibold text-sm sm:text-base ${result.timeCoracao.matched ? "text-emerald-400" : "text-destructive"}`}>
+                      {result.timeCoracao.matched ? "Acertou o Time do Coração! 🎉" : "Não acertou o Time do Coração"}
+                    </span>
+                  </div>
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <p className="text-muted-foreground">
+                      Time sorteado: <span className="font-semibold text-foreground">{result.timeCoracao.drawn}</span>
+                    </p>
+                    <p className="text-muted-foreground">
+                      Seu time: <span className="font-semibold text-foreground">{result.timeCoracao.selected}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
