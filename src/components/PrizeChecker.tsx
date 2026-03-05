@@ -188,6 +188,7 @@ export function PrizeChecker() {
   const [trevosInput, setTrevosInput] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamOpen, setTeamOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
