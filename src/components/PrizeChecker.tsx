@@ -338,7 +338,7 @@ export function PrizeChecker() {
             </div>
 
             {/* Draw results */}
-            {result.draws.map((draw, idx) => (
+            {result.draws?.map((draw, idx) => (
               <DrawResultBlock key={idx} draw={draw} variant={selectedLottery as LotteryVariant} />
             ))}
           </div>
