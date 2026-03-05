@@ -129,18 +129,6 @@ const Index = () => {
           </div>
         </motion.section>
 
-        {/* Prize Checker */}
-        <motion.section
-          className="mb-8 sm:mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.15 }}>
-          <div className="max-w-lg mx-auto px-1">
-            <PrizeChecker />
-          </div>
-        </motion.section>
-
         {/* Special Draw Banner */}
         {showDuplaDePascoa && (
         <motion.section
