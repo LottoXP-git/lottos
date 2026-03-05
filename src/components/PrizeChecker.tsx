@@ -326,6 +326,7 @@ export function PrizeChecker() {
     setNumbersInput("");
     setTrevosInput("");
     setSelectedTeam("");
+    setSelectedMonth("");
     setConcurso("");
   };
 
