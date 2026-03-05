@@ -465,6 +465,31 @@ export function PrizeChecker() {
           </div>
         )}
 
+        {/* Mês da Sorte - only for Dia de Sorte */}
+        {selectedLottery === "diadesorte" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs sm:text-sm flex items-center gap-1">
+              <CalendarDays className="w-3.5 h-3.5 text-primary" />
+              Mês da Sorte
+            </Label>
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+                <SelectValue placeholder="Selecione o mês..." />
+              </SelectTrigger>
+              <SelectContent>
+                {MESES_DIA_DE_SORTE.map(mes => (
+                  <SelectItem key={mes} value={mes} className="text-xs sm:text-sm">
+                    {mes}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Selecione o mês apostado para conferir o Mês da Sorte
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
