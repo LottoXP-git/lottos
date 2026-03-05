@@ -332,6 +332,25 @@ export function PrizeChecker() {
           )}
         </div>
 
+        {/* Trevos Input - only for +Milionária */}
+        {selectedLottery === "maismilionaria" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs sm:text-sm">
+              Trevos apostados
+              <span className="text-muted-foreground ml-1">(1 a 6)</span>
+            </Label>
+            <Input
+              placeholder="Ex: 2, 5"
+              value={trevosInput}
+              onChange={e => setTrevosInput(e.target.value)}
+              className="h-9 sm:h-10 text-xs sm:text-sm"
+            />
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Aposta padrão: 2 trevos • Separe por vírgula ou espaço
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
