@@ -114,8 +114,8 @@ export function LotteryCard({
           <span>{result.date}</span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-wrap gap-2 justify-center py-2">
+      <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-1 sm:py-2">
           {result.id === "federal" ? (
             <div className="w-full space-y-2">
               {result.numbers.map((num, idx) => {
