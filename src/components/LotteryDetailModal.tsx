@@ -120,9 +120,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </>
             ) : lottery.id === "maismilionaria" ? (
               <>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {lottery.numbers.map((num, idx) => (
-                    <LotteryBall key={`n-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={idx * 50} />
+                    <LotteryBall key={`n-${idx}`} number={num} size="md" variant={variantMap[lottery.color]} delay={idx * 50} />
                   ))}
                 </div>
                 {lottery.trevos && lottery.trevos.length > 0 && (
