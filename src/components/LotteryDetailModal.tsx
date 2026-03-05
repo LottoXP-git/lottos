@@ -278,7 +278,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           )}
 
           {/* Next Draw Info */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
             <div className="p-2.5 sm:p-3 rounded-xl bg-secondary/30 border border-border flex flex-col items-center gap-0.5 sm:gap-1">
               <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
                 <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
