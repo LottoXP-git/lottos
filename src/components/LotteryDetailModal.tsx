@@ -304,21 +304,21 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           <AdBanner format="inline" className="mb-2 sm:mb-4" />
 
           <Tabs defaultValue="history" className="w-full">
-            <TabsList className="flex w-full overflow-x-auto gap-1 bg-secondary/50 p-1 rounded-lg scrollbar-hide">
-              <TabsTrigger value="history" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <Clock className="w-4 h-4 shrink-0" />
+            <TabsList className="flex w-full overflow-x-auto gap-0.5 sm:gap-1 bg-secondary/50 p-0.5 sm:p-1 rounded-lg scrollbar-hide">
+              <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Histórico</span>
               </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <BarChart3 className="w-4 h-4 shrink-0" />
+              <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Estatísticas</span>
               </TabsTrigger>
-              <TabsTrigger value="frequency" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <History className="w-4 h-4 shrink-0" />
+              <TabsTrigger value="frequency" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Frequências</span>
               </TabsTrigger>
-              <TabsTrigger value="picks" className="flex items-center gap-1.5 px-3 py-2 min-w-fit text-xs sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <Sparkles className="w-4 h-4 shrink-0" />
+              <TabsTrigger value="picks" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Palpites</span>
               </TabsTrigger>
             </TabsList>
