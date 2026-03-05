@@ -608,6 +608,36 @@ export function PrizeChecker() {
                 </div>
               </div>
             )}
+
+            {/* Mês da Sorte result for Dia de Sorte */}
+            {result.mesSorte && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <CalendarDays className="w-4 h-4 text-primary" />
+                  Mês da Sorte
+                </p>
+                <div className={`rounded-lg p-3 border ${result.mesSorte.matched ? "bg-emerald-500/10 border-emerald-500/30" : "bg-destructive/5 border-destructive/20"}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    {result.mesSorte.matched ? (
+                      <Check className="w-5 h-5 text-emerald-400" />
+                    ) : (
+                      <X className="w-5 h-5 text-destructive" />
+                    )}
+                    <span className={`font-semibold text-sm sm:text-base ${result.mesSorte.matched ? "text-emerald-400" : "text-destructive"}`}>
+                      {result.mesSorte.matched ? "Acertou o Mês da Sorte! 🎉" : "Não acertou o Mês da Sorte"}
+                    </span>
+                  </div>
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <p className="text-muted-foreground">
+                      Mês sorteado: <span className="font-semibold text-foreground">{result.mesSorte.drawn}</span>
+                    </p>
+                    <p className="text-muted-foreground">
+                      Seu mês: <span className="font-semibold text-foreground">{result.mesSorte.selected}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
