@@ -20,20 +20,20 @@ function RankingList({ items, icon, accentClass, borderClass, bgClass }: {
   borderClass: string;
   bgClass: string;
 }) {
-  if (items.length === 0) return <p className="text-sm text-muted-foreground text-center">Dados insuficientes</p>;
+  if (items.length === 0) return <p className="text-xs sm:text-sm text-muted-foreground text-center">Dados insuficientes</p>;
   const max = items[0].count;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5 sm:space-y-2">
       {items.map((item, idx) => (
-        <div key={item.name} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${bgClass} border ${borderClass}`}>
-          <span className={`text-sm font-bold ${accentClass} w-6 text-center`}>{idx + 1}º</span>
+        <div key={item.name} className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg ${bgClass} border ${borderClass}`}>
+          <span className={`text-xs sm:text-sm font-bold ${accentClass} w-5 sm:w-6 text-center`}>{idx + 1}º</span>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium text-foreground truncate">{item.name}</span>
-              <span className={`text-xs font-mono font-semibold ${accentClass}`}>{item.count}x</span>
+            <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+              <span className="text-xs sm:text-sm font-medium text-foreground truncate">{item.name}</span>
+              <span className={`text-[10px] sm:text-xs font-mono font-semibold ${accentClass}`}>{item.count}x</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-secondary">
+            <div className="w-full h-1 sm:h-1.5 rounded-full bg-secondary">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${accentClass.replace("text-", "bg-")}`}
                 style={{ width: `${(item.count / max) * 100}%` }}
