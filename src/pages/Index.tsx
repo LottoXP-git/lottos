@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ShareButton";
 import { PrizeRanking } from "@/components/PrizeRanking";
+import { PrizeChecker } from "@/components/PrizeChecker";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
@@ -125,6 +126,18 @@ const Index = () => {
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
+          </div>
+        </motion.section>
+
+        {/* Prize Checker */}
+        <motion.section
+          className="mb-8 sm:mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.15 }}>
+          <div className="max-w-lg mx-auto px-1">
+            <PrizeChecker />
           </div>
         </motion.section>
 
