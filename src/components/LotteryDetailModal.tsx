@@ -214,12 +214,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                     <div key={group.label}>
                       <div className="text-xs font-semibold text-muted-foreground text-center mb-2">{group.label}</div>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full text-xs sm:text-sm">
                           <thead>
                             <tr className="border-b border-border">
-                              <th className="text-left py-2 px-2 text-muted-foreground font-medium">Faixa</th>
-                              <th className="text-center py-2 px-2 text-muted-foreground font-medium">Ganhadores</th>
-                              <th className="text-right py-2 px-2 text-muted-foreground font-medium">Prêmio</th>
+                              <th className="text-left py-1.5 px-1.5 sm:py-2 sm:px-2 text-muted-foreground font-medium">Faixa</th>
+                              <th className="text-center py-1.5 px-1 sm:py-2 sm:px-2 text-muted-foreground font-medium">Ganh.</th>
+                              <th className="text-right py-1.5 px-1.5 sm:py-2 sm:px-2 text-muted-foreground font-medium">Prêmio</th>
                             </tr>
                           </thead>
                           <tbody>
