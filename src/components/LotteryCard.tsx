@@ -97,25 +97,25 @@ export function LotteryCard({
           <Sparkles className="w-3.5 h-3.5" />
         </div>}
 
-      <CardHeader className={cn("pb-3", (isHighPrize || isSpecial) && "pt-10")}>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-bold text-foreground">
+      <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-base sm:text-xl font-bold text-foreground truncate">
             {result.name}
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <ShareButton title={`${result.name} - Concurso ${result.concurso}`} text={shareText} className="h-8 w-8" />
-            <Badge variant="outline" className={cn("font-mono", badgeColorMap[result.color])}>
-              Concurso {result.concurso}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <ShareButton title={`${result.name} - Concurso ${result.concurso}`} text={shareText} className="h-7 w-7 sm:h-8 sm:w-8" />
+            <Badge variant="outline" className={cn("font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5", badgeColorMap[result.color])}>
+              {result.concurso}
             </Badge>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Calendar className="w-4 h-4" />
+        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground">
+          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span>{result.date}</span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-wrap gap-2 justify-center py-2">
+      <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-1 sm:py-2">
           {result.id === "federal" ? (
             <div className="w-full space-y-2">
               {result.numbers.map((num, idx) => {
@@ -175,7 +175,7 @@ export function LotteryCard({
               )}
             </>
           ) : (
-            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)
+            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "xs" : "sm"} variant={variantMap[result.color]} delay={idx * 80} />)
           )}
         </div>
 
@@ -196,7 +196,7 @@ export function LotteryCard({
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2 text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-sm">
             <Trophy className="w-4 h-4 text-primary" />
             <span className="text-muted-foreground">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
