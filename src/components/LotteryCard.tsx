@@ -175,7 +175,7 @@ export function LotteryCard({
               )}
             </>
           ) : (
-            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)
+            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "xs" : "sm"} variant={variantMap[result.color]} delay={idx * 80} />)
           )}
         </div>
 
