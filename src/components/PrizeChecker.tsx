@@ -6,9 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+
+const MESES_DIA_DE_SORTE = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+];
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const TIMEMANIA_TEAMS = [
@@ -90,6 +95,7 @@ interface CheckResult {
   draws: DrawResult[];
   trevos?: TrevoResult;
   timeCoracao?: { drawn: string; selected: string; matched: boolean };
+  mesSorte?: { drawn: string; selected: string; matched: boolean };
 }
 
 function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
@@ -182,6 +188,7 @@ export function PrizeChecker() {
   const [trevosInput, setTrevosInput] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamOpen, setTeamOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
@@ -282,6 +289,17 @@ export function PrizeChecker() {
         };
       }
 
+      // Handle Mês da Sorte for Dia de Sorte
+      let mesSorteResult: { drawn: string; selected: string; matched: boolean } | undefined;
+      if (selectedLottery === "diadesorte" && selectedMonth) {
+        const drawnMonth = apiData.mesSorte || apiData.mesSort || "";
+        mesSorteResult = {
+          drawn: drawnMonth,
+          selected: selectedMonth,
+          matched: drawnMonth.toLowerCase() === selectedMonth.toLowerCase(),
+        };
+      }
+
       const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
 
       setResult({
@@ -290,6 +308,7 @@ export function PrizeChecker() {
         draws,
         trevos: trevosResult,
         timeCoracao: timeCoracaoResult,
+        mesSorte: mesSorteResult,
       });
 
       if (bestDraw.prizeTier) {
@@ -307,6 +326,7 @@ export function PrizeChecker() {
     setNumbersInput("");
     setTrevosInput("");
     setSelectedTeam("");
+    setSelectedMonth("");
     setConcurso("");
   };
 
@@ -445,6 +465,31 @@ export function PrizeChecker() {
           </div>
         )}
 
+        {/* Mês da Sorte - only for Dia de Sorte */}
+        {selectedLottery === "diadesorte" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs sm:text-sm flex items-center gap-1">
+              <CalendarDays className="w-3.5 h-3.5 text-primary" />
+              Mês da Sorte
+            </Label>
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+                <SelectValue placeholder="Selecione o mês..." />
+              </SelectTrigger>
+              <SelectContent>
+                {MESES_DIA_DE_SORTE.map(mes => (
+                  <SelectItem key={mes} value={mes} className="text-xs sm:text-sm">
+                    {mes}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Selecione o mês apostado para conferir o Mês da Sorte
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
@@ -558,6 +603,36 @@ export function PrizeChecker() {
                     </p>
                     <p className="text-muted-foreground">
                       Seu time: <span className="font-semibold text-foreground">{result.timeCoracao.selected}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Mês da Sorte result for Dia de Sorte */}
+            {result.mesSorte && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <CalendarDays className="w-4 h-4 text-primary" />
+                  Mês da Sorte
+                </p>
+                <div className={`rounded-lg p-3 border ${result.mesSorte.matched ? "bg-emerald-500/10 border-emerald-500/30" : "bg-destructive/5 border-destructive/20"}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    {result.mesSorte.matched ? (
+                      <Check className="w-5 h-5 text-emerald-400" />
+                    ) : (
+                      <X className="w-5 h-5 text-destructive" />
+                    )}
+                    <span className={`font-semibold text-sm sm:text-base ${result.mesSorte.matched ? "text-emerald-400" : "text-destructive"}`}>
+                      {result.mesSorte.matched ? "Acertou o Mês da Sorte! 🎉" : "Não acertou o Mês da Sorte"}
+                    </span>
+                  </div>
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <p className="text-muted-foreground">
+                      Mês sorteado: <span className="font-semibold text-foreground">{result.mesSorte.drawn}</span>
+                    </p>
+                    <p className="text-muted-foreground">
+                      Seu mês: <span className="font-semibold text-foreground">{result.mesSorte.selected}</span>
                     </p>
                   </div>
                 </div>
