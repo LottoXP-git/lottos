@@ -64,58 +64,58 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
 
   return (
     <Card className="card-glass border-primary/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
+      <CardHeader className="px-3 sm:px-6 pt-3 sm:pt-6 pb-1 sm:pb-2">
+        <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
+          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           Gerador de Palpites Inteligente
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-3 gap-2">
+      <CardContent className="space-y-3 sm:space-y-6 px-3 sm:px-6 pb-3 sm:pb-6">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
           {strategies.map((s) => (
             <button
               key={s.id}
               onClick={() => setStrategy(s.id)}
               className={cn(
-                "p-3 rounded-lg border-2 transition-all duration-300 flex flex-col items-center gap-1",
+                "p-2 sm:p-3 rounded-lg border-2 transition-all duration-300 flex flex-col items-center gap-0.5 sm:gap-1",
                 strategy === s.id
                   ? "border-primary bg-primary/10"
                   : "border-border bg-secondary/30 hover:border-primary/50"
               )}
             >
               <div className={cn(
-                "flex items-center gap-1.5",
+                "flex items-center gap-1 sm:gap-1.5",
                 strategy === s.id ? "text-primary" : "text-muted-foreground"
               )}>
                 {s.icon}
-                <span className="font-medium text-sm">{s.label}</span>
+                <span className="font-medium text-xs sm:text-sm">{s.label}</span>
               </div>
-              <span className="text-[10px] text-muted-foreground">{s.description}</span>
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground hidden sm:block">{s.description}</span>
             </button>
           ))}
         </div>
 
         <Button
           onClick={generatePicks}
-          className="w-full bg-gradient-to-r from-primary to-yellow-600 hover:from-primary/90 hover:to-yellow-600/90 text-primary-foreground font-bold"
+          className="w-full bg-gradient-to-r from-primary to-yellow-600 hover:from-primary/90 hover:to-yellow-600/90 text-primary-foreground font-bold text-xs sm:text-sm h-9 sm:h-10"
           disabled={isGenerating}
         >
           {isGenerating ? (
-            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+            <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
           ) : (
-            <Sparkles className="w-4 h-4 mr-2" />
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
           )}
           Gerar Palpite para {lottery.name}
         </Button>
 
         {picks.length > 0 && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="flex flex-wrap gap-2 justify-center py-4">
+          <div className="space-y-2 sm:space-y-4 animate-fade-in">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-2 sm:py-4">
               {picks.map((num, idx) => (
                 <LotteryBall
                   key={`${idx}-${num}`}
                   number={num}
-                  size={picks.length > 10 ? "sm" : "lg"}
+                  size={picks.length > 10 ? "xs" : "sm"}
                   variant={variantMap[lottery.color]}
                   delay={idx * 100}
                 />
@@ -125,22 +125,22 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
             <Button
               onClick={copyPicks}
               variant="outline"
-              className="w-full border-primary/50 hover:bg-primary/10"
+              className="w-full border-primary/50 hover:bg-primary/10 text-xs sm:text-sm h-9 sm:h-10"
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4 mr-2 text-emerald-400" />
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-emerald-400" />
                   Copiado!
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4 mr-2" />
+                  <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                   Copiar Palpite
                 </>
               )}
             </Button>
 
-            <p className="text-xs text-center text-muted-foreground">
+            <p className="text-[10px] sm:text-xs text-center text-muted-foreground">
               Palpite baseado na estratégia "{strategies.find(s => s.id === strategy)?.label}" usando dados dos últimos 100 sorteios
             </p>
           </div>
