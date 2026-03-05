@@ -395,6 +395,56 @@ export function PrizeChecker() {
           </div>
         )}
 
+        {/* Time do Coração - only for Timemania */}
+        {selectedLottery === "timemania" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs sm:text-sm flex items-center gap-1">
+              <Heart className="w-3.5 h-3.5 text-primary" />
+              Time do Coração
+            </Label>
+            <Popover open={teamOpen} onOpenChange={setTeamOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={teamOpen}
+                  className="w-full justify-between h-9 sm:h-10 text-xs sm:text-sm font-normal"
+                >
+                  {selectedTeam || "Selecione o time..."}
+                  <Search className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Buscar time..." className="h-9 text-xs sm:text-sm" />
+                  <CommandList>
+                    <CommandEmpty className="text-xs py-4">Nenhum time encontrado.</CommandEmpty>
+                    <CommandGroup>
+                      {TIMEMANIA_TEAMS.sort().map(team => (
+                        <CommandItem
+                          key={team}
+                          value={team}
+                          onSelect={(val) => {
+                            setSelectedTeam(val === selectedTeam ? "" : val);
+                            setTeamOpen(false);
+                          }}
+                          className="text-xs sm:text-sm"
+                        >
+                          <Check className={`mr-2 h-3.5 w-3.5 ${selectedTeam === team ? "opacity-100" : "opacity-0"}`} />
+                          {team}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Selecione o time apostado para conferir o Time do Coração
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
