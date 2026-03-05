@@ -143,9 +143,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 )}
               </>
             ) : (
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                 {lottery.numbers.map((num, idx) => (
-                  <LotteryBall key={`n-${idx}`} number={num} size={lottery.numbers.length > 10 ? "sm" : "lg"} variant={variantMap[lottery.color]} delay={idx * 50} />
+                  <LotteryBall key={`n-${idx}`} number={num} size={lottery.numbers.length > 10 ? "sm" : "md"} variant={variantMap[lottery.color]} delay={idx * 50} />
                 ))}
               </div>
             )}
