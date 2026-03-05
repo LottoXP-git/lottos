@@ -51,10 +51,17 @@ interface DrawResult {
   prizeTier: string | null;
 }
 
+interface TrevoResult {
+  drawnTrevos: number[];
+  matchedTrevos: number[];
+  unmatchedTrevos: number[];
+}
+
 interface CheckResult {
   concurso: number;
   date: string;
   draws: DrawResult[];
+  trevos?: TrevoResult;
 }
 
 function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
