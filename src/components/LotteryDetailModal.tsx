@@ -112,9 +112,9 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                   ))}
                 </div>
                 <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {lottery.numbers.slice(6).map((num, idx) => (
-                    <LotteryBall key={`s2-${idx}`} number={num} size="lg" variant={variantMap[lottery.color]} delay={(idx + 6) * 50} />
+                    <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[lottery.color]} delay={(idx + 6) * 50} />
                   ))}
                 </div>
               </>
