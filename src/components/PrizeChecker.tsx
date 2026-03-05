@@ -6,8 +6,35 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart } from "lucide-react";
 import { toast } from "sonner";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const TIMEMANIA_TEAMS = [
+  "ABC", "América (MG)", "América (RN)", "Aparecidense", "Associação Ferroviária",
+  "Atlético Acreano", "Atlético Goianiense", "Atlético Mineiro", "Altos (PI)", "Avaí",
+  "Boa Esporte", "Boavista", "Botafogo (PB)", "Botafogo (RJ)", "Botafogo (SP)",
+  "Bragantino", "Brasiliense", "Brasil de Pelotas", "Brusque",
+  "Campinense", "Ceará", "Chapecoense", "Cianorte", "Confiança",
+  "Corinthians", "Coritiba", "CRB", "Criciúma", "Cruzeiro", "CSA", "Cuiabá",
+  "Figueirense", "Flamengo", "Floresta", "Fluminense",
+  "Ferroviário (CE)", "Fortaleza", "Atlético Cearense",
+  "Goiás", "Grêmio", "Guarani",
+  "Imperatriz", "Internacional", "Ituano",
+  "Jacuipense", "Joinville", "Juazeirense", "Juventude",
+  "Londrina", "Luverdense",
+  "Manaus", "Mirassol", "Moto Club",
+  "Náutico", "Novorizontino",
+  "Oeste", "Operário (PR)",
+  "Palmeiras", "Paraná Clube", "Athletico Paranaense", "Paysandu", "Ponte Preta",
+  "Remo",
+  "Sampaio Corrêa", "Santa Cruz", "Santos", "São Bento", "São José (RS)",
+  "São Paulo", "São Raimundo (RR)", "Caxias do Sul", "Sport",
+  "Tombense", "Treze",
+  "Vasco", "Vila Nova", "Vitória", "Volta Redonda",
+  "Ypiranga (RS)", "Bahia",
+];
 
 interface LotteryOption {
   id: string;
@@ -62,6 +89,7 @@ interface CheckResult {
   date: string;
   draws: DrawResult[];
   trevos?: TrevoResult;
+  timeCoracao?: { drawn: string; selected: string; matched: boolean };
 }
 
 function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
@@ -152,6 +180,8 @@ export function PrizeChecker() {
   const [concurso, setConcurso] = useState("");
   const [numbersInput, setNumbersInput] = useState("");
   const [trevosInput, setTrevosInput] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [teamOpen, setTeamOpen] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
@@ -241,6 +271,17 @@ export function PrizeChecker() {
         }
       }
 
+      // Handle Time do Coração for Timemania
+      let timeCoracaoResult: { drawn: string; selected: string; matched: boolean } | undefined;
+      if (selectedLottery === "timemania" && selectedTeam) {
+        const drawnTeam = apiData.timeCoracao || apiData.nomeTimeCoracao || "";
+        timeCoracaoResult = {
+          drawn: drawnTeam,
+          selected: selectedTeam,
+          matched: drawnTeam.toLowerCase().includes(selectedTeam.toLowerCase()) || selectedTeam.toLowerCase().includes(drawnTeam.toLowerCase()),
+        };
+      }
+
       const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
 
       setResult({
@@ -248,6 +289,7 @@ export function PrizeChecker() {
         date: apiData.data || apiData.dataApuracao || "",
         draws,
         trevos: trevosResult,
+        timeCoracao: timeCoracaoResult,
       });
 
       if (bestDraw.prizeTier) {
@@ -264,6 +306,7 @@ export function PrizeChecker() {
     setResult(null);
     setNumbersInput("");
     setTrevosInput("");
+    setSelectedTeam("");
     setConcurso("");
   };
 
@@ -348,6 +391,56 @@ export function PrizeChecker() {
             />
             <p className="text-[10px] sm:text-xs text-muted-foreground">
               Aposta padrão: 2 trevos • Separe por vírgula ou espaço
+            </p>
+          </div>
+        )}
+
+        {/* Time do Coração - only for Timemania */}
+        {selectedLottery === "timemania" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs sm:text-sm flex items-center gap-1">
+              <Heart className="w-3.5 h-3.5 text-primary" />
+              Time do Coração
+            </Label>
+            <Popover open={teamOpen} onOpenChange={setTeamOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={teamOpen}
+                  className="w-full justify-between h-9 sm:h-10 text-xs sm:text-sm font-normal"
+                >
+                  {selectedTeam || "Selecione o time..."}
+                  <Search className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Buscar time..." className="h-9 text-xs sm:text-sm" />
+                  <CommandList>
+                    <CommandEmpty className="text-xs py-4">Nenhum time encontrado.</CommandEmpty>
+                    <CommandGroup>
+                      {TIMEMANIA_TEAMS.sort().map(team => (
+                        <CommandItem
+                          key={team}
+                          value={team}
+                          onSelect={(val) => {
+                            setSelectedTeam(val === selectedTeam ? "" : val);
+                            setTeamOpen(false);
+                          }}
+                          className="text-xs sm:text-sm"
+                        >
+                          <Check className={`mr-2 h-3.5 w-3.5 ${selectedTeam === team ? "opacity-100" : "opacity-0"}`} />
+                          {team}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Selecione o time apostado para conferir o Time do Coração
             </p>
           </div>
         )}
@@ -437,6 +530,36 @@ export function PrizeChecker() {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Time do Coração result for Timemania */}
+            {result.timeCoracao && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <Heart className="w-4 h-4 text-primary fill-primary" />
+                  Time do Coração
+                </p>
+                <div className={`rounded-lg p-3 border ${result.timeCoracao.matched ? "bg-emerald-500/10 border-emerald-500/30" : "bg-destructive/5 border-destructive/20"}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    {result.timeCoracao.matched ? (
+                      <Check className="w-5 h-5 text-emerald-400" />
+                    ) : (
+                      <X className="w-5 h-5 text-destructive" />
+                    )}
+                    <span className={`font-semibold text-sm sm:text-base ${result.timeCoracao.matched ? "text-emerald-400" : "text-destructive"}`}>
+                      {result.timeCoracao.matched ? "Acertou o Time do Coração! 🎉" : "Não acertou o Time do Coração"}
+                    </span>
+                  </div>
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <p className="text-muted-foreground">
+                      Time sorteado: <span className="font-semibold text-foreground">{result.timeCoracao.drawn}</span>
+                    </p>
+                    <p className="text-muted-foreground">
+                      Seu time: <span className="font-semibold text-foreground">{result.timeCoracao.selected}</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
