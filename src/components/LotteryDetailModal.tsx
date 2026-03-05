@@ -225,13 +225,13 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                           <tbody>
                             {group.items.map((p, idx) => (
                               <tr key={idx} className="border-b border-border/50 last:border-0">
-                                <td className="py-2 px-2 text-foreground">{p.descricao}</td>
-                                <td className="py-2 px-2 text-center">
+                                <td className="py-1.5 px-1.5 sm:py-2 sm:px-2 text-foreground">{p.descricao}</td>
+                                <td className="py-1.5 px-1 sm:py-2 sm:px-2 text-center">
                                   <span className={p.ganhadores > 0 ? "text-primary font-semibold" : "text-muted-foreground"}>
                                     {p.ganhadores}
                                   </span>
                                 </td>
-                                <td className="py-2 px-2 text-right font-mono text-foreground">
+                                <td className="py-1.5 px-1.5 sm:py-2 sm:px-2 text-right font-mono text-foreground">
                                   {typeof p.valorPremio === 'number'
                                     ? `R$ ${p.valorPremio.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                     : p.valorPremio}
