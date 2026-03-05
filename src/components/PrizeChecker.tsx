@@ -151,6 +151,7 @@ export function PrizeChecker() {
   const [selectedLottery, setSelectedLottery] = useState("");
   const [concurso, setConcurso] = useState("");
   const [numbersInput, setNumbersInput] = useState("");
+  const [trevosInput, setTrevosInput] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
