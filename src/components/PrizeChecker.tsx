@@ -89,6 +89,7 @@ interface CheckResult {
   date: string;
   draws: DrawResult[];
   trevos?: TrevoResult;
+  timeCoracao?: { drawn: string; selected: string; matched: boolean };
 }
 
 function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
