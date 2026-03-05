@@ -289,6 +289,17 @@ export function PrizeChecker() {
         };
       }
 
+      // Handle Mês da Sorte for Dia de Sorte
+      let mesSorteResult: { drawn: string; selected: string; matched: boolean } | undefined;
+      if (selectedLottery === "diadesorte" && selectedMonth) {
+        const drawnMonth = apiData.mesSorte || apiData.mesSort || "";
+        mesSorteResult = {
+          drawn: drawnMonth,
+          selected: selectedMonth,
+          matched: drawnMonth.toLowerCase() === selectedMonth.toLowerCase(),
+        };
+      }
+
       const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
 
       setResult({
@@ -297,6 +308,7 @@ export function PrizeChecker() {
         draws,
         trevos: trevosResult,
         timeCoracao: timeCoracaoResult,
+        mesSorte: mesSorteResult,
       });
 
       if (bestDraw.prizeTier) {
