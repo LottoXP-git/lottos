@@ -12,7 +12,8 @@ export function FrequencyChart({ data, maxNumber, title }: FrequencyChartProps) 
   const sortedByNumber = [...data].sort((a, b) => a.number - b.number);
   
   // Split into rows for better display
-  const itemsPerRow = maxNumber <= 25 ? 5 : maxNumber <= 60 ? 10 : 10;
+  const itemsPerRow = maxNumber <= 25 ? 5 : 10;
+  const mobileItemsPerRow = maxNumber <= 25 ? 5 : 8;
   const rows = [];
   for (let i = 0; i < sortedByNumber.length; i += itemsPerRow) {
     rows.push(sortedByNumber.slice(i, i + itemsPerRow));
