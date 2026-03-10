@@ -9,7 +9,7 @@ import { LotteryBall } from "./LotteryBall";
 
 import { ShareButton } from "./ShareButton";
 import { SpecialStats } from "./SpecialStats";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble } from "lucide-react";
 import { AdBanner } from "./AdBanner";
 import { useMemo } from "react";
 
