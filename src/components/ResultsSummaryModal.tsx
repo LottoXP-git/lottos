@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Copy, Check, FileText, Download, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { LotteryBall } from "@/components/LotteryBall";
+import lotusLogo from "@/assets/lotus-logo.png";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
@@ -37,10 +38,21 @@ function buildShareText(lotteries: LotteryResult[]): string {
 
 function SummaryContent({ lotteries, contentRef }: { lotteries: LotteryResult[]; contentRef: React.RefObject<HTMLDivElement> }) {
   return (
-    <div ref={contentRef} className="space-y-3 bg-background p-4 rounded-xl">
-      <div className="text-center pb-2 border-b border-border">
-        <h2 className="text-base font-bold text-foreground">🎰 Resultados das Loterias Caixa</h2>
-        <p className="text-[10px] text-muted-foreground mt-0.5">
+    <div ref={contentRef} className="relative space-y-3 bg-background p-4 rounded-xl overflow-hidden">
+      {/* Watermark */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img
+          src={lotusLogo}
+          alt=""
+          className="w-48 h-48 object-contain opacity-[0.06]"
+          style={{ filter: "grayscale(100%)" }}
+        />
+      </div>
+      <div className="relative z-10 space-y-3">
+      <div className="text-center pb-2 border-b border-border flex flex-col items-center gap-1">
+        <img src={lotusLogo} alt="Lotus" className="h-7 w-auto" />
+        <h2 className="text-base font-bold text-foreground">Resultados das Loterias Caixa</h2>
+        <p className="text-[10px] text-muted-foreground">
           Atualizado em {new Date().toLocaleDateString("pt-BR")}
         </p>
       </div>
@@ -100,6 +112,7 @@ function SummaryContent({ lotteries, contentRef }: { lotteries: LotteryResult[];
       <p className="text-[9px] text-muted-foreground text-center pt-1">
         loteriascaixa.app
       </p>
+      </div>
     </div>
   );
 }
