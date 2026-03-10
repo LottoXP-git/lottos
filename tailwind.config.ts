@@ -58,6 +58,7 @@ export default {
           lotomania: "hsl(var(--lottery-lotomania))",
           duplasena: "hsl(var(--lottery-duplasena))",
           timemania: "hsl(var(--lottery-timemania))",
+          loteca: "hsl(var(--lottery-loteca))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

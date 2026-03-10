@@ -13,6 +13,17 @@ export interface WinnerLocation {
   ganhadores: number;
 }
 
+export interface LotecaMatch {
+  sequencial: number;
+  equipeUm: string;
+  equipeDois: string;
+  golEquipeUm: number;
+  golEquipeDois: number;
+  resultado: "coluna1" | "empate" | "coluna2";
+  campeonato: string;
+  dataJogo: string;
+}
+
 export interface LotteryResult {
   id: string;
   name: string;
@@ -24,6 +35,7 @@ export interface LotteryResult {
   mesSorte?: string;
   premiacoes?: PrizeTier[];
   localGanhadores?: WinnerLocation[];
+  jogos?: LotecaMatch[];
   prize: string;
   winners: number;
   nextPrize: string;
