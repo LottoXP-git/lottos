@@ -46,6 +46,7 @@
     --lottery-lotomania: 28 95% 48%;
     --lottery-duplasena: 350 75% 40%;
     --lottery-timemania: 142 70% 40%;
+    --lottery-loteca: 0 72% 45%;
 
     /* Modern Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(25, 100%, 50%) 0%, hsl(35, 100%, 55%) 100%);

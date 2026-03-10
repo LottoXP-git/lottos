@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation } from "@/data/lotteryData";
+import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
 import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
@@ -9,7 +9,7 @@ import { LotteryBall } from "./LotteryBall";
 
 import { ShareButton } from "./ShareButton";
 import { SpecialStats } from "./SpecialStats";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble } from "lucide-react";
 import { AdBanner } from "./AdBanner";
 import { useMemo } from "react";
 
@@ -72,7 +72,32 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{lottery.date}</span>
             </div>
-            {lottery.id === "federal" ? (
+            {lottery.id === "loteca" && lottery.jogos ? (
+              <div className="space-y-2">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Dribbble className="w-4 h-4 text-red-400" />
+                  <span className="text-sm font-semibold text-muted-foreground">{lottery.jogos.length} Jogos</span>
+                </div>
+                <div className="grid gap-1.5">
+                  {lottery.jogos.map((jogo, idx) => {
+                    const isHomeWin = jogo.golEquipeUm > jogo.golEquipeDois;
+                    const isDraw = jogo.golEquipeUm === jogo.golEquipeDois;
+                    const resultLabel = isHomeWin ? "Col 1" : isDraw ? "Empate" : "Col 2";
+                    return (
+                      <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/5 border border-red-500/15 text-xs sm:text-sm">
+                        <span className="text-[10px] font-mono text-muted-foreground w-5">{idx + 1}</span>
+                        <span className={`flex-1 truncate ${isHomeWin ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeUm}</span>
+                        <span className="font-mono font-bold text-red-400 px-2 shrink-0">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
+                        <span className={`flex-1 truncate text-right ${!isHomeWin && !isDraw ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeDois}</span>
+                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${
+                          isHomeWin ? "bg-emerald-500/15 text-emerald-400" : isDraw ? "bg-amber-500/15 text-amber-400" : "bg-blue-500/15 text-blue-400"
+                        }`}>{resultLabel}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : lottery.id === "federal" ? (
               <div className="space-y-2">
                 {lottery.numbers.map((num, idx) => {
                   const location = lottery.localGanhadores?.find(l => l.posicao === idx + 1);
@@ -309,50 +334,57 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Histórico</span>
               </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                <span>Estatísticas</span>
-              </TabsTrigger>
-              <TabsTrigger value="frequency" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                <span>Frequências</span>
-              </TabsTrigger>
-              <TabsTrigger value="picks" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                <span>Palpites</span>
-              </TabsTrigger>
+              {lottery.id !== "loteca" && (
+                <>
+                  <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                    <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span>Estatísticas</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="frequency" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                    <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span>Frequências</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="picks" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span>Palpites</span>
+                  </TabsTrigger>
+                </>
+              )}
             </TabsList>
 
             <TabsContent value="history" className="mt-2 sm:mt-4">
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-2 sm:mt-4 space-y-3 sm:space-y-4">
-              <StatisticsPanel
-                frequencyData={frequencyData}
-                variant={variantMap[lottery.color]}
-                showCount={lottery.selectCount > 10 ? 10 : lottery.selectCount}
-              />
-              <SpecialStats lottery={lottery} />
-            </TabsContent>
+            {lottery.id !== "loteca" && (
+              <>
+                <TabsContent value="stats" className="mt-2 sm:mt-4 space-y-3 sm:space-y-4">
+                  <StatisticsPanel
+                    frequencyData={frequencyData}
+                    variant={variantMap[lottery.color]}
+                    showCount={lottery.selectCount > 10 ? 10 : lottery.selectCount}
+                  />
+                  <SpecialStats lottery={lottery} />
+                </TabsContent>
 
-            <TabsContent value="frequency" className="mt-2 sm:mt-4">
-              <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
-                <FrequencyChart
-                  data={frequencyData}
-                  maxNumber={lottery.maxNumber}
-                  title={`Mapa de Frequência - ${lottery.name}`}
-                />
-              </div>
-            </TabsContent>
+                <TabsContent value="frequency" className="mt-2 sm:mt-4">
+                  <div className="p-2.5 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
+                    <FrequencyChart
+                      data={frequencyData}
+                      maxNumber={lottery.maxNumber}
+                      title={`Mapa de Frequência - ${lottery.name}`}
+                    />
+                  </div>
+                </TabsContent>
 
-
-            <TabsContent value="picks" className="mt-2 sm:mt-4">
-              <SmartPickGenerator
-                lottery={lottery}
-                frequencyData={frequencyData}
-              />
-            </TabsContent>
+                <TabsContent value="picks" className="mt-2 sm:mt-4">
+                  <SmartPickGenerator
+                    lottery={lottery}
+                    frequencyData={frequencyData}
+                  />
+                </TabsContent>
+              </>
+            )}
           </Tabs>
 
           {/* Ad - Sidebar no modal */}

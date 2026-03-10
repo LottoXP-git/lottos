@@ -35,6 +35,7 @@ const difficultyMap: Record<string, { odds: string; level: "easy" | "medium" | "
   maismilionaria:  { odds: "1 em 238.360.500", level: "extreme", explain: "Acertar 6 números de 50 + 2 trevos de 6. C(50,6) × C(6,2)." },
   federal:         { odds: "1 em 100.000", level: "easy", explain: "Bilhete com 5 dígitos. 100.000 combinações possíveis." },
   duplasena:       { odds: "1 em 15.890.700", level: "hard", explain: "Acertar 6 números de 50 em cada sorteio. Combinação C(50,6)." },
+  loteca:          { odds: "1 em 4.782.969", level: "medium", explain: "Acertar o resultado de 14 jogos de futebol (vitória/empate/derrota). 3¹⁴ combinações." },
 };
 
 const levelConfig: Record<string, { label: string; color: string; bg: string }> = {
