@@ -1,0 +1,144 @@
+import { useState } from "react";
+import { LotteryResult } from "@/data/lotteryData";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Share2, Copy, Check, FileText } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { LotteryBall } from "@/components/LotteryBall";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
+
+const variantMap: Record<string, LotteryVariant> = {
+  megasena: "megasena", lotofacil: "lotofacil", quina: "quina",
+  lotomania: "lotomania", duplasena: "duplasena", diadesorte: "diadesorte",
+  supersete: "supersete", maismilionaria: "maismilionaria", timemania: "timemania",
+  federal: "federal", loteca: "loteca",
+};
+
+interface ResultsSummaryModalProps {
+  lotteries: LotteryResult[];
+}
+
+function buildShareText(lotteries: LotteryResult[]): string {
+  const lines = lotteries.map((l) => {
+    const nums = l.id === "federal"
+      ? l.numbers.join(" | ")
+      : l.numbers.join(" - ");
+    let extra = "";
+    if (l.trevos?.length) extra += ` | Trevos: ${l.trevos.join(", ")}`;
+    if (l.timeCoracao) extra += ` | ${l.timeCoracao}`;
+    if (l.mesSorte) extra += ` | ${l.mesSorte}`;
+    return `🎯 ${l.name} (${l.concurso}) — ${l.date}\n   ${nums}${extra}\n   💰 Próximo: ${l.nextPrize}`;
+  });
+  return `🎰 Resultados das Loterias Caixa\n\n${lines.join("\n\n")}`;
+}
+
+export function ResultsSummaryModal({ lotteries }: ResultsSummaryModalProps) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const text = buildShareText(lotteries);
+    const shareData = { title: "Resultados das Loterias Caixa", text, url: window.location.href };
+
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+        toast({ title: "Compartilhado!", description: "Resumo compartilhado com sucesso." });
+        return;
+      } catch (err) {
+        if ((err as Error).name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(`${shareData.title}\n\n${text}\n\n${shareData.url}`);
+      setCopied(true);
+      toast({ title: "Copiado!", description: "Resumo copiado para a área de transferência." });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast({ title: "Erro", description: "Não foi possível copiar.", variant: "destructive" });
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <FileText className="w-4 h-4" />
+          Resumo
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-lg max-h-[85vh] p-0">
+        <DialogHeader className="p-6 pb-2">
+          <DialogTitle className="flex items-center justify-between">
+            <span>Resumo dos Resultados</span>
+            <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
+              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              {copied ? "Copiado" : "Compartilhar"}
+            </Button>
+          </DialogTitle>
+        </DialogHeader>
+
+        <ScrollArea className="px-6 pb-6 max-h-[65vh]">
+          <div className="space-y-4">
+            {lotteries.map((lottery) => {
+              const variant = variantMap[lottery.id] || "megasena";
+              return (
+                <div
+                  key={lottery.id}
+                  className="p-3 rounded-xl border border-border bg-card/50 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-sm text-foreground">{lottery.name}</h3>
+                      <p className="text-[11px] text-muted-foreground">
+                        Concurso {lottery.concurso} • {lottery.date}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-muted-foreground">Próximo prêmio</p>
+                      <p className="text-xs font-bold text-primary">{lottery.nextPrize}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {lottery.id === "federal" ? (
+                      lottery.numbers.map((n, i) => (
+                        <span key={i} className="px-2 py-0.5 rounded-md bg-muted text-xs font-mono font-semibold text-foreground">
+                          {String(n).padStart(5, "0")}
+                        </span>
+                      ))
+                    ) : (
+                      lottery.numbers.map((n, i) => (
+                        <LotteryBall key={i} number={n} variant={variant} size="sm" />
+                      ))
+                    )}
+                  </div>
+
+                  {lottery.trevos && lottery.trevos.length > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-muted-foreground">Trevos:</span>
+                      {lottery.trevos.map((t, i) => (
+                        <span key={i} className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-bold flex items-center justify-center">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {lottery.timeCoracao && (
+                    <p className="text-[11px] text-muted-foreground">❤️ {lottery.timeCoracao}</p>
+                  )}
+                  {lottery.mesSorte && (
+                    <p className="text-[11px] text-muted-foreground">📅 {lottery.mesSorte}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+}
