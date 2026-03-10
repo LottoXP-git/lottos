@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import Index from "./pages/Index";
 import History from "./pages/History";
+import SpecialDraws from "./pages/SpecialDraws";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
