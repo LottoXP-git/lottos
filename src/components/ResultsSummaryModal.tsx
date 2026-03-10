@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Copy, Check, FileText, Download, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { LotteryBall } from "@/components/LotteryBall";
+import lotusLogo from "@/assets/lotus-logo.png";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
