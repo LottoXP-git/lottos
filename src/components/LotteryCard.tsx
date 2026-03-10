@@ -70,6 +70,7 @@ function isSpecialDraw(id: string, concurso: number): boolean {
 
 function getSpecialDrawLabel(id: string): string {
   if (id === "lotofacil") return "CONCURSO ESPECIAL DA LOTOFÁCIL!";
+  if (id === "quina") return "QUINA FINAL 5 - ESPECIAL!";
   if (id === "duplasena") return "DUPLA DE PÁSCOA / ESPECIAL!";
   if (id === "megasena") return "MEGA DA VIRADA / ESPECIAL!";
   return "CONCURSO ESPECIAL!";
