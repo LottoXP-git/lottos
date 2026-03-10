@@ -1,4 +1,4 @@
-import { Home, History } from "lucide-react";
+import { Home, History, Sparkles } from "lucide-react";
 import { NavLink } from "./NavLink";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
