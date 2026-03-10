@@ -112,6 +112,7 @@ function SummaryContent({ lotteries, contentRef }: { lotteries: LotteryResult[];
       <p className="text-[9px] text-muted-foreground text-center pt-1">
         loteriascaixa.app
       </p>
+      </div>
     </div>
   );
 }

@@ -40,12 +40,18 @@ export function LotteryBall({
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center font-mono font-bold shadow-lg transition-all duration-300 hover:scale-110 text-white",
+        "rounded-full flex items-center justify-center font-mono font-bold shadow-lg transition-all duration-300 hover:scale-110 text-white leading-none",
         sizeClasses[size],
         variantClasses[variant],
         animated && "animate-bounce-in opacity-0"
       )}
-      style={animated ? { animationDelay: `${delay}ms`, animationFillMode: "forwards" } : undefined}
+      style={{
+        ...(animated ? { animationDelay: `${delay}ms`, animationFillMode: "forwards" } : {}),
+        lineHeight: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {number.toString().padStart(2, "0")}
     </div>
