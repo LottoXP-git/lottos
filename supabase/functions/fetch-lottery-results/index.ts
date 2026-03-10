@@ -114,7 +114,112 @@
   },
 ];
  
+  // Fetch Loteca from official Caixa API (not supported by loteriascaixa-api)
+  async function fetchLotecaResult(config: LotteryConfig, concurso?: number) {
+    const baseUrl = "https://servicebus2.caixa.gov.br/portaldeloterias/api/loteca";
+    const url = concurso ? `${baseUrl}/${concurso}` : baseUrl;
+
+    console.log(`Fetching Loteca from: ${url}`);
+
+    try {
+      const response = await fetch(url, {
+        headers: { "Accept": "application/json" },
+      });
+
+      if (!response.ok) {
+        console.error(`Error fetching Loteca: ${response.status}`);
+        return null;
+      }
+
+      const data = await response.json();
+      console.log(`Received data for Loteca:`, JSON.stringify(data).substring(0, 200));
+
+      const formatDate = (dateStr: string) => {
+        if (!dateStr) return "";
+        if (dateStr.includes("/")) return dateStr;
+        const parts = dateStr.split("-");
+        if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        return dateStr;
+      };
+
+      const formatPrize = (value: number) => {
+        if (!value) return "R$ 0,00";
+        return `R$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      };
+
+      // Parse matches
+      const jogos = (data.listaResultadoEquipeEsportiva || [])
+        .sort((a: any, b: any) => a.nuSequencial - b.nuSequencial)
+        .map((m: any) => {
+          const golUm = m.nuGolEquipeUm ?? 0;
+          const golDois = m.nuGolEquipeDois ?? 0;
+          let resultado: string;
+          if (golUm > golDois) resultado = "coluna1";
+          else if (golUm === golDois) resultado = "empate";
+          else resultado = "coluna2";
+          return {
+            sequencial: m.nuSequencial,
+            equipeUm: m.nomeEquipeUm || "",
+            equipeDois: m.nomeEquipeDois || "",
+            golEquipeUm: golUm,
+            golEquipeDois: golDois,
+            resultado,
+            campeonato: m.nomeCampeonato || "",
+            dataJogo: m.dtJogo || "",
+          };
+        });
+
+      // Parse prize tiers
+      const premiacoes = (data.listaRateioPremio || []).map((p: any) => ({
+        descricao: p.descricaoFaixa || "",
+        faixa: p.faixa || 0,
+        ganhadores: p.numeroDeGanhadores || 0,
+        valorPremio: p.valorPremio || 0,
+      }));
+
+      // Parse winner locations
+      const localGanhadores = (data.listaMunicipioUFGanhadores || []).map((l: any) => ({
+        posicao: l.posicao || 0,
+        municipio: l.municipio || "",
+        uf: l.uf || "",
+        nomeLoteria: l.nomeFatansiaUL || "",
+        ganhadores: l.ganhadores || 0,
+      }));
+
+      const firstPrize = premiacoes.length > 0 ? premiacoes[0].valorPremio : 0;
+      const firstPrizeWinners = premiacoes.length > 0 ? premiacoes[0].ganhadores : 0;
+
+      return {
+        id: config.id,
+        name: config.name,
+        concurso: data.numero || 0,
+        date: formatDate(data.dataApuracao || ""),
+        numbers: [],
+        jogos,
+        trevos: [],
+        premiacoes,
+        localGanhadores: localGanhadores.length > 0 ? localGanhadores : undefined,
+        prize: formatPrize(firstPrize),
+        winners: firstPrizeWinners,
+        nextPrize: formatPrize(data.valorEstimadoProximoConcurso || 0),
+        nextDate: formatDate(data.dataProximoConcurso || ""),
+        color: config.color,
+        maxNumber: config.maxNumber,
+        selectCount: config.selectCount,
+        accumulated: data.acumulado || false,
+      };
+    } catch (error) {
+      console.error(`Error fetching Loteca:`, error);
+      return null;
+    }
+  }
+
  async function fetchLotteryResult(config: LotteryConfig, concurso?: number) {
+    // Loteca uses a different API
+    if (config.id === "loteca") {
+      return fetchLotecaResult(config, concurso);
+    }
+
    // Using loterias-api - open source API for Brazilian lotteries
    // GitHub: https://github.com/guto-alves/loterias-api
    const baseUrl = "https://loteriascaixa-api.herokuapp.com/api";
@@ -161,9 +266,7 @@
      // Format date - handle different formats
      const formatDate = (dateStr: string) => {
        if (!dateStr) return "";
-       // If already in DD/MM/YYYY format
        if (dateStr.includes("/")) return dateStr;
-       // Convert from YYYY-MM-DD to DD/MM/YYYY
        const parts = dateStr.split("-");
        if (parts.length === 3) {
          return `${parts[2]}/${parts[1]}/${parts[0]}`;
