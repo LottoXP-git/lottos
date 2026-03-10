@@ -177,6 +177,7 @@ const Index = () => {
                 <span className="text-gradient">Resultados</span>
               </h2>
               <div className="flex items-center gap-2">
+                <ResultsSummaryModal lotteries={results} />
                 <ShareButton
                 title="Resultados das Loterias Caixa"
                 text={`🎰 Resultados das Loterias Caixa\n\n💰 Prêmios acumulados: R$ ${(totalPrize / 1000000).toFixed(0)}M+\n🎯 ${results.length} loterias disponíveis\n\nConfira os últimos resultados!`}
