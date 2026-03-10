@@ -117,7 +117,28 @@ export function LotteryCard({
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
         <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-1 sm:py-2">
-          {result.id === "federal" ? (
+          {result.id === "loteca" && result.jogos ? (
+            <div className="w-full space-y-1.5">
+              <div className="flex items-center justify-center gap-1.5 mb-2">
+                <Dribbble className="w-3.5 h-3.5 text-red-400" />
+                <span className="text-xs font-semibold text-muted-foreground">{result.jogos.length} Jogos</span>
+              </div>
+              {result.jogos.slice(0, 5).map((jogo, idx) => {
+                const isHomeWin = jogo.golEquipeUm > jogo.golEquipeDois;
+                const isDraw = jogo.golEquipeUm === jogo.golEquipeDois;
+                return (
+                  <div key={idx} className="flex items-center justify-between px-2 py-1 rounded-md bg-red-500/5 border border-red-500/15 text-xs">
+                    <span className={`truncate max-w-[80px] ${isHomeWin ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeUm}</span>
+                    <span className="font-mono font-bold text-red-400 px-2">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
+                    <span className={`truncate max-w-[80px] text-right ${!isHomeWin && !isDraw ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeDois}</span>
+                  </div>
+                );
+              })}
+              {result.jogos.length > 5 && (
+                <p className="text-[10px] text-center text-muted-foreground mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
+              )}
+            </div>
+          ) : result.id === "federal" ? (
             <div className="w-full space-y-2">
               {result.numbers.map((num, idx) => {
                 const location = result.localGanhadores?.find(l => l.posicao === idx + 1);
