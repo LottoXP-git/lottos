@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation } from "@/data/lotteryData";
+import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
 import { StatisticsPanel } from "./StatisticsPanel";
 import { SmartPickGenerator } from "./SmartPickGenerator";
