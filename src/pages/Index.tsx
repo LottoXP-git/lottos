@@ -32,12 +32,6 @@ const Index = () => {
   // Use API data or fallback to static data
   const results = useMemo(() => {
     if (lotteryResults && lotteryResults.length > 0) {
-      // If Loteca is missing from API results (Caixa API may block), add fallback
-      const hasLoteca = lotteryResults.some(r => r.id === "loteca");
-      if (!hasLoteca) {
-        const lotecaFallback = fallbackResults.find(r => r.id === "loteca");
-        if (lotecaFallback) return [...lotteryResults, lotecaFallback];
-      }
       return lotteryResults;
     }
     return fallbackResults;
