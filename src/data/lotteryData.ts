@@ -195,6 +195,25 @@ export const lotteryResults: LotteryResult[] = [
     selectCount: 5,
     accumulated: false,
   },
+  {
+    id: "loteca",
+    name: "Loteca",
+    concurso: 1236,
+    date: "09/03/2026",
+    numbers: [],
+    jogos: [
+      { sequencial: 1, equipeUm: "NOVORIZONTINO", equipeDois: "PALMEIRAS", golEquipeUm: 1, golEquipeDois: 2, resultado: "coluna2", campeonato: "PRINCIPAL", dataJogo: "08/03/2026" },
+      { sequencial: 2, equipeUm: "ASA", equipeDois: "CRB", golEquipeUm: 1, golEquipeDois: 1, resultado: "empate", campeonato: "PRINCIPAL", dataJogo: "07/03/2026" },
+    ],
+    prize: "R$ 1.089.869,49",
+    winners: 3,
+    nextPrize: "R$ 1.000.000,00",
+    nextDate: "14/03/2026",
+    color: "lottery-loteca",
+    maxNumber: 14,
+    selectCount: 14,
+    accumulated: false,
+  },
 ];
 
 // Simulated historical frequency data (last 100 draws)
