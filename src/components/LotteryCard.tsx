@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
-import { LotteryResult, WinnerLocation } from "@/data/lotteryData";
+import { LotteryResult, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
+import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays, Dribbble } from "lucide-react";
 import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
