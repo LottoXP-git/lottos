@@ -13,6 +13,7 @@ import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-r
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ShareButton";
+import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
 import { AdBanner } from "@/components/AdBanner";
