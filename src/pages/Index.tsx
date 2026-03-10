@@ -13,6 +13,7 @@ import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-r
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ShareButton";
+import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
 import { AdBanner } from "@/components/AdBanner";
@@ -176,6 +177,7 @@ const Index = () => {
                 <span className="text-gradient">Resultados</span>
               </h2>
               <div className="flex items-center gap-2">
+                <ResultsSummaryModal lotteries={results} />
                 <ShareButton
                 title="Resultados das Loterias Caixa"
                 text={`🎰 Resultados das Loterias Caixa\n\n💰 Prêmios acumulados: R$ ${(totalPrize / 1000000).toFixed(0)}M+\n🎯 ${results.length} loterias disponíveis\n\nConfira os últimos resultados!`}
