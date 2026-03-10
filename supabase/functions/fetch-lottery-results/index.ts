@@ -89,14 +89,6 @@
     selectCount: 7,
   },
   {
-    id: "timemania",
-    name: "Timemania",
-    apiName: "timemania",
-    color: "lottery-timemania",
-    maxNumber: 80,
-    selectCount: 7,
-  },
-  {
     id: "federal",
     name: "Federal",
     apiName: "federal",
