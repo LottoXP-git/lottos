@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { LotecaVolante } from "./LotecaVolante";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
@@ -73,30 +74,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <span>{lottery.date}</span>
             </div>
             {lottery.id === "loteca" && lottery.jogos ? (
-              <div className="space-y-2">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Dribbble className="w-4 h-4 text-red-400" />
-                  <span className="text-sm font-semibold text-muted-foreground">{lottery.jogos.length} Jogos</span>
-                </div>
-                <div className="grid gap-1.5">
-                  {lottery.jogos.map((jogo, idx) => {
-                    const isHomeWin = jogo.golEquipeUm > jogo.golEquipeDois;
-                    const isDraw = jogo.golEquipeUm === jogo.golEquipeDois;
-                    const resultLabel = isHomeWin ? "Col 1" : isDraw ? "Empate" : "Col 2";
-                    return (
-                      <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/5 border border-red-500/15 text-xs sm:text-sm">
-                        <span className="text-[10px] font-mono text-muted-foreground w-5">{idx + 1}</span>
-                        <span className={`flex-1 truncate ${isHomeWin ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeUm}</span>
-                        <span className="font-mono font-bold text-red-400 px-2 shrink-0">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
-                        <span className={`flex-1 truncate text-right ${!isHomeWin && !isDraw ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeDois}</span>
-                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${
-                          isHomeWin ? "bg-emerald-500/15 text-emerald-400" : isDraw ? "bg-amber-500/15 text-amber-400" : "bg-blue-500/15 text-blue-400"
-                        }`}>{resultLabel}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              <LotecaVolante jogos={lottery.jogos} concurso={lottery.concurso} />
             ) : lottery.id === "federal" ? (
               <div className="space-y-2">
                 {lottery.numbers.map((num, idx) => {
