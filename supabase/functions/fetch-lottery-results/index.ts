@@ -89,14 +89,6 @@
     selectCount: 7,
   },
   {
-    id: "timemania",
-    name: "Timemania",
-    apiName: "timemania",
-    color: "lottery-timemania",
-    maxNumber: 80,
-    selectCount: 7,
-  },
-  {
     id: "federal",
     name: "Federal",
     apiName: "federal",
@@ -116,14 +108,20 @@
  
   // Fetch Loteca from official Caixa API (not supported by loteriascaixa-api)
   async function fetchLotecaResult(config: LotteryConfig, concurso?: number) {
-    const baseUrl = "https://servicebus2.caixa.gov.br/portaldeloterias/api/loteca";
-    const url = concurso ? `${baseUrl}/${concurso}` : baseUrl;
+    const caixaUrl = concurso
+      ? `https://servicebus2.caixa.gov.br/portaldeloterias/api/loteca/${concurso}`
+      : "https://servicebus2.caixa.gov.br/portaldeloterias/api/loteca";
 
-    console.log(`Fetching Loteca from: ${url}`);
+    console.log(`Fetching Loteca from: ${caixaUrl}`);
 
     try {
-      const response = await fetch(url, {
-        headers: { "Accept": "application/json" },
+      const response = await fetch(caixaUrl, {
+        headers: {
+          "Accept": "application/json",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Referer": "https://loterias.caixa.gov.br/",
+          "Origin": "https://loterias.caixa.gov.br",
+        },
       });
 
       if (!response.ok) {
