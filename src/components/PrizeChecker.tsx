@@ -100,16 +100,50 @@ interface CheckResult {
   mesSorte?: { drawn: string; selected: string; matched: boolean };
 }
 
-function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
+function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): number | null {
+  if (!premiacoes || premiacoes.length === 0) return null;
+  // Try to find matching tier by faixa number or by description containing the match count
+  for (const p of premiacoes) {
+    const desc = (p.descricao || p.nome || "").toLowerCase();
+    const faixa = p.faixa;
+    // Map matches to expected faixa
+    if (lotteryId === "megasena") {
+      if (matches === 6 && faixa === 1) return p.valorPremio || 0;
+      if (matches === 5 && faixa === 2) return p.valorPremio || 0;
+      if (matches === 4 && faixa === 3) return p.valorPremio || 0;
+    } else if (lotteryId === "quina") {
+      if (matches === 5 && faixa === 1) return p.valorPremio || 0;
+      if (matches === 4 && faixa === 2) return p.valorPremio || 0;
+      if (matches === 3 && faixa === 3) return p.valorPremio || 0;
+      if (matches === 2 && faixa === 4) return p.valorPremio || 0;
+    } else if (lotteryId === "duplasena") {
+      if (matches === 6 && faixa === 1) return p.valorPremio || 0;
+      if (matches === 5 && faixa === 2) return p.valorPremio || 0;
+      if (matches === 4 && faixa === 3) return p.valorPremio || 0;
+      if (matches === 3 && faixa === 4) return p.valorPremio || 0;
+    } else {
+      // Generic: match by description containing the number
+      if (desc.includes(`${matches} acerto`) || desc.includes(`${matches} ponto`)) {
+        return p.valorPremio || 0;
+      }
+    }
+  }
+  return null;
+}
+
+function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string, premiacoes?: any[]): DrawResult {
   const matched = betNumbers.filter(n => drawnNumbers.includes(n)).sort((a, b) => a - b);
   const unmatched = betNumbers.filter(n => !drawnNumbers.includes(n)).sort((a, b) => a - b);
+  const prizeTier = PRIZE_TIERS[lotteryId]?.[matched.length] || null;
+  const prizeValue = prizeTier ? findPrizeValue(premiacoes || [], matched.length, lotteryId) : null;
   return {
     label,
     drawnNumbers,
     matchedNumbers: matched,
     unmatchedNumbers: unmatched,
     totalMatches: matched.length,
-    prizeTier: PRIZE_TIERS[lotteryId]?.[matched.length] || null,
+    prizeTier,
+    prizeValue,
   };
 }
 
