@@ -320,6 +320,7 @@ export function PrizeChecker() {
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamOpen, setTeamOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [cotas, setCotas] = useState("1");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
