@@ -100,13 +100,21 @@ interface CheckResult {
   mesSorte?: { drawn: string; selected: string; matched: boolean };
 }
 
+function comb(n: number, k: number): number {
+  if (k < 0 || k > n) return 0;
+  if (k === 0 || k === n) return 1;
+  let result = 1;
+  for (let i = 0; i < k; i++) {
+    result = result * (n - i) / (i + 1);
+  }
+  return Math.round(result);
+}
+
 function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): number | null {
   if (!premiacoes || premiacoes.length === 0) return null;
-  // Try to find matching tier by faixa number or by description containing the match count
   for (const p of premiacoes) {
     const desc = (p.descricao || p.nome || "").toLowerCase();
     const faixa = p.faixa;
-    // Map matches to expected faixa
     if (lotteryId === "megasena") {
       if (matches === 6 && faixa === 1) return p.valorPremio || 0;
       if (matches === 5 && faixa === 2) return p.valorPremio || 0;
@@ -122,13 +130,48 @@ function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): 
       if (matches === 4 && faixa === 3) return p.valorPremio || 0;
       if (matches === 3 && faixa === 4) return p.valorPremio || 0;
     } else {
-      // Generic: match by description containing the number
       if (desc.includes(`${matches} acerto`) || desc.includes(`${matches} ponto`)) {
         return p.valorPremio || 0;
       }
     }
   }
   return null;
+}
+
+// Calculate all prize tiers won considering the number of numbers bet
+function calculateAllPrizes(
+  lotteryId: string,
+  betCount: number,
+  matchedCount: number,
+  selectCount: number,
+  premiacoes: any[]
+): { tier: string; hits: number; combos: number; unitPrize: number; totalPrize: number }[] {
+  const tiers = PRIZE_TIERS[lotteryId];
+  if (!tiers || !premiacoes || premiacoes.length === 0) return [];
+
+  const unmatchedCount = betCount - matchedCount;
+  const results: { tier: string; hits: number; combos: number; unitPrize: number; totalPrize: number }[] = [];
+
+  for (const hitsStr of Object.keys(tiers)) {
+    const hits = parseInt(hitsStr, 10);
+    if (hits > matchedCount) continue;
+    // Number of winning combinations: C(matched, hits) * C(unmatched, selectCount - hits)
+    const combos = comb(matchedCount, hits) * comb(unmatchedCount, selectCount - hits);
+    if (combos <= 0) continue;
+
+    const unitPrize = findPrizeValue(premiacoes, hits, lotteryId);
+    if (unitPrize === null) continue;
+
+    results.push({
+      tier: tiers[hits],
+      hits,
+      combos,
+      unitPrize,
+      totalPrize: combos * unitPrize,
+    });
+  }
+
+  return results.sort((a, b) => b.hits - a.hits);
 }
 
 function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string, premiacoes?: any[]): DrawResult {
