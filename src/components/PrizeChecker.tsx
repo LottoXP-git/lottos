@@ -504,7 +504,7 @@ export function PrizeChecker() {
         </p>
       </CardHeader>
 
-      <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6 pb-4 sm:pb-6">
+      <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6 pb-4 sm:pb-6 relative z-10">
         {/* Lottery Select */}
         <div className="space-y-1.5">
           <Label className="text-xs sm:text-sm">Loteria</Label>
