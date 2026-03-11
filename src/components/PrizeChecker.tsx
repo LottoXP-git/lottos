@@ -75,6 +75,14 @@ const PRIZE_TIERS: Record<string, Record<number, string>> = {
   timemania: { 7: "7 acertos 🏆", 6: "6 acertos", 5: "5 acertos", 4: "4 acertos", 3: "3 acertos" },
 };
 
+interface PrizeTierResult {
+  tier: string;
+  hits: number;
+  combos: number;
+  unitPrize: number;
+  totalPrize: number;
+}
+
 interface DrawResult {
   label?: string;
   drawnNumbers: number[];
@@ -83,6 +91,8 @@ interface DrawResult {
   totalMatches: number;
   prizeTier: string | null;
   prizeValue: number | null;
+  allPrizes: PrizeTierResult[];
+  betCount: number;
 }
 
 interface TrevoResult {
