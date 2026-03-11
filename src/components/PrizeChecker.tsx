@@ -6,10 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays, Users } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays, Users, ScanSearch, Target, Award, ShieldCheck } from "lucide-react";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { motion } from "framer-motion";
 
 const MESES_DIA_DE_SORTE = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
