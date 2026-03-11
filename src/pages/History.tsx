@@ -127,19 +127,19 @@ const History = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Page Title */}
-        <section className="mb-8 animate-fade-in">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <HistoryIcon className="w-6 h-6 text-primary" />
+        <section className="mb-6 sm:mb-8 animate-fade-in">
+          <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+              <HistoryIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-2xl sm:text-3xl font-bold">
               <span className="text-foreground">Histórico de </span>
               <span className="text-gradient">Resultados</span>
             </h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Consulte todos os resultados anteriores com filtros avançados
           </p>
         </section>
