@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Heart, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 
@@ -98,6 +99,11 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Lotus. Todos os direitos reservados.
           </p>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <Link to="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link>
+            <span>•</span>
+            <Link to="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link>
+          </div>
           <p className="text-xs text-muted-foreground text-center">
             Este site não possui vínculo oficial com a Caixa Econômica Federal.
           </p>
