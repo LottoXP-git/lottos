@@ -202,7 +202,8 @@ function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: 
     betCount: betNumbers.length,
   };
 }
-}
+
+
 
 function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: LotteryVariant }) {
   return (
