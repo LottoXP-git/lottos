@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, NumberFrequency, generateSmartPicks } from "@/data/lotteryData";
-import { Sparkles, Flame, Snowflake, Scale, RefreshCw, Copy, Check } from "lucide-react";
+import { Sparkles, Flame, Snowflake, Scale, RefreshCw, Copy, Check, Wand2, Dices, Star, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SmartPickGeneratorProps {
   lottery: LotteryResult;
