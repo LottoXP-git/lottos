@@ -777,6 +777,49 @@ export function PrizeChecker() {
                 </div>
               </div>
             )}
+
+            {/* Prize Summary */}
+            {(() => {
+              const allPrizes = result.draws.flatMap(d => d.allPrizes);
+              const totalWon = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
+              const hasAnyPrize = allPrizes.length > 0;
+              if (!hasAnyPrize) return null;
+              return (
+                <div className="rounded-lg p-4 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-primary" />
+                    <span className="font-bold text-sm sm:text-base text-foreground">Resumo da Conferência</span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    {result.draws.map((draw, di) =>
+                      draw.allPrizes.map((p, pi) => (
+                        <div key={`${di}-${pi}`} className="flex items-center justify-between text-xs sm:text-sm">
+                          <span className="text-muted-foreground">
+                            {draw.label ? `${draw.label} — ` : ""}{p.tier}
+                            {p.combos > 1 ? ` (×${p.combos})` : ""}
+                          </span>
+                          <span className={`font-semibold ${p.totalPrize > 0 ? "text-emerald-400" : "text-muted-foreground"}`}>
+                            {p.totalPrize > 0
+                              ? p.totalPrize.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                              : "Acumulou"}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="border-t border-primary/20 pt-2 flex items-center justify-between">
+                    <span className="font-bold text-sm sm:text-base text-foreground">Total a receber:</span>
+                    <span className={`font-extrabold text-base sm:text-lg ${totalWon > 0 ? "text-emerald-400" : "text-muted-foreground"}`}>
+                      {totalWon > 0
+                        ? totalWon.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                        : "R$ 0,00 (acumulou)"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
       </CardContent>
