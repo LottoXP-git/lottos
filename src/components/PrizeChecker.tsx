@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays, Users } from "lucide-react";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -320,6 +320,7 @@ export function PrizeChecker() {
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamOpen, setTeamOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [cotas, setCotas] = useState("1");
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
 
@@ -467,6 +468,7 @@ export function PrizeChecker() {
     setSelectedTeam("");
     setSelectedMonth("");
     setConcurso("");
+    setCotas("1");
   };
 
   return (
@@ -629,6 +631,25 @@ export function PrizeChecker() {
           </div>
         )}
 
+        {/* Cotas (Bolão) */}
+        <div className="space-y-1.5">
+          <Label className="text-xs sm:text-sm flex items-center gap-1">
+            <Users className="w-3.5 h-3.5 text-primary" />
+            Cotas do bolão (opcional)
+          </Label>
+          <Input
+            type="number"
+            min="1"
+            placeholder="1"
+            value={cotas}
+            onChange={e => setCotas(e.target.value)}
+            className="h-9 sm:h-10 text-xs sm:text-sm"
+          />
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
+            Informe o número de cotas para dividir o prêmio (bolão)
+          </p>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
@@ -784,6 +805,8 @@ export function PrizeChecker() {
               const totalWon = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
               const hasAnyPrize = allPrizes.length > 0;
               if (!hasAnyPrize) return null;
+              const numCotas = Math.max(1, parseInt(cotas) || 1);
+              const totalPerCota = totalWon / numCotas;
               return (
                 <div className="rounded-lg p-4 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 space-y-3">
                   <div className="flex items-center gap-2">
@@ -809,13 +832,26 @@ export function PrizeChecker() {
                     )}
                   </div>
 
-                  <div className="border-t border-primary/20 pt-2 flex items-center justify-between">
-                    <span className="font-bold text-sm sm:text-base text-foreground">Total a receber:</span>
-                    <span className={`font-extrabold text-base sm:text-lg ${totalWon > 0 ? "text-emerald-400" : "text-muted-foreground"}`}>
-                      {totalWon > 0
-                        ? totalWon.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-                        : "R$ 0,00 (acumulou)"}
-                    </span>
+                  <div className="border-t border-primary/20 pt-2 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm sm:text-base text-foreground">Total bruto:</span>
+                      <span className={`font-extrabold text-base sm:text-lg ${totalWon > 0 ? "text-emerald-400" : "text-muted-foreground"}`}>
+                        {totalWon > 0
+                          ? totalWon.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                          : "R$ 0,00 (acumulou)"}
+                      </span>
+                    </div>
+                    {numCotas > 1 && totalWon > 0 && (
+                      <div className="flex items-center justify-between bg-secondary/50 rounded-md px-3 py-2">
+                        <span className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          Sua cota ({1}/{numCotas}):
+                        </span>
+                        <span className="font-extrabold text-base sm:text-lg text-primary">
+                          {totalPerCota.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
