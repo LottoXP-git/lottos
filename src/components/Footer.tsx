@@ -79,11 +79,6 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-foreground">Contato</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="w-4 h-4 text-primary shrink-0" />
-                <span>
-</span>
-              </li>
-              <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
                 <span>grupolottoxp@gmail.com</span>
               </li>
