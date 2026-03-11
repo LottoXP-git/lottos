@@ -82,6 +82,7 @@ interface DrawResult {
   unmatchedNumbers: number[];
   totalMatches: number;
   prizeTier: string | null;
+  prizeValue: number | null;
 }
 
 interface TrevoResult {
