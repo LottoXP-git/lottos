@@ -184,11 +184,12 @@ function calculateAllPrizes(
   return results.sort((a, b) => b.hits - a.hits);
 }
 
-function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string, premiacoes?: any[]): DrawResult {
+function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], selectCount: number, label?: string, premiacoes?: any[]): DrawResult {
   const matched = betNumbers.filter(n => drawnNumbers.includes(n)).sort((a, b) => a - b);
   const unmatched = betNumbers.filter(n => !drawnNumbers.includes(n)).sort((a, b) => a - b);
   const prizeTier = PRIZE_TIERS[lotteryId]?.[matched.length] || null;
-  const prizeValue = prizeTier ? findPrizeValue(premiacoes || [], matched.length, lotteryId) : null;
+  const allPrizes = calculateAllPrizes(lotteryId, betNumbers.length, matched.length, selectCount, premiacoes || []);
+  const topPrize = allPrizes.length > 0 ? allPrizes[0] : null;
   return {
     label,
     drawnNumbers,
@@ -196,8 +197,11 @@ function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: 
     unmatchedNumbers: unmatched,
     totalMatches: matched.length,
     prizeTier,
-    prizeValue,
+    prizeValue: topPrize ? topPrize.totalPrize : null,
+    allPrizes,
+    betCount: betNumbers.length,
   };
+}
 }
 
 function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: LotteryVariant }) {
