@@ -178,9 +178,24 @@ function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: Lottery
         </div>
 
         {draw.prizeTier && (
-          <Badge className="mb-2 bg-primary/20 text-primary border-primary/30 text-xs">
-            {draw.prizeTier}
-          </Badge>
+          <div className="mb-2 space-y-1.5">
+            <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+              {draw.prizeTier}
+            </Badge>
+            {draw.prizeValue !== null && draw.prizeValue > 0 && (
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                <Trophy className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                  Prêmio: {draw.prizeValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                </span>
+              </div>
+            )}
+            {draw.prizeValue === 0 && (
+              <p className="text-[10px] sm:text-xs text-muted-foreground italic">
+                Nenhum ganhador nesta faixa — prêmio acumula
+              </p>
+            )}
+          </div>
         )}
 
         {draw.matchedNumbers.length > 0 && (
