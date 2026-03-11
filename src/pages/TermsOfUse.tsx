@@ -85,9 +85,7 @@ export default function TermsOfUse() {
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-foreground">8. Contato</h2>
             <p>
-              Dúvidas sobre estes termos podem ser enviadas para: <span className="text-foreground font-medium">
-
-              </span>
+              Dúvidas sobre estes termos podem ser enviadas para: <span className="text-foreground font-medium">grupolottoxp@gmail.com</span>
             </p>
           </section>
         </div>
