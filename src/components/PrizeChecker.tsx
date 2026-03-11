@@ -473,14 +473,34 @@ export function PrizeChecker() {
   };
 
   return (
-    <Card className="border-border bg-card overflow-hidden">
-      <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
+    <Card className="border-border bg-card overflow-hidden relative">
+      {/* Decorative floating icons */}
+      <div className="absolute top-3 right-4 opacity-10 pointer-events-none">
+        <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}>
+          <Target className="w-14 h-14 sm:w-16 sm:h-16 text-accent" />
+        </motion.div>
+      </div>
+      <div className="absolute bottom-6 left-3 opacity-[0.06] pointer-events-none">
+        <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}>
+          <Award className="w-12 h-12 sm:w-14 sm:h-14 text-primary" />
+        </motion.div>
+      </div>
+
+      <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6 relative z-10">
         <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          Conferir Aposta
+          <motion.div
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+          >
+            <ScanSearch className="w-5 h-5 sm:w-6 sm:h-6 text-accent drop-shadow-[0_0_6px_hsl(var(--accent)/0.5)]" />
+          </motion.div>
+          <span className="text-gradient-blue font-bold">Conferir Aposta</span>
+          <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}>
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+          </motion.div>
         </CardTitle>
         <p className="text-xs sm:text-sm text-muted-foreground">
-          Insira seus números para conferir se você ganhou
+          🎯 Insira seus números para conferir se você ganhou
         </p>
       </CardHeader>
 
