@@ -631,6 +631,25 @@ export function PrizeChecker() {
           </div>
         )}
 
+        {/* Cotas (Bolão) */}
+        <div className="space-y-1.5">
+          <Label className="text-xs sm:text-sm flex items-center gap-1">
+            <Users className="w-3.5 h-3.5 text-primary" />
+            Cotas do bolão (opcional)
+          </Label>
+          <Input
+            type="number"
+            min="1"
+            placeholder="1"
+            value={cotas}
+            onChange={e => setCotas(e.target.value)}
+            className="h-9 sm:h-10 text-xs sm:text-sm"
+          />
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
+            Informe o número de cotas para dividir o prêmio (bolão)
+          </p>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
