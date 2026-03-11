@@ -235,24 +235,46 @@ function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: Lottery
           </span>
         </div>
 
-        {draw.prizeTier && (
-          <div className="mb-2 space-y-1.5">
+        {draw.allPrizes.length > 0 && (
+          <div className="mb-2 space-y-2">
+            {draw.betCount > (draw.matchedNumbers.length + draw.unmatchedNumbers.length - draw.unmatchedNumbers.length) && draw.allPrizes.some(p => p.combos > 1) && (
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                Aposta com {draw.betCount} números — prêmio calculado por combinações
+              </p>
+            )}
+            {draw.allPrizes.map((p, i) => (
+              <div key={i} className="space-y-1">
+                <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+                  {p.tier}{p.combos > 1 ? ` (×${p.combos} combinações)` : ""}
+                </Badge>
+                {p.totalPrize > 0 && (
+                  <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                    <Trophy className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                      {p.totalPrize.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                      {p.combos > 1 && (
+                        <span className="font-normal text-muted-foreground ml-1">
+                          ({p.combos}× {p.unitPrize.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })})
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
+                {p.unitPrize === 0 && (
+                  <p className="text-[10px] sm:text-xs text-muted-foreground italic">
+                    Nenhum ganhador nesta faixa — prêmio acumula
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {draw.allPrizes.length === 0 && draw.prizeTier && (
+          <div className="mb-2">
             <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
               {draw.prizeTier}
             </Badge>
-            {draw.prizeValue !== null && draw.prizeValue > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                <Trophy className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs sm:text-sm font-bold text-emerald-400">
-                  Prêmio: {draw.prizeValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                </span>
-              </div>
-            )}
-            {draw.prizeValue === 0 && (
-              <p className="text-[10px] sm:text-xs text-muted-foreground italic">
-                Nenhum ganhador nesta faixa — prêmio acumula
-              </p>
-            )}
           </div>
         )}
 
