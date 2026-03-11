@@ -82,6 +82,7 @@ interface DrawResult {
   unmatchedNumbers: number[];
   totalMatches: number;
   prizeTier: string | null;
+  prizeValue: number | null;
 }
 
 interface TrevoResult {
@@ -99,16 +100,50 @@ interface CheckResult {
   mesSorte?: { drawn: string; selected: string; matched: boolean };
 }
 
-function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string): DrawResult {
+function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): number | null {
+  if (!premiacoes || premiacoes.length === 0) return null;
+  // Try to find matching tier by faixa number or by description containing the match count
+  for (const p of premiacoes) {
+    const desc = (p.descricao || p.nome || "").toLowerCase();
+    const faixa = p.faixa;
+    // Map matches to expected faixa
+    if (lotteryId === "megasena") {
+      if (matches === 6 && faixa === 1) return p.valorPremio || 0;
+      if (matches === 5 && faixa === 2) return p.valorPremio || 0;
+      if (matches === 4 && faixa === 3) return p.valorPremio || 0;
+    } else if (lotteryId === "quina") {
+      if (matches === 5 && faixa === 1) return p.valorPremio || 0;
+      if (matches === 4 && faixa === 2) return p.valorPremio || 0;
+      if (matches === 3 && faixa === 3) return p.valorPremio || 0;
+      if (matches === 2 && faixa === 4) return p.valorPremio || 0;
+    } else if (lotteryId === "duplasena") {
+      if (matches === 6 && faixa === 1) return p.valorPremio || 0;
+      if (matches === 5 && faixa === 2) return p.valorPremio || 0;
+      if (matches === 4 && faixa === 3) return p.valorPremio || 0;
+      if (matches === 3 && faixa === 4) return p.valorPremio || 0;
+    } else {
+      // Generic: match by description containing the number
+      if (desc.includes(`${matches} acerto`) || desc.includes(`${matches} ponto`)) {
+        return p.valorPremio || 0;
+      }
+    }
+  }
+  return null;
+}
+
+function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string, premiacoes?: any[]): DrawResult {
   const matched = betNumbers.filter(n => drawnNumbers.includes(n)).sort((a, b) => a - b);
   const unmatched = betNumbers.filter(n => !drawnNumbers.includes(n)).sort((a, b) => a - b);
+  const prizeTier = PRIZE_TIERS[lotteryId]?.[matched.length] || null;
+  const prizeValue = prizeTier ? findPrizeValue(premiacoes || [], matched.length, lotteryId) : null;
   return {
     label,
     drawnNumbers,
     matchedNumbers: matched,
     unmatchedNumbers: unmatched,
     totalMatches: matched.length,
-    prizeTier: PRIZE_TIERS[lotteryId]?.[matched.length] || null,
+    prizeTier,
+    prizeValue,
   };
 }
 
@@ -143,9 +178,24 @@ function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: Lottery
         </div>
 
         {draw.prizeTier && (
-          <Badge className="mb-2 bg-primary/20 text-primary border-primary/30 text-xs">
-            {draw.prizeTier}
-          </Badge>
+          <div className="mb-2 space-y-1.5">
+            <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+              {draw.prizeTier}
+            </Badge>
+            {draw.prizeValue !== null && draw.prizeValue > 0 && (
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                <Trophy className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                  Prêmio: {draw.prizeValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                </span>
+              </div>
+            )}
+            {draw.prizeValue === 0 && (
+              <p className="text-[10px] sm:text-xs text-muted-foreground italic">
+                Nenhum ganhador nesta faixa — prêmio acumula
+              </p>
+            )}
+          </div>
         )}
 
         {draw.matchedNumbers.length > 0 && (
@@ -251,14 +301,16 @@ export function PrizeChecker() {
           draw2Numbers = draw1Numbers.splice(6);
         }
 
-        draws.push(buildDrawResult("duplasena", parsed, draw1Numbers, "1º Sorteio"));
+        const premiacoes1 = apiData.premiacoes?.filter((p: any) => p.descricao?.toLowerCase().includes("1º") || p.faixa <= 4) || apiData.premiacoes || [];
+        const premiacoes2 = apiData.premiacoes2 || premiacoes1;
+        draws.push(buildDrawResult("duplasena", parsed, draw1Numbers, "1º Sorteio", premiacoes1));
         if (draw2Numbers.length > 0) {
-          draws.push(buildDrawResult("duplasena", parsed, draw2Numbers, "2º Sorteio"));
+          draws.push(buildDrawResult("duplasena", parsed, draw2Numbers, "2º Sorteio", premiacoes2));
         }
       } else {
         const drawnNumbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
           .map((d: string) => parseInt(d, 10));
-        draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers));
+        draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers, undefined, apiData.premiacoes));
       }
 
       // Handle trevos for +Milionária
