@@ -127,19 +127,19 @@ const History = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Page Title */}
-        <section className="mb-8 animate-fade-in">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <HistoryIcon className="w-6 h-6 text-primary" />
+        <section className="mb-6 sm:mb-8 animate-fade-in">
+          <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+              <HistoryIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-2xl sm:text-3xl font-bold">
               <span className="text-foreground">Histórico de </span>
               <span className="text-gradient">Resultados</span>
             </h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Consulte todos os resultados anteriores com filtros avançados
           </p>
         </section>
@@ -260,87 +260,149 @@ const History = () => {
           </p>
         </div>
 
-        {/* Results Table */}
-        <section className="rounded-xl border border-border overflow-hidden bg-card animate-fade-in">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary/50 hover:bg-secondary/50">
-                <TableHead className="font-semibold">Loteria</TableHead>
-                <TableHead className="font-semibold">Concurso</TableHead>
-                <TableHead className="font-semibold">Data</TableHead>
-                <TableHead className="font-semibold">Números Sorteados</TableHead>
-                <TableHead className="font-semibold text-right">Prêmio</TableHead>
-                <TableHead className="font-semibold text-center">
-                  <Trophy className="w-4 h-4 inline" />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedResults.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Nenhum resultado encontrado para os filtros selecionados.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                paginatedResults.map((result, idx) => (
-                  <TableRow
-                    key={`${result.id}-${result.concurso}`}
-                    className="cursor-pointer transition-colors hover:bg-secondary/30"
-                    onClick={() => handleRowClick(result)}
-                    style={{ animationDelay: `${idx * 30}ms` }}
-                  >
-                    <TableCell>
-                      <span
-                        className={cn(
-                          "px-2 py-1 rounded-md text-xs font-medium",
-                          result.id === "megasena" && "bg-lottery-megasena/20 text-lottery-megasena",
-                          result.id === "lotofacil" && "bg-lottery-lotofacil/20 text-lottery-lotofacil",
-                          result.id === "quina" && "bg-lottery-quina/20 text-lottery-quina",
-                          result.id === "lotomania" && "bg-lottery-lotomania/20 text-lottery-lotomania",
-                          result.id === "duplasena" && "bg-lottery-duplasena/20 text-lottery-duplasena"
-                        )}
-                      >
-                        {result.name}
-                      </span>
-                    </TableCell>
-                    <TableCell className="font-mono font-semibold">
-                      #{result.concurso}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{result.date}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {result.numbers.slice(0, result.numbers.length > 10 ? 8 : 6).map((num) => (
-                          <LotteryBall
-                            key={num}
-                            number={num}
-                            size="xs"
-                            variant={variantMap[result.color]}
-                          />
-                        ))}
-                        {result.numbers.length > (result.numbers.length > 10 ? 8 : 6) && (
-                          <span className="text-xs text-muted-foreground flex items-center">
-                            +{result.numbers.length - (result.numbers.length > 10 ? 8 : 6)}
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-semibold text-primary">
-                      {result.prize}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {result.winners > 0 ? (
-                        <span className="text-primary font-semibold">{result.winners}</span>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
+        {/* Results - Cards on mobile, Table on desktop */}
+        {paginatedResults.length === 0 ? (
+          <section className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground animate-fade-in">
+            Nenhum resultado encontrado para os filtros selecionados.
+          </section>
+        ) : (
+          <>
+            {/* Mobile Cards */}
+            <section className="md:hidden space-y-3 animate-fade-in">
+              {paginatedResults.map((result, idx) => (
+                <div
+                  key={`${result.id}-${result.concurso}`}
+                  className="p-3 rounded-xl bg-card border border-border cursor-pointer active:scale-[0.98] transition-transform"
+                  onClick={() => handleRowClick(result)}
+                  style={{ animationDelay: `${idx * 30}ms` }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span
+                      className={cn(
+                        "px-2 py-0.5 rounded-md text-[11px] font-medium",
+                        result.id === "megasena" && "bg-lottery-megasena/20 text-lottery-megasena",
+                        result.id === "lotofacil" && "bg-lottery-lotofacil/20 text-lottery-lotofacil",
+                        result.id === "quina" && "bg-lottery-quina/20 text-lottery-quina",
+                        result.id === "lotomania" && "bg-lottery-lotomania/20 text-lottery-lotomania",
+                        result.id === "duplasena" && "bg-lottery-duplasena/20 text-lottery-duplasena"
                       )}
-                    </TableCell>
+                    >
+                      {result.name}
+                    </span>
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                      <span className="font-mono font-semibold text-foreground">#{result.concurso}</span>
+                      <span>•</span>
+                      <span>{result.date}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {result.numbers.slice(0, result.numbers.length > 10 ? 8 : 6).map((num) => (
+                      <LotteryBall
+                        key={num}
+                        number={num}
+                        size="xs"
+                        variant={variantMap[result.color]}
+                      />
+                    ))}
+                    {result.numbers.length > (result.numbers.length > 10 ? 8 : 6) && (
+                      <span className="text-[10px] text-muted-foreground flex items-center">
+                        +{result.numbers.length - (result.numbers.length > 10 ? 8 : 6)}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-primary truncate mr-2">{result.prize}</span>
+                    <span className="text-[11px]">
+                      {result.winners > 0 ? (
+                        <span className="text-primary font-semibold flex items-center gap-1">
+                          <Trophy className="w-3 h-3" /> {result.winners}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">Acumulou</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </section>
+
+            {/* Desktop Table */}
+            <section className="hidden md:block rounded-xl border border-border overflow-hidden bg-card animate-fade-in">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-secondary/50 hover:bg-secondary/50">
+                    <TableHead className="font-semibold">Loteria</TableHead>
+                    <TableHead className="font-semibold">Concurso</TableHead>
+                    <TableHead className="font-semibold">Data</TableHead>
+                    <TableHead className="font-semibold">Números Sorteados</TableHead>
+                    <TableHead className="font-semibold text-right">Prêmio</TableHead>
+                    <TableHead className="font-semibold text-center">
+                      <Trophy className="w-4 h-4 inline" />
+                    </TableHead>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </section>
+                </TableHeader>
+                <TableBody>
+                  {paginatedResults.map((result, idx) => (
+                    <TableRow
+                      key={`${result.id}-${result.concurso}`}
+                      className="cursor-pointer transition-colors hover:bg-secondary/30"
+                      onClick={() => handleRowClick(result)}
+                      style={{ animationDelay: `${idx * 30}ms` }}
+                    >
+                      <TableCell>
+                        <span
+                          className={cn(
+                            "px-2 py-1 rounded-md text-xs font-medium",
+                            result.id === "megasena" && "bg-lottery-megasena/20 text-lottery-megasena",
+                            result.id === "lotofacil" && "bg-lottery-lotofacil/20 text-lottery-lotofacil",
+                            result.id === "quina" && "bg-lottery-quina/20 text-lottery-quina",
+                            result.id === "lotomania" && "bg-lottery-lotomania/20 text-lottery-lotomania",
+                            result.id === "duplasena" && "bg-lottery-duplasena/20 text-lottery-duplasena"
+                          )}
+                        >
+                          {result.name}
+                        </span>
+                      </TableCell>
+                      <TableCell className="font-mono font-semibold">
+                        #{result.concurso}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{result.date}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {result.numbers.slice(0, result.numbers.length > 10 ? 8 : 6).map((num) => (
+                            <LotteryBall
+                              key={num}
+                              number={num}
+                              size="xs"
+                              variant={variantMap[result.color]}
+                            />
+                          ))}
+                          {result.numbers.length > (result.numbers.length > 10 ? 8 : 6) && (
+                            <span className="text-xs text-muted-foreground flex items-center">
+                              +{result.numbers.length - (result.numbers.length > 10 ? 8 : 6)}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold text-primary">
+                        {result.prize}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {result.winners > 0 ? (
+                          <span className="text-primary font-semibold">{result.winners}</span>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </section>
+          </>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
