@@ -286,14 +286,16 @@ export function PrizeChecker() {
           draw2Numbers = draw1Numbers.splice(6);
         }
 
-        draws.push(buildDrawResult("duplasena", parsed, draw1Numbers, "1º Sorteio"));
+        const premiacoes1 = apiData.premiacoes?.filter((p: any) => p.descricao?.toLowerCase().includes("1º") || p.faixa <= 4) || apiData.premiacoes || [];
+        const premiacoes2 = apiData.premiacoes2 || premiacoes1;
+        draws.push(buildDrawResult("duplasena", parsed, draw1Numbers, "1º Sorteio", premiacoes1));
         if (draw2Numbers.length > 0) {
-          draws.push(buildDrawResult("duplasena", parsed, draw2Numbers, "2º Sorteio"));
+          draws.push(buildDrawResult("duplasena", parsed, draw2Numbers, "2º Sorteio", premiacoes2));
         }
       } else {
         const drawnNumbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
           .map((d: string) => parseInt(d, 10));
-        draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers));
+        draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers, undefined, apiData.premiacoes));
       }
 
       // Handle trevos for +Milionária
