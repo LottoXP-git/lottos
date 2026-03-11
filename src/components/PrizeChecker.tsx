@@ -468,6 +468,7 @@ export function PrizeChecker() {
     setSelectedTeam("");
     setSelectedMonth("");
     setConcurso("");
+    setCotas("1");
   };
 
   return (
