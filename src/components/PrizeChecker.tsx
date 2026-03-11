@@ -75,6 +75,14 @@ const PRIZE_TIERS: Record<string, Record<number, string>> = {
   timemania: { 7: "7 acertos 🏆", 6: "6 acertos", 5: "5 acertos", 4: "4 acertos", 3: "3 acertos" },
 };
 
+interface PrizeTierResult {
+  tier: string;
+  hits: number;
+  combos: number;
+  unitPrize: number;
+  totalPrize: number;
+}
+
 interface DrawResult {
   label?: string;
   drawnNumbers: number[];
@@ -83,6 +91,8 @@ interface DrawResult {
   totalMatches: number;
   prizeTier: string | null;
   prizeValue: number | null;
+  allPrizes: PrizeTierResult[];
+  betCount: number;
 }
 
 interface TrevoResult {
@@ -100,13 +110,21 @@ interface CheckResult {
   mesSorte?: { drawn: string; selected: string; matched: boolean };
 }
 
+function comb(n: number, k: number): number {
+  if (k < 0 || k > n) return 0;
+  if (k === 0 || k === n) return 1;
+  let result = 1;
+  for (let i = 0; i < k; i++) {
+    result = result * (n - i) / (i + 1);
+  }
+  return Math.round(result);
+}
+
 function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): number | null {
   if (!premiacoes || premiacoes.length === 0) return null;
-  // Try to find matching tier by faixa number or by description containing the match count
   for (const p of premiacoes) {
     const desc = (p.descricao || p.nome || "").toLowerCase();
     const faixa = p.faixa;
-    // Map matches to expected faixa
     if (lotteryId === "megasena") {
       if (matches === 6 && faixa === 1) return p.valorPremio || 0;
       if (matches === 5 && faixa === 2) return p.valorPremio || 0;
@@ -122,7 +140,6 @@ function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): 
       if (matches === 4 && faixa === 3) return p.valorPremio || 0;
       if (matches === 3 && faixa === 4) return p.valorPremio || 0;
     } else {
-      // Generic: match by description containing the number
       if (desc.includes(`${matches} acerto`) || desc.includes(`${matches} ponto`)) {
         return p.valorPremio || 0;
       }
@@ -131,11 +148,48 @@ function findPrizeValue(premiacoes: any[], matches: number, lotteryId: string): 
   return null;
 }
 
-function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], label?: string, premiacoes?: any[]): DrawResult {
+// Calculate all prize tiers won considering the number of numbers bet
+function calculateAllPrizes(
+  lotteryId: string,
+  betCount: number,
+  matchedCount: number,
+  selectCount: number,
+  premiacoes: any[]
+): { tier: string; hits: number; combos: number; unitPrize: number; totalPrize: number }[] {
+  const tiers = PRIZE_TIERS[lotteryId];
+  if (!tiers || !premiacoes || premiacoes.length === 0) return [];
+
+  const unmatchedCount = betCount - matchedCount;
+  const results: { tier: string; hits: number; combos: number; unitPrize: number; totalPrize: number }[] = [];
+
+  for (const hitsStr of Object.keys(tiers)) {
+    const hits = parseInt(hitsStr, 10);
+    if (hits > matchedCount) continue;
+    // Number of winning combinations: C(matched, hits) * C(unmatched, selectCount - hits)
+    const combos = comb(matchedCount, hits) * comb(unmatchedCount, selectCount - hits);
+    if (combos <= 0) continue;
+
+    const unitPrize = findPrizeValue(premiacoes, hits, lotteryId);
+    if (unitPrize === null) continue;
+
+    results.push({
+      tier: tiers[hits],
+      hits,
+      combos,
+      unitPrize,
+      totalPrize: combos * unitPrize,
+    });
+  }
+
+  return results.sort((a, b) => b.hits - a.hits);
+}
+
+function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: number[], selectCount: number, label?: string, premiacoes?: any[]): DrawResult {
   const matched = betNumbers.filter(n => drawnNumbers.includes(n)).sort((a, b) => a - b);
   const unmatched = betNumbers.filter(n => !drawnNumbers.includes(n)).sort((a, b) => a - b);
   const prizeTier = PRIZE_TIERS[lotteryId]?.[matched.length] || null;
-  const prizeValue = prizeTier ? findPrizeValue(premiacoes || [], matched.length, lotteryId) : null;
+  const allPrizes = calculateAllPrizes(lotteryId, betNumbers.length, matched.length, selectCount, premiacoes || []);
+  const topPrize = allPrizes.length > 0 ? allPrizes[0] : null;
   return {
     label,
     drawnNumbers,
@@ -143,9 +197,13 @@ function buildDrawResult(lotteryId: string, betNumbers: number[], drawnNumbers: 
     unmatchedNumbers: unmatched,
     totalMatches: matched.length,
     prizeTier,
-    prizeValue,
+    prizeValue: topPrize ? topPrize.totalPrize : null,
+    allPrizes,
+    betCount: betNumbers.length,
   };
 }
+
+
 
 function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: LotteryVariant }) {
   return (
@@ -177,24 +235,46 @@ function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: Lottery
           </span>
         </div>
 
-        {draw.prizeTier && (
-          <div className="mb-2 space-y-1.5">
+        {draw.allPrizes.length > 0 && (
+          <div className="mb-2 space-y-2">
+            {draw.betCount > (draw.matchedNumbers.length + draw.unmatchedNumbers.length - draw.unmatchedNumbers.length) && draw.allPrizes.some(p => p.combos > 1) && (
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                Aposta com {draw.betCount} números — prêmio calculado por combinações
+              </p>
+            )}
+            {draw.allPrizes.map((p, i) => (
+              <div key={i} className="space-y-1">
+                <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+                  {p.tier}{p.combos > 1 ? ` (×${p.combos} combinações)` : ""}
+                </Badge>
+                {p.totalPrize > 0 && (
+                  <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                    <Trophy className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                      {p.totalPrize.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                      {p.combos > 1 && (
+                        <span className="font-normal text-muted-foreground ml-1">
+                          ({p.combos}× {p.unitPrize.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })})
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
+                {p.unitPrize === 0 && (
+                  <p className="text-[10px] sm:text-xs text-muted-foreground italic">
+                    Nenhum ganhador nesta faixa — prêmio acumula
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {draw.allPrizes.length === 0 && draw.prizeTier && (
+          <div className="mb-2">
             <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
               {draw.prizeTier}
             </Badge>
-            {draw.prizeValue !== null && draw.prizeValue > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                <Trophy className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs sm:text-sm font-bold text-emerald-400">
-                  Prêmio: {draw.prizeValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                </span>
-              </div>
-            )}
-            {draw.prizeValue === 0 && (
-              <p className="text-[10px] sm:text-xs text-muted-foreground italic">
-                Nenhum ganhador nesta faixa — prêmio acumula
-              </p>
-            )}
           </div>
         )}
 
@@ -303,14 +383,14 @@ export function PrizeChecker() {
 
         const premiacoes1 = apiData.premiacoes?.filter((p: any) => p.descricao?.toLowerCase().includes("1º") || p.faixa <= 4) || apiData.premiacoes || [];
         const premiacoes2 = apiData.premiacoes2 || premiacoes1;
-        draws.push(buildDrawResult("duplasena", parsed, draw1Numbers, "1º Sorteio", premiacoes1));
+        draws.push(buildDrawResult("duplasena", parsed, draw1Numbers, 6, "1º Sorteio", premiacoes1));
         if (draw2Numbers.length > 0) {
-          draws.push(buildDrawResult("duplasena", parsed, draw2Numbers, "2º Sorteio", premiacoes2));
+          draws.push(buildDrawResult("duplasena", parsed, draw2Numbers, 6, "2º Sorteio", premiacoes2));
         }
       } else {
         const drawnNumbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
           .map((d: string) => parseInt(d, 10));
-        draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers, undefined, apiData.premiacoes));
+        draws.push(buildDrawResult(selectedLottery, parsed, drawnNumbers, lottery?.selectCount || parsed.length, undefined, apiData.premiacoes));
       }
 
       // Handle trevos for +Milionária
@@ -697,6 +777,49 @@ export function PrizeChecker() {
                 </div>
               </div>
             )}
+
+            {/* Prize Summary */}
+            {(() => {
+              const allPrizes = result.draws.flatMap(d => d.allPrizes);
+              const totalWon = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
+              const hasAnyPrize = allPrizes.length > 0;
+              if (!hasAnyPrize) return null;
+              return (
+                <div className="rounded-lg p-4 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-primary" />
+                    <span className="font-bold text-sm sm:text-base text-foreground">Resumo da Conferência</span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    {result.draws.map((draw, di) =>
+                      draw.allPrizes.map((p, pi) => (
+                        <div key={`${di}-${pi}`} className="flex items-center justify-between text-xs sm:text-sm">
+                          <span className="text-muted-foreground">
+                            {draw.label ? `${draw.label} — ` : ""}{p.tier}
+                            {p.combos > 1 ? ` (×${p.combos})` : ""}
+                          </span>
+                          <span className={`font-semibold ${p.totalPrize > 0 ? "text-emerald-400" : "text-muted-foreground"}`}>
+                            {p.totalPrize > 0
+                              ? p.totalPrize.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                              : "Acumulou"}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="border-t border-primary/20 pt-2 flex items-center justify-between">
+                    <span className="font-bold text-sm sm:text-base text-foreground">Total a receber:</span>
+                    <span className={`font-extrabold text-base sm:text-lg ${totalWon > 0 ? "text-emerald-400" : "text-muted-foreground"}`}>
+                      {totalWon > 0
+                        ? totalWon.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                        : "R$ 0,00 (acumulou)"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
       </CardContent>
