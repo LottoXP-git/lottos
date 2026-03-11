@@ -80,11 +80,12 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary shrink-0" />
-                <span>(81)983004889</span>
+                <span>
+</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
-                <span>contato@lotus.com.br</span>
+                <span>grupolottoxp@gmail.com</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -109,5 +110,4 @@ export function Footer() {
           </p>
         </div>
       </div>
-    </footer>);
-}
+    </footer>);}

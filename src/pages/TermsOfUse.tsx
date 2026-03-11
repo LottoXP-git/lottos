@@ -19,16 +19,16 @@ export default function TermsOfUse() {
         <div className="prose prose-sm dark:prose-invert space-y-6 text-muted-foreground">
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-foreground">1. Aceitação dos termos</h2>
-            <p>
-              Ao acessar e utilizar o site Lotus, você concorda com estes Termos de Uso. Caso não concorde com qualquer parte destes termos,
-              recomendamos que não utilize o site.
+            <p>Ao acessar e utilizar o site Lottos, você concorda com estes Termos de Uso. Caso não concorde com qualquer parte destes termos, recomendamos que não utilize o site.
+
+
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-foreground">2. Descrição do serviço</h2>
-            <p>
-              O Lotus é uma plataforma informativa que apresenta resultados, estatísticas e ferramentas de geração de palpites para as loterias da Caixa Econômica Federal.
+            <p>O Lottos é uma plataforma informativa que apresenta resultados, estatísticas e ferramentas de geração de palpites para as loterias da Caixa Econômica Federal.
+
             </p>
             <p className="font-medium text-foreground">
               Este site NÃO possui vínculo oficial com a Caixa Econômica Federal e NÃO realiza vendas de apostas ou jogos.
@@ -52,9 +52,9 @@ export default function TermsOfUse() {
               Os resultados e estatísticas apresentados são meramente informativos. Não garantimos a precisão ou atualidade das informações.
               Os palpites gerados são aleatórios e não representam garantia de premiação.
             </p>
-            <p>
-              O Lotus não se responsabiliza por decisões de apostas tomadas com base nas informações disponibilizadas neste site.
-              Jogue com responsabilidade.
+            <p>O Lottos não se responsabiliza por decisões de apostas tomadas com base nas informações disponibilizadas neste site. Jogue com responsabilidade.
+
+
             </p>
           </section>
 
@@ -68,9 +68,9 @@ export default function TermsOfUse() {
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-foreground">6. Propriedade intelectual</h2>
-            <p>
-              Todo o conteúdo do site, incluindo textos, gráficos, logotipos e código-fonte, é de propriedade do Lotus e protegido por leis de direitos autorais.
-              As marcas e logotipos das loterias são de propriedade da Caixa Econômica Federal.
+            <p>Todo o conteúdo do site, incluindo textos, gráficos, logotipos e código-fonte, é de propriedade do Lottos e protegido por leis de direitos autorais. As marcas e logotipos das loterias são de propriedade da Caixa Econômica Federal.
+
+
             </p>
           </section>
 
@@ -91,6 +91,6 @@ export default function TermsOfUse() {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>);
+
 }
