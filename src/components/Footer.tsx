@@ -97,7 +97,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Lotus. Todos os direitos reservados.
+            © {new Date().getFullYear()} Lottos. Todos os direitos reservados.
           </p>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <Link to="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link>
