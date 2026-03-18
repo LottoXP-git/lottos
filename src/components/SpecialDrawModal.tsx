@@ -1,8 +1,9 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Egg, Gift, Calendar, Clock, TrendingUp, Sparkles, Star, PartyPopper } from "lucide-react";
+import { Egg, Gift, Calendar, Clock, TrendingUp, Sparkles, Star, PartyPopper, History } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LotteryBall } from "./LotteryBall";
 
 interface SpecialDrawModalProps {
   open: boolean;
@@ -31,11 +32,29 @@ function getCountdown(targetDate: Date): CountdownValues {
   };
 }
 
-// Dupla de Páscoa 2025 config
+interface PastPascoaResult {
+  year: number;
+  concurso: number;
+  date: string;
+  firstDraw: number[];
+  secondDraw: number[];
+  winners: number;
+  prize: string;
+}
+
+const PAST_PASCOA_RESULTS: PastPascoaResult[] = [
+  { year: 2025, concurso: 2797, date: "19/04/2025", firstDraw: [5, 18, 22, 27, 31, 46], secondDraw: [2, 7, 31, 45, 46, 47], winners: 2, prize: "R$ 50.266.019,36" },
+  { year: 2024, concurso: 2643, date: "30/03/2024", firstDraw: [1, 3, 10, 27, 46, 47], secondDraw: [8, 21, 32, 39, 42, 50], winners: 2, prize: "R$ 37.550.377,02" },
+  { year: 2023, concurso: 2499, date: "08/04/2023", firstDraw: [3, 4, 21, 23, 28, 32], secondDraw: [5, 15, 19, 21, 34, 39], winners: 2, prize: "R$ 34.964.445,18" },
+  { year: 2022, concurso: 2355, date: "16/04/2022", firstDraw: [19, 25, 32, 38, 39, 42], secondDraw: [5, 13, 15, 22, 42, 44], winners: 3, prize: "R$ 32.248.449,87" },
+  { year: 2021, concurso: 2212, date: "17/04/2021", firstDraw: [14, 31, 33, 42, 47, 50], secondDraw: [6, 7, 11, 14, 27, 35], winners: 4, prize: "R$ 31.479.548,88" },
+];
+
+// Dupla de Páscoa 2026 config
 const SPECIAL_DRAW = {
   name: "Dupla de Páscoa",
   lottery: "Dupla Sena",
-  concurso: 2774,
+  concurso: 2941,
   date: new Date("2026-04-04T20:00:00-03:00"), // Sábado de Páscoa 2026
   prize: "R$ 35.000.000,00",
   prizeValue: 35000000,
@@ -192,6 +211,59 @@ export function SpecialDrawModal({ open, onOpenChange, onGeneratePicks }: Specia
                 <span className="text-sm text-foreground">{item}</span>
               </motion.div>
             ))}
+          </div>
+
+          {/* Past Results */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-center gap-2">
+              <History className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                Últimos Resultados
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {PAST_PASCOA_RESULTS.map((result, idx) => (
+                <motion.div
+                  key={result.year}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + idx * 0.1 }}
+                  className="rounded-xl border border-border bg-secondary/30 p-3 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Egg className="w-3.5 h-3.5 text-rose-400" />
+                      <span className="text-sm font-semibold text-foreground">Páscoa {result.year}</span>
+                      <span className="text-xs text-muted-foreground font-mono">#{result.concurso}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{result.date}</span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="text-[10px] text-muted-foreground font-medium text-center">1º Sorteio</div>
+                    <div className="flex flex-wrap gap-1.5 justify-center">
+                      {result.firstDraw.map((num, i) => (
+                        <LotteryBall key={`f-${i}`} number={num} size="xs" variant="duplasena" delay={0} />
+                      ))}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground font-medium text-center mt-1">2º Sorteio</div>
+                    <div className="flex flex-wrap gap-1.5 justify-center">
+                      {result.secondDraw.map((num, i) => (
+                        <LotteryBall key={`s-${i}`} number={num} size="xs" variant="duplasena" delay={0} />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-border/50">
+                    <span className="text-muted-foreground">
+                      {result.winners} {result.winners === 1 ? "ganhador" : "ganhadores"}
+                    </span>
+                    <span className="font-semibold text-primary">{result.prize}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           {/* CTA */}
