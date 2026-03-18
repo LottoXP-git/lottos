@@ -54,7 +54,7 @@ const PAST_PASCOA_RESULTS: PastPascoaResult[] = [
 const SPECIAL_DRAW = {
   name: "Dupla de Páscoa",
   lottery: "Dupla Sena",
-  concurso: 2941,
+  concurso: 2940,
   date: new Date("2026-04-04T20:00:00-03:00"), // Sábado de Páscoa 2026
   prize: "R$ 35.000.000,00",
   prizeValue: 35000000,
