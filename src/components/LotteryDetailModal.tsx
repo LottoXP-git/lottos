@@ -48,19 +48,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
     <Dialog open={open} onOpenChange={onOpenChange}>
        <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-card border-border p-2.5 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-1rem)] sm:w-auto rounded-xl">
         <DialogHeader className="space-y-0.5 sm:space-y-1">
-          <div className="flex items-center justify-between w-full">
-            <DialogTitle className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-3 flex-wrap leading-tight">
+          <DialogTitle className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-3 flex-wrap leading-tight">
               {lottery.name}
               <span className="text-base sm:text-2xl font-normal text-muted-foreground">
                 #{lottery.concurso}
               </span>
             </DialogTitle>
-            <ShareButton
-              title={`${lottery.name} - Concurso ${lottery.concurso}`}
-              text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
-              className="h-8 w-8 sm:h-9 sm:w-9 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary shrink-0"
-            />
-          </div>
           <DialogDescription className="sr-only">
             Detalhes do resultado {lottery.name} concurso {lottery.concurso}
           </DialogDescription>
@@ -303,7 +296,16 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             </div>
           </div>
 
-          {/* Ad - Inline no modal */}
+          {/* Share Button - Centralizado */}
+          <div className="flex justify-center">
+            <ShareButton
+              title={`${lottery.name} - Concurso ${lottery.concurso}`}
+              text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
+              className="h-9 w-9 sm:h-10 sm:w-10 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
+            />
+          </div>
+
+
           <AdBanner format="inline" className="mb-2 sm:mb-4" />
 
           <Tabs defaultValue="history" className="w-full">
