@@ -213,6 +213,59 @@ export function SpecialDrawModal({ open, onOpenChange, onGeneratePicks }: Specia
             ))}
           </div>
 
+          {/* Past Results */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-center gap-2">
+              <History className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                Últimos Resultados
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {PAST_PASCOA_RESULTS.map((result, idx) => (
+                <motion.div
+                  key={result.year}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + idx * 0.1 }}
+                  className="rounded-xl border border-border bg-secondary/30 p-3 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Egg className="w-3.5 h-3.5 text-rose-400" />
+                      <span className="text-sm font-semibold text-foreground">Páscoa {result.year}</span>
+                      <span className="text-xs text-muted-foreground font-mono">#{result.concurso}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{result.date}</span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="text-[10px] text-muted-foreground font-medium text-center">1º Sorteio</div>
+                    <div className="flex flex-wrap gap-1.5 justify-center">
+                      {result.firstDraw.map((num, i) => (
+                        <LotteryBall key={`f-${i}`} number={num} size="xs" variant="duplasena" delay={0} />
+                      ))}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground font-medium text-center mt-1">2º Sorteio</div>
+                    <div className="flex flex-wrap gap-1.5 justify-center">
+                      {result.secondDraw.map((num, i) => (
+                        <LotteryBall key={`s-${i}`} number={num} size="xs" variant="duplasena" delay={0} />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-border/50">
+                    <span className="text-muted-foreground">
+                      {result.winners} {result.winners === 1 ? "ganhador" : "ganhadores"}
+                    </span>
+                    <span className="font-semibold text-primary">{result.prize}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
           {/* CTA */}
           <Button
             className="w-full h-12 text-base font-bold gap-2 bg-gradient-to-r from-rose-500 via-primary to-amber-500 hover:from-rose-600 hover:via-primary hover:to-amber-600 text-primary-foreground shadow-lg"
