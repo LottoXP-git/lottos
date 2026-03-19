@@ -99,7 +99,7 @@ const Index = () => {
             <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
                 <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
-                <span className="text-lg sm:text-2xl font-bold text-emerald-400">10</span>
+                <span className="text-lg sm:text-2xl font-bold text-emerald-400">11</span>
               </div>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Loterias Disponíveis</p>
             </div>
@@ -131,18 +131,18 @@ const Index = () => {
         </motion.section>
 
         {/* Special Draw Banner */}
-        {showDuplaDePascoa && (
+        {showDuplaDePascoa &&
         <motion.section
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+          transition={{ duration: 0.5 }}>
+          
           <button
             onClick={() => setSpecialDrawOpen(true)}
-            className="w-full group relative overflow-hidden rounded-2xl border border-rose-500/30 bg-gradient-to-r from-rose-600/10 via-amber-500/10 to-violet-600/10 hover:from-rose-600/20 hover:via-amber-500/15 hover:to-violet-600/20 transition-all duration-300 p-4 sm:p-5"
-          >
+            className="w-full group relative overflow-hidden rounded-2xl border border-rose-500/30 bg-gradient-to-r from-rose-600/10 via-amber-500/10 to-violet-600/10 hover:from-rose-600/20 hover:via-amber-500/15 hover:to-violet-600/20 transition-all duration-300 p-4 sm:p-5">
+            
             <div className="absolute inset-0 bg-gradient-to-r from-rose-500/5 via-transparent to-amber-500/5 group-hover:opacity-100 opacity-0 transition-opacity" />
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 sm:gap-4">
@@ -167,7 +167,7 @@ const Index = () => {
             </div>
           </button>
         </motion.section>
-        )}
+        }
 
         {/* Lottery Results Grid */}
         <section className="mb-8 sm:mb-12">
@@ -199,7 +199,7 @@ const Index = () => {
             </div>
           
            {isLoading ?
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                {[...Array(5)].map((_, idx) =>
             <div key={idx} className="p-6 rounded-2xl border border-border bg-card">
                    <Skeleton className="h-6 w-32 mb-4" />
@@ -326,19 +326,19 @@ const Index = () => {
         open={modalOpen}
         onOpenChange={setModalOpen} />
 
-      {showDuplaDePascoa && (
-        <SpecialDrawModal
-          open={specialDrawOpen}
-          onOpenChange={setSpecialDrawOpen}
-          onGeneratePicks={() => {
-            setSpecialDrawOpen(false);
-            setQuickBetPreselect("duplasena");
-            setTimeout(() => {
-              document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
-            }, 100);
-          }}
-        />
-      )}
+      {showDuplaDePascoa &&
+      <SpecialDrawModal
+        open={specialDrawOpen}
+        onOpenChange={setSpecialDrawOpen}
+        onGeneratePicks={() => {
+          setSpecialDrawOpen(false);
+          setQuickBetPreselect("duplasena");
+          setTimeout(() => {
+            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }} />
+
+      }
 
     </div>);
 
