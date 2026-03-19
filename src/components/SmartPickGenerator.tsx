@@ -159,9 +159,17 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
               </motion.span>
             )}
-            Gerar Palpite para {lottery.name}
+            {freeGenerations > 0
+              ? `Gerar Palpite (${freeGenerations} restante${freeGenerations > 1 ? "s" : ""})`
+              : "Assistir Anúncio para Gerar"}
           </Button>
         </motion.div>
+
+        {freeGenerations <= 0 && picks.length > 0 && (
+          <p className="text-xs text-center text-muted-foreground animate-pulse">
+            🎬 Assista um anúncio rápido para liberar mais 2 palpites gratuitos
+          </p>
+        )}
 
         <AnimatePresence>
           {picks.length > 0 && (
