@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { VideoAdModal } from "./VideoAdModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotteryBall } from "./LotteryBall";
