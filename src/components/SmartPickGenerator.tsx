@@ -220,6 +220,8 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
             </motion.div>
           )}
         </AnimatePresence>
+
+        <VideoAdModal open={showVideoAd} onComplete={handleAdComplete} />
       </CardContent>
     </Card>
   );
