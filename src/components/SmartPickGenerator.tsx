@@ -41,10 +41,27 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
   const [picks, setPicks] = useState<number[]>([]);
   const [copied, setCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [freeGenerations, setFreeGenerations] = useState(2);
+  const [showVideoAd, setShowVideoAd] = useState(false);
 
   const generatePicks = () => {
+    if (freeGenerations <= 0) {
+      setShowVideoAd(true);
+      return;
+    }
+    runGeneration();
+  };
+
+  const handleAdComplete = () => {
+    setShowVideoAd(false);
+    setFreeGenerations(2);
+    runGeneration();
+  };
+
+  const runGeneration = () => {
     setIsGenerating(true);
     setPicks([]);
+    setFreeGenerations((prev) => prev - 1);
     
     setTimeout(() => {
       const newPicks = generateSmartPicks(frequencyData, lottery.selectCount, strategy);
