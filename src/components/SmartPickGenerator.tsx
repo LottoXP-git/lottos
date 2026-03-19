@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { VideoAdModal } from "./VideoAdModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotteryBall } from "./LotteryBall";
@@ -40,10 +41,27 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
   const [picks, setPicks] = useState<number[]>([]);
   const [copied, setCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [freeGenerations, setFreeGenerations] = useState(2);
+  const [showVideoAd, setShowVideoAd] = useState(false);
 
   const generatePicks = () => {
+    if (freeGenerations <= 0) {
+      setShowVideoAd(true);
+      return;
+    }
+    runGeneration();
+  };
+
+  const handleAdComplete = () => {
+    setShowVideoAd(false);
+    setFreeGenerations(2);
+    runGeneration();
+  };
+
+  const runGeneration = () => {
     setIsGenerating(true);
     setPicks([]);
+    setFreeGenerations((prev) => prev - 1);
     
     setTimeout(() => {
       const newPicks = generateSmartPicks(frequencyData, lottery.selectCount, strategy);
@@ -141,9 +159,17 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
               </motion.span>
             )}
-            Gerar Palpite para {lottery.name}
+            {freeGenerations > 0
+              ? `Gerar Palpite (${freeGenerations} restante${freeGenerations > 1 ? "s" : ""})`
+              : "Assistir Anúncio para Gerar"}
           </Button>
         </motion.div>
+
+        {freeGenerations <= 0 && picks.length > 0 && (
+          <p className="text-xs text-center text-muted-foreground animate-pulse">
+            🎬 Assista um anúncio rápido para liberar mais 2 palpites gratuitos
+          </p>
+        )}
 
         <AnimatePresence>
           {picks.length > 0 && (
@@ -194,6 +220,8 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
             </motion.div>
           )}
         </AnimatePresence>
+
+        <VideoAdModal open={showVideoAd} onComplete={handleAdComplete} />
       </CardContent>
     </Card>
   );
