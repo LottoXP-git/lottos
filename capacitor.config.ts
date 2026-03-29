@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.216c43eb67d24b40a6ba81d9201b5546',
+  appId: 'com.lottos.app',
   appName: 'Lottos',
   webDir: 'dist',
   server: {
