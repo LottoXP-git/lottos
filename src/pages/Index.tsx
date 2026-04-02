@@ -124,7 +124,7 @@ const Index = () => {
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
-        </motion.section>
+        </section>
 
         {/* Special Draw Banner */}
         {showDuplaDePascoa &&
