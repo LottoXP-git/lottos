@@ -282,11 +282,8 @@ const Index = () => {
         </section>
 
         {/* Prize Checker */}
-        <motion.section
-          className="mb-8 sm:mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}>
+        <section
+          className="mb-8 sm:mb-12 animate-fade-in">
           <div className="max-w-lg mx-auto px-1">
             <PrizeChecker />
           </div>
