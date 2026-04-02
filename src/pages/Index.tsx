@@ -234,11 +234,8 @@ const Index = () => {
         <AdBanner format="inline" className="mb-8" />
 
         {/* Prize Ranking */}
-        <motion.section
-          className="mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
+        <section
+          className="mb-12 animate-fade-in">
 
           <PrizeRanking lotteries={results} />
         </motion.section>
