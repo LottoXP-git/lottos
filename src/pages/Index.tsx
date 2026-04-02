@@ -158,7 +158,7 @@ const Index = () => {
               </div>
             </div>
           </button>
-        </motion.section>
+        </section>
         }
 
         {/* Lottery Results Grid */}
