@@ -244,11 +244,8 @@ const Index = () => {
         <AdBanner format="interstitial" className="mb-8" />
 
         {/* Registration Section */}
-        <motion.section
-          className="mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
+        <section
+          className="mb-12 animate-fade-in">
 
            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             <div>
