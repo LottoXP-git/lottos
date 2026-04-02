@@ -224,7 +224,7 @@ const Index = () => {
                 result={lottery}
                 onClick={() => handleCardClick(lottery)} />
 
-                  </motion.div>
+                  </div>
             )}
               </div>
           }
