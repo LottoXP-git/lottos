@@ -238,7 +238,7 @@ const Index = () => {
           className="mb-12 animate-fade-in">
 
           <PrizeRanking lotteries={results} />
-        </motion.section>
+        </section>
 
         {/* Ad - Interstitial */}
         <AdBanner format="interstitial" className="mb-8" />
