@@ -215,11 +215,10 @@ const Index = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {results.map((lottery, idx) =>
-            <motion.div
+            <div
               key={lottery.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}>
+              className="animate-fade-in"
+              style={{ animationDelay: `${idx * 80}ms`, animationFillMode: 'both' }}>
 
                     <LotteryCard
                 result={lottery}
