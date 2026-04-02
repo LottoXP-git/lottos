@@ -118,11 +118,8 @@ const Index = () => {
         <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
 
         {/* Quick Bet Generator */}
-        <motion.section
-          className="mb-8 sm:mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
+        <section
+          className="mb-8 sm:mb-12 animate-fade-in">
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
