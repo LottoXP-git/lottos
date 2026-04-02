@@ -287,7 +287,7 @@ const Index = () => {
           <div className="max-w-lg mx-auto px-1">
             <PrizeChecker />
           </div>
-        </motion.section>
+        </section>
 
         {/* Instructions */}
         <section className="text-center py-8 border-t border-border">
