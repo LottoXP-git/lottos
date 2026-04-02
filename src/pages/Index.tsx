@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
+
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LotteryCard } from "@/components/LotteryCard";
@@ -118,24 +118,18 @@ const Index = () => {
         <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
 
         {/* Quick Bet Generator */}
-        <motion.section
-          className="mb-8 sm:mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
+        <section
+          className="mb-8 sm:mb-12 animate-fade-in">
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
-        </motion.section>
+        </section>
 
         {/* Special Draw Banner */}
         {showDuplaDePascoa &&
-        <motion.section
-          className="mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
+        <section
+          className="mb-8 animate-fade-in">
           
           <button
             onClick={() => setSpecialDrawOpen(true)}
@@ -164,7 +158,7 @@ const Index = () => {
               </div>
             </div>
           </button>
-        </motion.section>
+        </section>
         }
 
         {/* Lottery Results Grid */}
@@ -221,17 +215,16 @@ const Index = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {results.map((lottery, idx) =>
-            <motion.div
+            <div
               key={lottery.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}>
+              className="animate-fade-in"
+              style={{ animationDelay: `${idx * 80}ms`, animationFillMode: 'both' }}>
 
                     <LotteryCard
                 result={lottery}
                 onClick={() => handleCardClick(lottery)} />
 
-                  </motion.div>
+                  </div>
             )}
               </div>
           }
@@ -241,24 +234,18 @@ const Index = () => {
         <AdBanner format="inline" className="mb-8" />
 
         {/* Prize Ranking */}
-        <motion.section
-          className="mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
+        <section
+          className="mb-12 animate-fade-in">
 
           <PrizeRanking lotteries={results} />
-        </motion.section>
+        </section>
 
         {/* Ad - Interstitial */}
         <AdBanner format="interstitial" className="mb-8" />
 
         {/* Registration Section */}
-        <motion.section
-          className="mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
+        <section
+          className="mb-12 animate-fade-in">
 
            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             <div>
@@ -292,18 +279,15 @@ const Index = () => {
             </div>
             <RegistrationForm />
           </div>
-        </motion.section>
+        </section>
 
         {/* Prize Checker */}
-        <motion.section
-          className="mb-8 sm:mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}>
+        <section
+          className="mb-8 sm:mb-12 animate-fade-in">
           <div className="max-w-lg mx-auto px-1">
             <PrizeChecker />
           </div>
-        </motion.section>
+        </section>
 
         {/* Instructions */}
         <section className="text-center py-8 border-t border-border">
