@@ -121,8 +121,7 @@ const Index = () => {
         <motion.section
           className="mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
