@@ -226,8 +226,7 @@ const Index = () => {
             <motion.div
               key={lottery.id}
               initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}>
 
                     <LotteryCard
