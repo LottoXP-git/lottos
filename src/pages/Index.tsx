@@ -128,11 +128,8 @@ const Index = () => {
 
         {/* Special Draw Banner */}
         {showDuplaDePascoa &&
-        <motion.section
-          className="mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
+        <section
+          className="mb-8 animate-fade-in">
           
           <button
             onClick={() => setSpecialDrawOpen(true)}
