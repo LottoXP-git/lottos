@@ -121,8 +121,7 @@ const Index = () => {
         <motion.section
           className="mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
@@ -135,8 +134,7 @@ const Index = () => {
         <motion.section
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}>
           
           <button
@@ -226,8 +224,7 @@ const Index = () => {
             <motion.div
               key={lottery.id}
               initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}>
 
                     <LotteryCard
@@ -247,8 +244,7 @@ const Index = () => {
         <motion.section
           className="mb-12"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}>
 
           <PrizeRanking lotteries={results} />
@@ -261,8 +257,7 @@ const Index = () => {
         <motion.section
           className="mb-12"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}>
 
            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
@@ -303,8 +298,7 @@ const Index = () => {
         <motion.section
           className="mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}>
           <div className="max-w-lg mx-auto px-1">
             <PrizeChecker />
