@@ -279,7 +279,7 @@ const Index = () => {
             </div>
             <RegistrationForm />
           </div>
-        </motion.section>
+        </section>
 
         {/* Prize Checker */}
         <motion.section
