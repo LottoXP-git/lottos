@@ -100,8 +100,8 @@ export function Footer() {
             <span>•</span>
             <Link to="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link>
           </div>
-          <p className="text-xs text-muted-foreground text-center">
-            Este site não possui vínculo oficial com a Caixa Econômica Federal.
+          <p className="text-xs text-muted-foreground text-center font-bold">
+            Este App não possui vínculo oficial com a Caixa Econômica Federal.
           </p>
         </div>
       </div>
