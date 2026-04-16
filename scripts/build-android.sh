@@ -5,6 +5,21 @@ echo "========================================="
 echo "  Lottos - Build Android Release"
 echo "========================================="
 
+# 0. Validação: capacitor.config.ts não pode conter server.url
+echo ""
+echo "[0/3] Validando capacitor.config.ts..."
+if grep -E "^[[:space:]]*url[[:space:]]*:" capacitor.config.ts | grep -v "^[[:space:]]*//" > /dev/null; then
+  echo ""
+  echo "❌ ERRO: capacitor.config.ts contém 'server.url'."
+  echo "   Isso faz o app carregar uma URL remota (ex: Lovable sandbox)"
+  echo "   em vez de rodar os arquivos locais do AAB."
+  echo ""
+  echo "   Remova o bloco 'server: { url: ... }' antes de gerar o build de release."
+  echo ""
+  exit 1
+fi
+echo "✅ capacitor.config.ts OK (sem server.url)."
+
 # 1. Build web
 echo ""
 echo "[1/3] Buildando o projeto web..."
