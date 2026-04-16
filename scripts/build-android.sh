@@ -28,3 +28,4 @@ echo "  Build concluído com sucesso!"
 echo "  AAB disponível em:"
 echo "  android/app/build/outputs/bundle/release/app-release.aab"
 echo "========================================="
+
