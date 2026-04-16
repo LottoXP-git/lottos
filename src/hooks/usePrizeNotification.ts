@@ -106,9 +106,10 @@ export function usePrizeNotification(results: LotteryResult[] | undefined) {
       // Show toast notification for each mega prize lottery
       megaPrizeLotteries.forEach((lottery, index) => {
         setTimeout(() => {
+          const acumulado = lottery.winners === 0 || lottery.accumulated;
           toast({
             title: `🎰 ${lottery.name} - MEGA PRÊMIO!`,
-            description: `O próximo sorteio tem prêmio estimado de ${lottery.nextPrize}! Não perca essa oportunidade!`,
+            description: `Concurso ${lottery.concurso} | ${acumulado ? "ACUMULOU! " : ""}Próximo prêmio: ${lottery.nextPrize} em ${lottery.nextDate}. Não perca!`,
             duration: 8000,
           });
         }, index * 1500); // Stagger notifications
