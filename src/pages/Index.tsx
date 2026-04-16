@@ -243,36 +243,7 @@ const Index = () => {
         <section
           className="mb-12 animate-fade-in">
 
-           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
-                <span className="text-accent">Receba </span>
-                <span className="text-gradient">Novidades</span>
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Cadastre-se para receber resultados, estatísticas e dicas exclusivas 
-                diretamente no seu WhatsApp ou email. Fique por dentro dos maiores 
-                prêmios e não perca nenhum sorteio!
-              </p>
-              <ul className="space-y-3 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary" />
-                  Resultados em tempo real
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary" />
-                  Análises estatísticas exclusivas
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary" />
-                  Dicas e palpites inteligentes
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary" />
-                  Alertas de prêmios acumulados
-                </li>
-              </ul>
-            </div>
+           <div className="max-w-xl mx-auto">
             <RegistrationForm />
           </div>
         </section>
