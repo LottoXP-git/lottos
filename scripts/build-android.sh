@@ -28,6 +28,25 @@ npm run build
 # 2. Sync Capacitor
 echo ""
 echo "[2/3] Sincronizando com Capacitor..."
+
+# Validação: pasta dist/ deve existir e conter index.html
+if [ ! -d "dist" ]; then
+  echo ""
+  echo "❌ ERRO: pasta 'dist/' não foi gerada pelo build."
+  echo "   Verifique a saída do 'npm run build' acima."
+  echo ""
+  exit 1
+fi
+
+if [ ! -f "dist/index.html" ]; then
+  echo ""
+  echo "❌ ERRO: 'dist/index.html' não encontrado."
+  echo "   O build web não gerou os arquivos esperados."
+  echo ""
+  exit 1
+fi
+
+echo "✅ Pasta dist/ validada (index.html presente)."
 npx cap sync android
 
 # 3. Bundle Release
