@@ -40,28 +40,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-    }
-
-    // Gera símbolos de depuração nativos (.zip) exigidos pela Play Store
-    bundle {
-        codeTransparency {
-            signing {
-                // sem assinatura de transparência por padrão
+            ndk {
+                debugSymbolLevel 'FULL'
             }
-        }
-    }
-
-    androidComponents {
-        onVariants(selector().withBuildType("release")) { variant ->
-            // habilita empacotamento de símbolos nativos no AAB
-        }
-    }
-
-    // Configuração oficial para incluir símbolos nativos no bundle
-    buildTypes.release {
-        ndk {
-            debugSymbolLevel 'FULL'
         }
     }
 }
