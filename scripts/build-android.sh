@@ -29,3 +29,5 @@ echo "  AAB disponível em:"
 echo "  android/app/build/outputs/bundle/release/app-release.aab"
 echo "========================================="
 
+
+
