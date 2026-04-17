@@ -1,29 +1,55 @@
 
-
 ## Objetivo
 
-Criar `RELEASE.md` na raiz do projeto documentando o fluxo manual completo de release Android, servindo como referência única para gerar e publicar novas versões na Play Store.
+Criar `scripts/build-android.ps1`, equivalente PowerShell do `scripts/build-android.sh`, para usuários Windows rodarem o build de release sem precisar de Git Bash ou WSL.
 
-## Estrutura do RELEASE.md
+## Paridade com o script bash
 
-1. **Visão geral** — quando fazer release, o que esperar.
-2. **Pré-requisitos** — Node 20+, JDK 21, Android SDK, `keystore.properties` local com `lottos-keystore.jks`.
-3. **Passo a passo**:
-   - Sincronizar código (`git pull`)
-   - Bumpar `versionCode` (+1) e `versionName` (semver) em `android/app/build.gradle`
-   - Rodar `bash scripts/build-android.sh` (já valida config offline, dist, sync, gera AAB assinado)
-   - Localizar artefatos: `app-release.aab` e `native-debug-symbols.zip`
-   - Upload no Google Play Console (faixa interna → produção)
-4. **Checklist de validação pós-publicação** — instalar via Play, abrir, conferir que não há "proxy 404", rodar `adb logcat | grep LottosBoot` se quiser confirmar URL inicial = `https://localhost/`.
-5. **Troubleshooting** — erros comuns:
-   - "versionCode already used" → esqueceu de bumpar
-   - "AAB não assinado" → falta `keystore.properties`
-   - "proxy 404" no app instalado → build antigo com `server.url`; refazer + republicar
-6. **Referências** — links para `.lovable/memory/project/native-config.md`, workflow CI, script de build.
+O `.ps1` replicará exatamente as 4 etapas do `.sh`:
 
-## Arquivo a criar
+1. **Validação `capacitor.config.ts`** — falhar se contiver `server.url` ativo (não comentado).
+2. **Build web** — `npm run build`.
+3. **Validação `dist/`** — checar existência de `dist/`, `dist/index.html`, e ausência de URLs Lovable remotas (`*.lovable.app`, `*.lovableproject.com`, `*.lovable.dev`).
+4. **Sync Capacitor** — `npx cap sync android` + validar `android/app/src/main/assets/public/index.html`.
+5. **Bundle release** — `cd android; .\gradlew.bat bundleRelease` (usa `gradlew.bat`, não `gradlew`).
 
-- `RELEASE.md` (raiz do projeto, ~120 linhas em português, formatado com headings, blocos de código bash e tabela de troubleshooting)
+## Adaptações Windows-específicas
 
-Sem mudanças em código ou configuração — apenas documentação.
+- `$ErrorActionPreference = "Stop"` (equivalente a `set -e`).
+- Uso de `Select-String` no lugar de `grep`.
+- `Test-Path` no lugar de `[ -f ]` / `[ -d ]`.
+- `.\gradlew.bat` no lugar de `./gradlew` (sem `chmod +x`, desnecessário no Windows).
+- Mensagens com prefixos `[OK]`, `[ERRO]` em vez de emojis ✅/❌ (alguns terminais Windows quebram emojis), mas mantendo cores via `Write-Host -ForegroundColor`.
+- Working directory: garantir execução a partir da raiz do projeto via `Push-Location` / `Pop-Location`.
 
+## Como rodar
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1
+```
+
+Ou, se a política já permitir:
+
+```powershell
+.\scripts\build-android.ps1
+```
+
+## Atualizações complementares
+
+- **`package.json`**: ajustar `"build:android"` para detectar SO automaticamente. Opção mais simples e robusta: usar `node` para fazer o dispatch.
+  - Alternativa A (preferida): adicionar segundo script `"build:android:win": "powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1"` e manter `build:android` como bash. Usuário escolhe.
+  - Alternativa B: substituir `build:android` por um pequeno wrapper Node que detecta `process.platform === 'win32'`.
+  
+  Vou usar **Alternativa A** (mais explícita, sem arquivo extra).
+
+- **`RELEASE.md`**: adicionar nota curta na seção "Passo a passo" explicando que usuários Windows devem rodar `npm run build:android:win` (ou o `.ps1` direto), e usuários Linux/macOS continuam com `npm run build:android`.
+
+## Arquivos a alterar
+
+| Arquivo | Ação |
+|---|---|
+| `scripts/build-android.ps1` | criar (~90 linhas, PowerShell) |
+| `package.json` | adicionar script `build:android:win` |
+| `RELEASE.md` | adicionar nota Windows na seção de build |
+
+Sem mudanças em código de aplicação.
