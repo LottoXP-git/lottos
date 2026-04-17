@@ -1,0 +1,87 @@
+name: Android Build Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate-build:
+    name: Validate Android Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Java (JDK 21)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Validate capacitor.config.ts (no server.url)
+        run: |
+          if grep -E "^[[:space:]]*url[[:space:]]*:" capacitor.config.ts | grep -v "^[[:space:]]*//" > /dev/null; then
+            echo "❌ ERRO: capacitor.config.ts contém 'server.url'."
+            echo "   Builds de release devem ser 100% offline."
+            exit 1
+          fi
+          echo "✅ capacitor.config.ts OK (sem server.url)."
+
+      - name: Build web project
+        run: npm run build
+
+      - name: Validate dist/ output
+        run: |
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ ERRO: dist/index.html não encontrado."
+            exit 1
+          fi
+          if grep -E '(src|href)="https?://[^"]*\.(lovable\.app|lovableproject\.com|lovable\.dev)' dist/index.html > /dev/null; then
+            echo "❌ ERRO: dist/index.html contém referências a domínios Lovable remotos."
+            grep -nE '(src|href)="https?://[^"]*\.(lovable\.app|lovableproject\.com|lovable\.dev)' dist/index.html || true
+            exit 1
+          fi
+          echo "✅ dist/ validado."
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Validate synced assets
+        run: |
+          SYNCED_INDEX="android/app/src/main/assets/public/index.html"
+          if [ ! -f "$SYNCED_INDEX" ]; then
+            echo "❌ ERRO: '$SYNCED_INDEX' não foi gerado."
+            exit 1
+          fi
+          echo "✅ Assets nativos sincronizados."
+
+      - name: Build Android (assembleDebug — sem keystore necessário)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload debug APK artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
