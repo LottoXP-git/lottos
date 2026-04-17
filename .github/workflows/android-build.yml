@@ -16,6 +16,42 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Validate versionCode bump
+        run: |
+          CURRENT=$(grep -E "^\s*versionCode\s+[0-9]+" android/app/build.gradle | grep -oE "[0-9]+" | head -1)
+          if [ -z "$CURRENT" ]; then
+            echo "❌ ERRO: Não foi possível ler versionCode atual de android/app/build.gradle."
+            exit 1
+          fi
+          echo "versionCode atual: $CURRENT"
+
+          # Tenta ler versionCode do commit anterior. Se não houver (primeiro commit, shallow), apenas avisa.
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            PREVIOUS=$(git show HEAD~1:android/app/build.gradle 2>/dev/null | grep -E "^\s*versionCode\s+[0-9]+" | grep -oE "[0-9]+" | head -1)
+            if [ -z "$PREVIOUS" ]; then
+              echo "⚠️  Aviso: commit anterior não tinha versionCode legível. Pulando comparação."
+              exit 0
+            fi
+            echo "versionCode anterior: $PREVIOUS"
+
+            # Só exige bump se o build.gradle realmente mudou neste commit
+            if git diff --name-only HEAD~1 HEAD | grep -q "^android/app/build.gradle$"; then
+              if [ "$CURRENT" -le "$PREVIOUS" ]; then
+                echo "❌ ERRO: android/app/build.gradle foi alterado mas versionCode não foi incrementado."
+                echo "   Anterior: $PREVIOUS | Atual: $CURRENT"
+                echo "   Antes de gerar AAB de release, bumpe versionCode (e idealmente versionName)."
+                exit 1
+              fi
+              echo "✅ versionCode incrementado corretamente ($PREVIOUS → $CURRENT)."
+            else
+              echo "ℹ️  build.gradle não mudou neste commit. Bump não é obrigatório agora."
+            fi
+          else
+            echo "ℹ️  Sem commit anterior disponível. Pulando validação de bump."
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
