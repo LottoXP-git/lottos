@@ -54,9 +54,9 @@ export function AdBanner({ format = "leaderboard", className }: AdBannerProps) {
   const config = adSlotConfig[format];
 
   return (
-    <div className={cn("w-full overflow-hidden", className)}>
+    <div className={cn("w-full overflow-hidden animate-fade-in", className)}>
       <ins
-        className="adsbygoogle"
+        className="adsbygoogle block animate-fade-in"
         ref={adRef}
         style={config.style}
         data-ad-client="ca-pub-2147498950861352"
