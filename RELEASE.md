@@ -69,9 +69,23 @@ defaultConfig {
 
 ### 3.3. Rodar o script de build
 
+**Linux / macOS:**
+
 ```bash
 bash scripts/build-android.sh
+# ou
+npm run build:android
 ```
+
+**Windows (PowerShell):**
+
+```powershell
+npm run build:android:win
+# ou diretamente:
+powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1
+```
+
+> Windows não tem `bash` nativo. Use o script PowerShell (`scripts/build-android.ps1`), ou alternativamente rode o `.sh` dentro do **Git Bash** / **WSL**.
 
 O script executa, em ordem, e **falha cedo** se algo estiver errado:
 
