@@ -18,22 +18,22 @@ const adSlotConfig: Record<AdFormat, { slot: string; format: string; style: Reac
   leaderboard: {
     slot: "auto",
     format: "auto",
-    style: { display: "block", minHeight: 90 },
+    style: { display: "block", minHeight: 45 },
   },
   inline: {
     slot: "auto",
     format: "fluid",
-    style: { display: "block", minHeight: 100 },
+    style: { display: "block", minHeight: 50 },
   },
   sidebar: {
     slot: "auto",
     format: "auto",
-    style: { display: "block", minHeight: 250 },
+    style: { display: "block", minHeight: 125 },
   },
   interstitial: {
     slot: "auto",
     format: "fluid",
-    style: { display: "block", minHeight: 100 },
+    style: { display: "block", minHeight: 50 },
   },
 };
 
