@@ -11,7 +11,6 @@ import { LotteryBall } from "./LotteryBall";
 import { ShareButton } from "./ShareButton";
 import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble } from "lucide-react";
-import { AdBanner } from "./AdBanner";
 import { useMemo } from "react";
 
 interface LotteryDetailModalProps {
@@ -306,8 +305,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </div>
 
 
-          <AdBanner format="inline" className="mb-2 sm:mb-4" />
-
           <Tabs defaultValue="history" className="w-full">
             <TabsList className="flex w-full overflow-x-auto gap-0.5 sm:gap-1 bg-secondary/50 p-0.5 sm:p-1 rounded-lg scrollbar-hide">
               <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
@@ -366,9 +363,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </>
             )}
           </Tabs>
-
-          {/* Ad - Sidebar no modal */}
-          <AdBanner format="sidebar" className="mt-4" />
         </div>
       </DialogContent>
     </Dialog>

@@ -5,7 +5,15 @@ import { Logo } from "./Logo";
 
 const AGE_VERIFIED_KEY = "lottos_age_verified";
 
+const BOT_UA_PATTERN = /Googlebot|AdsBot-Google|Mediapartners-Google|bingbot|DuckDuckBot|Slurp|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Applebot/i;
+
+function isSearchBot(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return BOT_UA_PATTERN.test(navigator.userAgent || "");
+}
+
 export function isAgeVerified(): boolean {
+  if (isSearchBot()) return true;
   return localStorage.getItem(AGE_VERIFIED_KEY) === "true";
 }
 

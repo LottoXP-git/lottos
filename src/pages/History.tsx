@@ -35,6 +35,7 @@ import { format, parse, isValid, isAfter, isBefore, isEqual } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Search, CalendarIcon, Filter, X, History as HistoryIcon, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -56,6 +57,7 @@ const variantMap: Record<string, "megasena" | "lotofacil" | "quina" | "lotomania
 };
 
 const History = () => {
+  useAdSenseScript();
   const [selectedLottery, setSelectedLottery] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);

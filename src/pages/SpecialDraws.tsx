@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Flame, Calendar, Gift, Trophy, Star, Clover, Heart, CalendarDays, Dribbble } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 
 interface SpecialDrawRule {
   id: string;
@@ -181,6 +182,7 @@ const specialDrawRules: SpecialDrawRule[] = [
 ];
 
 export default function SpecialDraws() {
+  useAdSenseScript();
   return (
     <div className="min-h-screen bg-background">
       <Header />
