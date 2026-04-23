@@ -363,9 +363,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               </>
             )}
           </Tabs>
-
-          {/* Ad - Sidebar no modal */}
-          <AdBanner format="sidebar" className="mt-4" />
         </div>
       </DialogContent>
     </Dialog>
