@@ -159,12 +159,12 @@ const Index = () => {
 
         {/* Lottery Results Grid */}
         <section className="mb-8 sm:mb-12">
-           <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+           <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2 mb-3">
                 <span className="text-accent">Últimos</span>
                 <span className="text-gradient">Resultados</span>
               </h2>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <ResultsSummaryModal lotteries={results} />
                 <ShareButton
                 title="Resultados das Loterias Caixa"
