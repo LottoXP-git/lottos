@@ -99,7 +99,7 @@ export function LotteryCard({
   const isSpecial = isSpecialDraw(result.id, result.concurso);
 
   const shareText = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🔢 Números: ${result.numbers.join(", ")}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
-  return <Card className={cn("card-glass border-2 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 glow-effect relative overflow-hidden", colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.2)]")} onClick={onClick}>
+  return <Card className={cn("border-2 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-white", bgColorMap[result.color], colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/70 shadow-[0_0_30px_rgba(234,179,8,0.4)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-400/70 shadow-[0_0_20px_rgba(6,182,212,0.3)]")} onClick={onClick}>
       {/* Special Draw Banner */}
       {isSpecial && !isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2">
           <Sparkles className="w-3.5 h-3.5" />
