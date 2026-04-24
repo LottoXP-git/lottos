@@ -111,9 +111,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Ad - Leaderboard */}
-        <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
-
         {/* Quick Bet Generator */}
         <section
           className="mb-8 sm:mb-12 animate-fade-in">
@@ -122,6 +119,9 @@ const Index = () => {
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
         </section>
+
+        {/* Ad - Leaderboard (após gerador de palpites) */}
+        <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
 
         {/* Special Draw Banner */}
         {showDuplaDePascoa &&
