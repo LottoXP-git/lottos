@@ -23,6 +23,20 @@ const colorMap: Record<string, string> = {
   "lottery-federal": "border-sky-500/30 hover:border-sky-500/60",
   "lottery-loteca": "border-red-500/30 hover:border-red-500/60"
 };
+// Background gradients per lottery — characteristic Caixa colors
+const bgColorMap: Record<string, string> = {
+  "lottery-megasena": "bg-gradient-to-br from-emerald-600 to-emerald-700",
+  "lottery-lotofacil": "bg-gradient-to-br from-purple-700 to-purple-900",
+  "lottery-quina": "bg-gradient-to-br from-indigo-800 to-blue-900",
+  "lottery-lotomania": "bg-gradient-to-br from-orange-500 to-orange-600",
+  "lottery-duplasena": "bg-gradient-to-br from-rose-700 to-red-800",
+  "lottery-diadesorte": "bg-gradient-to-br from-amber-500 to-yellow-600",
+  "lottery-supersete": "bg-gradient-to-br from-lime-500 to-lime-600",
+  "lottery-maismilionaria": "bg-gradient-to-br from-indigo-700 to-indigo-900",
+  "lottery-timemania": "bg-gradient-to-br from-yellow-400 to-yellow-500",
+  "lottery-federal": "bg-gradient-to-br from-sky-600 to-blue-700",
+  "lottery-loteca": "bg-gradient-to-br from-red-500 to-red-700"
+};
 const badgeColorMap: Record<string, string> = {
   "lottery-megasena": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   "lottery-lotofacil": "bg-purple-500/20 text-purple-400 border-purple-500/30",
@@ -85,7 +99,7 @@ export function LotteryCard({
   const isSpecial = isSpecialDraw(result.id, result.concurso);
 
   const shareText = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🔢 Números: ${result.numbers.join(", ")}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
-  return <Card className={cn("card-glass border-2 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 glow-effect relative overflow-hidden", colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.2)]")} onClick={onClick}>
+  return <Card className={cn("border-2 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-white", bgColorMap[result.color], colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/70 shadow-[0_0_30px_rgba(234,179,8,0.4)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-400/70 shadow-[0_0_20px_rgba(6,182,212,0.3)]")} onClick={onClick}>
       {/* Special Draw Banner */}
       {isSpecial && !isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2">
           <Sparkles className="w-3.5 h-3.5" />
@@ -101,17 +115,17 @@ export function LotteryCard({
 
       <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base sm:text-xl font-bold text-foreground truncate">
+          <CardTitle className="text-base sm:text-xl font-bold text-white truncate drop-shadow">
             {result.name}
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <ShareButton title={`${result.name} - Concurso ${result.concurso}`} text={shareText} className="h-7 w-7 sm:h-8 sm:w-8" />
-            <Badge variant="outline" className={cn("font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5", badgeColorMap[result.color])}>
+            <Badge variant="outline" className="font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5 bg-white/20 text-white border-white/30 backdrop-blur-sm">
               {result.concurso}
             </Badge>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/85">
           <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span>{result.date}</span>
         </div>
@@ -121,22 +135,22 @@ export function LotteryCard({
           {result.id === "loteca" && result.jogos ? (
             <div className="w-full space-y-1.5">
               <div className="flex items-center justify-center gap-1.5 mb-2">
-                <Dribbble className="w-3.5 h-3.5 text-red-400" />
-                <span className="text-xs font-semibold text-muted-foreground">{result.jogos.length} Jogos</span>
+                <Dribbble className="w-3.5 h-3.5 text-white" />
+                <span className="text-xs font-semibold text-white/90">{result.jogos.length} Jogos</span>
               </div>
               {result.jogos.slice(0, 5).map((jogo, idx) => {
                 const isHomeWin = jogo.golEquipeUm > jogo.golEquipeDois;
                 const isDraw = jogo.golEquipeUm === jogo.golEquipeDois;
                 return (
-                  <div key={idx} className="flex items-center justify-between px-2 py-1 rounded-md bg-red-500/5 border border-red-500/15 text-xs">
-                    <span className={`truncate max-w-[80px] ${isHomeWin ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeUm}</span>
-                    <span className="font-mono font-bold text-red-400 px-2">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
-                    <span className={`truncate max-w-[80px] text-right ${!isHomeWin && !isDraw ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeDois}</span>
+                  <div key={idx} className="flex items-center justify-between px-2 py-1 rounded-md bg-white/10 border border-white/20 text-xs">
+                    <span className={`truncate max-w-[80px] ${isHomeWin ? "font-bold text-white" : "text-white/75"}`}>{jogo.equipeUm}</span>
+                    <span className="font-mono font-bold text-white px-2">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
+                    <span className={`truncate max-w-[80px] text-right ${!isHomeWin && !isDraw ? "font-bold text-white" : "text-white/75"}`}>{jogo.equipeDois}</span>
                   </div>
                 );
               })}
               {result.jogos.length > 5 && (
-                <p className="text-[10px] text-center text-muted-foreground mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
+                <p className="text-[10px] text-center text-white/75 mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
               )}
             </div>
           ) : result.id === "federal" ? (
@@ -144,29 +158,29 @@ export function LotteryCard({
               {result.numbers.map((num, idx) => {
                 const location = result.localGanhadores?.find(l => l.posicao === idx + 1);
                 return (
-                  <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                  <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
                     <div className="flex flex-col">
-                      <span className="text-xs font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                      <span className="text-xs font-medium text-white/85">{idx + 1}º Prêmio</span>
                       {location && (
-                        <span className="text-[10px] text-muted-foreground/70 truncate max-w-[140px]">
+                        <span className="text-[10px] text-white/70 truncate max-w-[140px]">
                           {location.municipio}/{location.uf}
                         </span>
                       )}
                     </div>
-                    <span className="font-mono font-bold text-sky-400 text-sm">{String(num).padStart(5, '0')}</span>
+                    <span className="font-mono font-bold text-white text-sm">{String(num).padStart(5, '0')}</span>
                   </div>
                 );
               })}
             </div>
           ) : result.id === "duplasena" ? (
             <>
-              <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
+              <div className="w-full text-xs text-center text-white/85 font-medium mb-1">1º Sorteio</div>
               <div className="flex flex-wrap gap-2 justify-center">
                 {result.numbers.slice(0, 6).map((num, idx) => (
                   <LotteryBall key={`s1-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
               </div>
-              <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
+              <div className="w-full text-xs text-center text-white/85 font-medium mt-2 mb-1">2º Sorteio</div>
               <div className="flex flex-wrap gap-2 justify-center">
                 {result.numbers.slice(6).map((num, idx) => (
                   <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
@@ -183,13 +197,13 @@ export function LotteryCard({
               {result.trevos && result.trevos.length > 0 && (
                 <>
                   <div className="w-full flex items-center justify-center gap-1.5 mt-2 mb-1">
-                    <Clover className="w-3.5 h-3.5 text-emerald-500" />
-                    <span className="text-xs text-center text-emerald-500 font-medium">Trevos</span>
-                    <Clover className="w-3.5 h-3.5 text-emerald-500" />
+                    <Clover className="w-3.5 h-3.5 text-white" />
+                    <span className="text-xs text-center text-white/90 font-medium">Trevos</span>
+                    <Clover className="w-3.5 h-3.5 text-white" />
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
                     {result.trevos.map((trevo, idx) => (
-                      <div key={`t-${idx}`} className="w-10 h-10 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-sm font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
+                      <div key={`t-${idx}`} className="w-10 h-10 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-sm font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
                         {trevo}
                       </div>
                     ))}
@@ -204,43 +218,43 @@ export function LotteryCard({
 
         {/* Time do Coração - Timemania */}
         {result.id === "timemania" && result.timeCoracao && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-green-500/10 border border-green-500/30">
-            <Heart className="w-4 h-4 text-green-400 fill-green-400" />
-            <span className="text-sm font-semibold text-green-400">{result.timeCoracao}</span>
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
+            <Heart className="w-4 h-4 text-white fill-white" />
+            <span className="text-sm font-semibold text-white">{result.timeCoracao}</span>
           </div>
         )}
 
         {/* Mês da Sorte - Dia de Sorte */}
         {result.id === "diadesorte" && result.mesSorte && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-            <CalendarDays className="w-4 h-4 text-amber-400" />
-            <span className="text-sm text-muted-foreground">Mês da Sorte:</span>
-            <span className="text-sm font-semibold text-amber-400">{result.mesSorte}</span>
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
+            <CalendarDays className="w-4 h-4 text-white" />
+            <span className="text-sm text-white/85">Mês da Sorte:</span>
+            <span className="text-sm font-semibold text-white">{result.mesSorte}</span>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2 text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-sm">
-            <Trophy className="w-4 h-4 text-primary" />
-            <span className="text-muted-foreground">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
+            <Trophy className="w-4 h-4 text-white" />
+            <span className="text-white/85">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
           </div>
-          <span className="font-semibold text-primary text-right text-base">{result.prize}</span>
+          <span className="font-semibold text-white text-right text-base drop-shadow">{result.prize}</span>
 
           {result.id !== "federal" && (
             <>
               <div className="flex items-center gap-2 text-sm">
-                <Users className="w-4 h-4 text-accent" />
-                <span className="text-muted-foreground">Ganhadores:</span>
+                <Users className="w-4 h-4 text-white" />
+                <span className="text-white/85">Ganhadores:</span>
               </div>
-              <span className="text-sm font-semibold text-right">
+              <span className="text-sm font-semibold text-right text-white">
                 {result.winners === 0 ? "Acumulou!" : result.winners}
               </span>
 
               <div className="flex items-center gap-2 text-sm">
-                <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-500" : "text-emerald-400")} />
-                <span className="text-muted-foreground">Próximo:</span>
+                <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-300" : "text-white")} />
+                <span className="text-white/85">Próximo:</span>
               </div>
-              <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-500 text-base animate-pulse" : "text-emerald-400")}>
+              <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-300 text-base animate-pulse drop-shadow" : "text-white drop-shadow")}>
                 {result.nextPrize}
               </span>
             </>
@@ -248,8 +262,8 @@ export function LotteryCard({
         </div>
 
         {/* High Prize Highlight */}
-        {isHighPrize && <div className="mt-3 p-2 rounded-lg bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-yellow-500/10 border border-yellow-500/30">
-            <p className="text-xs text-center text-yellow-500 font-medium">
+        {isHighPrize && <div className="mt-3 p-2 rounded-lg bg-yellow-300/20 border border-yellow-200/40">
+            <p className="text-xs text-center text-yellow-100 font-medium drop-shadow">
               💰 Acima de R$ 20 milhões! Não perca!
             </p>
           </div>}
