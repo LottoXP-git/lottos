@@ -123,6 +123,9 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Ad - Leaderboard (após gerador de palpites) */}
+        <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
+
         {/* Special Draw Banner */}
         {showDuplaDePascoa &&
         <section
