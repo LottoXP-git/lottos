@@ -79,7 +79,7 @@ export default function PrivacyPolicy() {
               <li>Solicitar a exclusão de seus dados</li>
               <li>Revogar o consentimento para comunicações de marketing</li>
             </ul>
-            <p>Para exercer seus direitos, entre em contato pelo e-mail: <span className="text-foreground font-medium">contato@lotus.com.br</span></p>
+             <p>Para exercer seus direitos, entre em contato pelo e-mail: <span className="text-foreground font-medium">grupolottoxp@gmail.com</span></p>
           </section>
 
           <section className="space-y-2">
