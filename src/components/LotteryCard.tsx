@@ -5,7 +5,8 @@ import { LotteryResult, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays, Dribbble } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
-import { ShareButton } from "./ShareButton";
+import { ShareCardImageButton } from "./ShareCardImageButton";
+import { useRef } from "react";
 interface LotteryCardProps {
   result: LotteryResult;
   onClick?: () => void;
@@ -97,9 +98,10 @@ export function LotteryCard({
   const nextPrizeValue = parsePrizeValue(result.nextPrize);
   const isHighPrize = nextPrizeValue >= 20000000; // R$ 20 milhões
   const isSpecial = isSpecialDraw(result.id, result.concurso);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const shareText = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🔢 Números: ${result.numbers.join(", ")}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
-  return <Card className={cn("border-2 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-white", bgColorMap[result.color], colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/70 shadow-[0_0_30px_rgba(234,179,8,0.4)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-400/70 shadow-[0_0_20px_rgba(6,182,212,0.3)]")} onClick={onClick}>
+  const shareCaption = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
+  return <Card ref={cardRef} className={cn("border-2 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-white", bgColorMap[result.color], colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/70 shadow-[0_0_30px_rgba(234,179,8,0.4)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-400/70 shadow-[0_0_20px_rgba(6,182,212,0.3)]")} onClick={onClick}>
       {/* Special Draw Banner */}
       {isSpecial && !isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2">
           <Sparkles className="w-3.5 h-3.5" />
@@ -119,7 +121,7 @@ export function LotteryCard({
             {result.name}
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <ShareButton title={`${result.name} - Concurso ${result.concurso}`} text={shareText} className="h-7 w-7 sm:h-8 sm:w-8" />
+            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
             <Badge variant="outline" className="font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5 bg-white/20 text-white border-white/30 backdrop-blur-sm">
               {result.concurso}
             </Badge>
