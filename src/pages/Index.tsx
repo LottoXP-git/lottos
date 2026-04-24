@@ -111,9 +111,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Ad - Leaderboard */}
-        <AdBanner format="leaderboard" className="mb-6 sm:mb-8 rounded-xl" />
-
         {/* Quick Bet Generator */}
         <section
           className="mb-8 sm:mb-12 animate-fade-in">
