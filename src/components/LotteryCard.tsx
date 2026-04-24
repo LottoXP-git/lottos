@@ -218,43 +218,43 @@ export function LotteryCard({
 
         {/* Time do Coração - Timemania */}
         {result.id === "timemania" && result.timeCoracao && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-green-500/10 border border-green-500/30">
-            <Heart className="w-4 h-4 text-green-400 fill-green-400" />
-            <span className="text-sm font-semibold text-green-400">{result.timeCoracao}</span>
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
+            <Heart className="w-4 h-4 text-white fill-white" />
+            <span className="text-sm font-semibold text-white">{result.timeCoracao}</span>
           </div>
         )}
 
         {/* Mês da Sorte - Dia de Sorte */}
         {result.id === "diadesorte" && result.mesSorte && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-            <CalendarDays className="w-4 h-4 text-amber-400" />
-            <span className="text-sm text-muted-foreground">Mês da Sorte:</span>
-            <span className="text-sm font-semibold text-amber-400">{result.mesSorte}</span>
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
+            <CalendarDays className="w-4 h-4 text-white" />
+            <span className="text-sm text-white/85">Mês da Sorte:</span>
+            <span className="text-sm font-semibold text-white">{result.mesSorte}</span>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2 text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-sm">
-            <Trophy className="w-4 h-4 text-primary" />
-            <span className="text-muted-foreground">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
+            <Trophy className="w-4 h-4 text-white" />
+            <span className="text-white/85">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
           </div>
-          <span className="font-semibold text-primary text-right text-base">{result.prize}</span>
+          <span className="font-semibold text-white text-right text-base drop-shadow">{result.prize}</span>
 
           {result.id !== "federal" && (
             <>
               <div className="flex items-center gap-2 text-sm">
-                <Users className="w-4 h-4 text-accent" />
-                <span className="text-muted-foreground">Ganhadores:</span>
+                <Users className="w-4 h-4 text-white" />
+                <span className="text-white/85">Ganhadores:</span>
               </div>
-              <span className="text-sm font-semibold text-right">
+              <span className="text-sm font-semibold text-right text-white">
                 {result.winners === 0 ? "Acumulou!" : result.winners}
               </span>
 
               <div className="flex items-center gap-2 text-sm">
-                <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-500" : "text-emerald-400")} />
-                <span className="text-muted-foreground">Próximo:</span>
+                <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-300" : "text-white")} />
+                <span className="text-white/85">Próximo:</span>
               </div>
-              <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-500 text-base animate-pulse" : "text-emerald-400")}>
+              <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-300 text-base animate-pulse drop-shadow" : "text-white drop-shadow")}>
                 {result.nextPrize}
               </span>
             </>
@@ -262,8 +262,8 @@ export function LotteryCard({
         </div>
 
         {/* High Prize Highlight */}
-        {isHighPrize && <div className="mt-3 p-2 rounded-lg bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-yellow-500/10 border border-yellow-500/30">
-            <p className="text-xs text-center text-yellow-500 font-medium">
+        {isHighPrize && <div className="mt-3 p-2 rounded-lg bg-yellow-300/20 border border-yellow-200/40">
+            <p className="text-xs text-center text-yellow-100 font-medium drop-shadow">
               💰 Acima de R$ 20 milhões! Não perca!
             </p>
           </div>}
