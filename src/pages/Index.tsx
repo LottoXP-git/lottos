@@ -11,7 +11,6 @@ import { useLotteryResults } from "@/hooks/useLotteryResults";
 import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { ShareButton } from "@/components/ShareButton";
 import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
@@ -168,13 +167,6 @@ const Index = () => {
               </h2>
               <div className="flex items-center gap-2 flex-wrap">
                 <ResultsSummaryModal lotteries={results} />
-                <ShareButton
-                title="Resultados das Loterias Caixa"
-                text={`🎰 Resultados das Loterias Caixa\n\n💰 Prêmios acumulados: R$ ${(totalPrize / 1000000).toFixed(0)}M+\n🎯 ${results.length} loterias disponíveis\n\nConfira os últimos resultados!`}
-                variant="outline"
-                size="sm"
-                className="h-9 w-9" />
-
                 <Button
                 variant="outline"
                 size="sm"
