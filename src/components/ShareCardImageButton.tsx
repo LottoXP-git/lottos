@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Share2, Loader2 } from "lucide-react";
-import { useState, RefObject } from "react";
+import { Share2, Loader2, Download } from "lucide-react";
+import { useState, RefObject, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
 import {
@@ -9,6 +9,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface ShareCardImageButtonProps {
   /** Ref to the DOM node that should be captured (the colored card). */
@@ -33,8 +41,20 @@ export function ShareCardImageButton({
   className,
 }: ShareCardImageButtonProps) {
   const [busy, setBusy] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
+  const [sharing, setSharing] = useState(false);
 
-  const handleShare = async (e: React.MouseEvent) => {
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const safeName = fileName.replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
+
+  const handleGeneratePreview = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!targetRef.current || busy) return;
 
@@ -52,10 +72,31 @@ export function ShareCardImageButton({
       );
       if (!blob) throw new Error("Falha ao gerar imagem");
 
-      const safeName = fileName.replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
-      const file = new File([blob], `${safeName}.png`, { type: "image/png" });
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      const url = URL.createObjectURL(blob);
+      setPreviewBlob(blob);
+      setPreviewUrl(url);
+      setPreviewOpen(true);
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Erro",
+        description: "Não foi possível gerar a imagem do card.",
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
 
-      // Try Web Share API with the file (mobile + supported desktop)
+  const handleConfirmShare = async () => {
+    if (!previewBlob) return;
+    setSharing(true);
+    try {
+      const file = new File([previewBlob], `${safeName}.png`, {
+        type: "image/png",
+      });
+
       if (
         navigator.canShare?.({ files: [file] }) &&
         typeof navigator.share === "function"
@@ -70,61 +111,101 @@ export function ShareCardImageButton({
             title: "Compartilhado!",
             description: "Imagem enviada com sucesso.",
           });
+          setPreviewOpen(false);
           return;
         } catch (err) {
-          if ((err as Error).name === "AbortError") return;
-          // fall through to download
+          if ((err as Error).name === "AbortError") {
+            return;
+          }
         }
       }
 
-      // Fallback: download the PNG
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${safeName}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      toast({
-        title: "Imagem salva!",
-        description: "O card foi baixado em PNG.",
-      });
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: "Erro",
-        description: "Não foi possível gerar a imagem do card.",
-        variant: "destructive",
-      });
+      handleConfirmDownload();
     } finally {
-      setBusy(false);
+      setSharing(false);
     }
   };
 
+  const handleConfirmDownload = () => {
+    if (!previewUrl) return;
+    const a = document.createElement("a");
+    a.href = previewUrl;
+    a.download = `${safeName}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast({
+      title: "Imagem salva!",
+      description: "O card foi baixado em PNG.",
+    });
+    setPreviewOpen(false);
+  };
+
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleShare}
-            disabled={busy}
-            className={className}
-          >
-            {busy ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Share2 className="w-4 h-4" />
+    <>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleGeneratePreview}
+              disabled={busy}
+              className={className}
+            >
+              {busy ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Share2 className="w-4 h-4" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Pré-visualizar e compartilhar</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent
+          className="max-w-md"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <DialogHeader>
+            <DialogTitle>Pré-visualização</DialogTitle>
+            <DialogDescription>
+              Confira a imagem antes de compartilhar ou baixar.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center rounded-lg bg-muted/40 p-3">
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Pré-visualização do card"
+                className="max-h-[60vh] w-auto rounded-md shadow-md"
+              />
             )}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Compartilhar como imagem</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              onClick={handleConfirmDownload}
+              disabled={sharing}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Baixar PNG
+            </Button>
+            <Button onClick={handleConfirmShare} disabled={sharing}>
+              {sharing ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Share2 className="w-4 h-4 mr-2" />
+              )}
+              Compartilhar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
