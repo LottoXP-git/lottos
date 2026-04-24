@@ -135,22 +135,22 @@ export function LotteryCard({
           {result.id === "loteca" && result.jogos ? (
             <div className="w-full space-y-1.5">
               <div className="flex items-center justify-center gap-1.5 mb-2">
-                <Dribbble className="w-3.5 h-3.5 text-red-400" />
-                <span className="text-xs font-semibold text-muted-foreground">{result.jogos.length} Jogos</span>
+                <Dribbble className="w-3.5 h-3.5 text-white" />
+                <span className="text-xs font-semibold text-white/90">{result.jogos.length} Jogos</span>
               </div>
               {result.jogos.slice(0, 5).map((jogo, idx) => {
                 const isHomeWin = jogo.golEquipeUm > jogo.golEquipeDois;
                 const isDraw = jogo.golEquipeUm === jogo.golEquipeDois;
                 return (
-                  <div key={idx} className="flex items-center justify-between px-2 py-1 rounded-md bg-red-500/5 border border-red-500/15 text-xs">
-                    <span className={`truncate max-w-[80px] ${isHomeWin ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeUm}</span>
-                    <span className="font-mono font-bold text-red-400 px-2">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
-                    <span className={`truncate max-w-[80px] text-right ${!isHomeWin && !isDraw ? "font-bold text-foreground" : "text-muted-foreground"}`}>{jogo.equipeDois}</span>
+                  <div key={idx} className="flex items-center justify-between px-2 py-1 rounded-md bg-white/10 border border-white/20 text-xs">
+                    <span className={`truncate max-w-[80px] ${isHomeWin ? "font-bold text-white" : "text-white/75"}`}>{jogo.equipeUm}</span>
+                    <span className="font-mono font-bold text-white px-2">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
+                    <span className={`truncate max-w-[80px] text-right ${!isHomeWin && !isDraw ? "font-bold text-white" : "text-white/75"}`}>{jogo.equipeDois}</span>
                   </div>
                 );
               })}
               {result.jogos.length > 5 && (
-                <p className="text-[10px] text-center text-muted-foreground mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
+                <p className="text-[10px] text-center text-white/75 mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
               )}
             </div>
           ) : result.id === "federal" ? (
@@ -158,29 +158,29 @@ export function LotteryCard({
               {result.numbers.map((num, idx) => {
                 const location = result.localGanhadores?.find(l => l.posicao === idx + 1);
                 return (
-                  <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                  <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
                     <div className="flex flex-col">
-                      <span className="text-xs font-medium text-muted-foreground">{idx + 1}º Prêmio</span>
+                      <span className="text-xs font-medium text-white/85">{idx + 1}º Prêmio</span>
                       {location && (
-                        <span className="text-[10px] text-muted-foreground/70 truncate max-w-[140px]">
+                        <span className="text-[10px] text-white/70 truncate max-w-[140px]">
                           {location.municipio}/{location.uf}
                         </span>
                       )}
                     </div>
-                    <span className="font-mono font-bold text-sky-400 text-sm">{String(num).padStart(5, '0')}</span>
+                    <span className="font-mono font-bold text-white text-sm">{String(num).padStart(5, '0')}</span>
                   </div>
                 );
               })}
             </div>
           ) : result.id === "duplasena" ? (
             <>
-              <div className="w-full text-xs text-center text-muted-foreground font-medium mb-1">1º Sorteio</div>
+              <div className="w-full text-xs text-center text-white/85 font-medium mb-1">1º Sorteio</div>
               <div className="flex flex-wrap gap-2 justify-center">
                 {result.numbers.slice(0, 6).map((num, idx) => (
                   <LotteryBall key={`s1-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
               </div>
-              <div className="w-full text-xs text-center text-muted-foreground font-medium mt-2 mb-1">2º Sorteio</div>
+              <div className="w-full text-xs text-center text-white/85 font-medium mt-2 mb-1">2º Sorteio</div>
               <div className="flex flex-wrap gap-2 justify-center">
                 {result.numbers.slice(6).map((num, idx) => (
                   <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
@@ -197,13 +197,13 @@ export function LotteryCard({
               {result.trevos && result.trevos.length > 0 && (
                 <>
                   <div className="w-full flex items-center justify-center gap-1.5 mt-2 mb-1">
-                    <Clover className="w-3.5 h-3.5 text-emerald-500" />
-                    <span className="text-xs text-center text-emerald-500 font-medium">Trevos</span>
-                    <Clover className="w-3.5 h-3.5 text-emerald-500" />
+                    <Clover className="w-3.5 h-3.5 text-white" />
+                    <span className="text-xs text-center text-white/90 font-medium">Trevos</span>
+                    <Clover className="w-3.5 h-3.5 text-white" />
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
                     {result.trevos.map((trevo, idx) => (
-                      <div key={`t-${idx}`} className="w-10 h-10 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-sm font-bold text-emerald-400 animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
+                      <div key={`t-${idx}`} className="w-10 h-10 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-sm font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
                         {trevo}
                       </div>
                     ))}
