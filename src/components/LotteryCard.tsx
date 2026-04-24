@@ -23,6 +23,20 @@ const colorMap: Record<string, string> = {
   "lottery-federal": "border-sky-500/30 hover:border-sky-500/60",
   "lottery-loteca": "border-red-500/30 hover:border-red-500/60"
 };
+// Background gradients per lottery — characteristic Caixa colors
+const bgColorMap: Record<string, string> = {
+  "lottery-megasena": "bg-gradient-to-br from-emerald-600 to-emerald-700",
+  "lottery-lotofacil": "bg-gradient-to-br from-purple-700 to-purple-900",
+  "lottery-quina": "bg-gradient-to-br from-indigo-800 to-blue-900",
+  "lottery-lotomania": "bg-gradient-to-br from-orange-500 to-orange-600",
+  "lottery-duplasena": "bg-gradient-to-br from-rose-700 to-red-800",
+  "lottery-diadesorte": "bg-gradient-to-br from-amber-500 to-yellow-600",
+  "lottery-supersete": "bg-gradient-to-br from-lime-500 to-lime-600",
+  "lottery-maismilionaria": "bg-gradient-to-br from-indigo-700 to-indigo-900",
+  "lottery-timemania": "bg-gradient-to-br from-yellow-400 to-yellow-500",
+  "lottery-federal": "bg-gradient-to-br from-sky-600 to-blue-700",
+  "lottery-loteca": "bg-gradient-to-br from-red-500 to-red-700"
+};
 const badgeColorMap: Record<string, string> = {
   "lottery-megasena": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   "lottery-lotofacil": "bg-purple-500/20 text-purple-400 border-purple-500/30",
