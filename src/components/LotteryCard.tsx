@@ -115,17 +115,17 @@ export function LotteryCard({
 
       <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base sm:text-xl font-bold text-foreground truncate">
+          <CardTitle className="text-base sm:text-xl font-bold text-white truncate drop-shadow">
             {result.name}
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <ShareButton title={`${result.name} - Concurso ${result.concurso}`} text={shareText} className="h-7 w-7 sm:h-8 sm:w-8" />
-            <Badge variant="outline" className={cn("font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5", badgeColorMap[result.color])}>
+            <Badge variant="outline" className="font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5 bg-white/20 text-white border-white/30 backdrop-blur-sm">
               {result.concurso}
             </Badge>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/85">
           <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span>{result.date}</span>
         </div>
