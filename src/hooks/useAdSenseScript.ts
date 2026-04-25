@@ -1,8 +1,13 @@
+import { useEffect } from "react";
+
 /**
- * No-op hook mantido por compatibilidade. O script do Google AdSense agora é
+ * Hook mantido por compatibilidade. O script do Google AdSense agora é
  * carregado estaticamente no <head> via index.html, conforme instrução oficial
- * do AdSense, garantindo presença em todas as rotas da SPA.
+ * do AdSense. Mantemos um useEffect vazio para preservar a contagem de hooks
+ * em chamadas existentes.
  */
 export function useAdSenseScript() {
-  // intencionalmente vazio
+  useEffect(() => {
+    // no-op: script já está em index.html
+  }, []);
 }
