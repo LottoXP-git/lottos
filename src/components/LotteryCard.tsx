@@ -117,9 +117,9 @@ export function LotteryCard({
 
       <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base sm:text-xl font-bold text-white truncate drop-shadow flex items-center gap-2 flex-wrap min-w-0">
-            <span className="truncate">{result.name}</span>
-            <span className="font-mono font-bold text-lg sm:text-2xl text-white/95 drop-shadow shrink-0">
+          <CardTitle className="text-base sm:text-xl font-bold text-white drop-shadow flex items-baseline gap-2 flex-nowrap min-w-0 flex-1 overflow-hidden">
+            <span className="truncate min-w-0">{result.name}</span>
+            <span className="font-mono font-bold text-base sm:text-2xl text-white/95 drop-shadow shrink-0 whitespace-nowrap">
               #{result.concurso}
             </span>
           </CardTitle>
