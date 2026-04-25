@@ -71,13 +71,13 @@ const Index = () => {
             }
           </div>
           
-           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
-             <span className="text-gradient">Lottos.app</span>
-           </h1>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4">
+              <span className="text-gradient">Lottos</span>
+            </h1>
           
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
-            Acompanhe os resultados de todas as loterias, analise estatísticas de frequência 
-            e gere palpites inteligentes baseados em dados históricos.
+            Acompanhe os resultados de todas as loterias em tempo real, analise estatísticas de frequência 
+            e gere palpites inteligentes baseados em dados históricos. Aproveite também o nosso conferidor de apostas !
           </p>
 
           {/* Stats Overview */}
