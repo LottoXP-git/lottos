@@ -21,18 +21,19 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-  default: "bg-gradient-to-br from-primary to-orange-600",
-  megasena: "bg-gradient-to-br from-lottery-megasena to-emerald-800",
-  lotofacil: "bg-gradient-to-br from-lottery-lotofacil to-fuchsia-900",
-  quina: "bg-gradient-to-br from-lottery-quina to-indigo-900",
-  lotomania: "bg-gradient-to-br from-lottery-lotomania to-orange-700",
-  duplasena: "bg-gradient-to-br from-lottery-duplasena to-rose-800",
-  diadesorte: "bg-gradient-to-br from-amber-500 to-amber-700",
-  supersete: "bg-gradient-to-br from-lime-500 to-lime-700",
-  maismilionaria: "bg-gradient-to-br from-indigo-500 to-indigo-800",
-  timemania: "bg-gradient-to-br from-green-500 to-green-700",
-  federal: "bg-gradient-to-br from-sky-500 to-sky-700",
-  loteca: "bg-gradient-to-br from-red-500 to-red-800",
+  // Darker, deeper gradients for stronger contrast against white text in any lighting
+  default: "bg-gradient-to-br from-orange-600 to-orange-800",
+  megasena: "bg-gradient-to-br from-emerald-700 to-emerald-900",
+  lotofacil: "bg-gradient-to-br from-purple-700 to-fuchsia-900",
+  quina: "bg-gradient-to-br from-blue-800 to-indigo-950",
+  lotomania: "bg-gradient-to-br from-orange-600 to-orange-800",
+  duplasena: "bg-gradient-to-br from-rose-700 to-rose-900",
+  diadesorte: "bg-gradient-to-br from-amber-600 to-amber-800",
+  supersete: "bg-gradient-to-br from-lime-700 to-green-900",
+  maismilionaria: "bg-gradient-to-br from-indigo-700 to-indigo-950",
+  timemania: "bg-gradient-to-br from-green-700 to-green-900",
+  federal: "bg-gradient-to-br from-sky-700 to-blue-900",
+  loteca: "bg-gradient-to-br from-red-700 to-red-900",
 };
 
 export function LotteryBall({
@@ -45,7 +46,7 @@ export function LotteryBall({
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center font-mono font-bold shadow-lg transition-all duration-300 hover:scale-110 text-white leading-none",
+        "rounded-full flex items-center justify-center font-mono font-extrabold shadow-lg ring-2 ring-white/90 transition-all duration-300 hover:scale-110 text-white leading-none",
         sizeClasses[size],
         variantClasses[variant],
         animated && "animate-bounce-in opacity-0"
@@ -56,6 +57,7 @@ export function LotteryBall({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        textShadow: "0 1px 2px rgba(0,0,0,0.7), 0 0 3px rgba(0,0,0,0.5)",
       }}
     >
       {number.toString().padStart(2, "0")}
