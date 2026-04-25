@@ -1,73 +1,70 @@
+## Objetivo
 
+Enviar automaticamente cada novo cadastro do app (formulário `RegistrationForm`) para o **HubSpot CRM**, criando ou atualizando o contato em tempo real, com todos os dados e consentimentos de marketing devidamente mapeados.
 
-## Diagnóstico das violações do AdSense
+## Como vai funcionar
 
-O Google identificou dois problemas principais:
+1. Usuário preenche o formulário de cadastro no app
+2. Os dados são salvos na tabela `user_registrations` (como já acontece hoje)
+3. Imediatamente depois, uma **edge function** envia esses dados ao HubSpot via API
+4. O contato aparece no seu painel do HubSpot com todas as informações e tags
+5. Se houver erro no HubSpot, o cadastro local **não é perdido** — fica salvo no app e logado para revisão
 
-### 1. "Anúncios em telas sem conteúdo do editor"
+## Etapas da implementação
 
-O script `adsbygoogle.js` carrega **globalmente** no `index.html` em **todas** as páginas/estados, incluindo:
-- **AgeGate (tela de bloqueio)** — quando o crawler do Google visita o site, ele só vê o portão de idade (sem conteúdo real). O script de anúncios está carregado, mas a tela está "vazia" do ponto de vista de conteúdo.
-- **Página 404 (NotFound)** — apenas navegação/erro, sem conteúdo.
-- **Modais e estados de loading** com banners do `AdBanner`.
+### 1. Conectar HubSpot ao projeto
+- Você será solicitado a fazer login na sua conta HubSpot via OAuth (sem precisar copiar API keys manualmente)
+- O token de acesso fica seguro no Lovable Cloud
 
-### 2. "Conteúdo de baixo valor"
+### 2. Criar a edge function `sync-hubspot-contact`
+- Recebe os dados do cadastro
+- Faz a chamada autenticada para a API do HubSpot via gateway do Lovable
+- Cria/atualiza o contato (deduplica por e-mail automaticamente)
+- Retorna sucesso ou erro com detalhes nos logs
 
-- O crawler do Google **não consegue passar do AgeGate** (precisa selecionar ano de nascimento). Ele indexa apenas a tela de bloqueio → conclui que o site não tem conteúdo.
-- A `PrivacyPolicy` e `TermsOfUse` são páginas curtas/institucionais que **não devem ter ads** carregando.
+### 3. Mapeamento dos campos
 
----
-
-## Plano de correção
-
-### Mudança 1 — Carregar AdSense apenas em páginas de conteúdo real
-
-Remover o `<script async ...adsbygoogle.js>` do `index.html` (carregamento global) e movê-lo para um carregamento **condicional via React**, ativado apenas:
-- Após a verificação de idade (não no AgeGate).
-- Apenas nas páginas com conteúdo substancial: `/` (Index), `/historico` (History), `/regras-especiais` (SpecialDraws).
-- **Nunca** em: `/privacidade`, `/termos`, `/404`.
-
-Implementação: criar um hook `useAdSenseScript()` que injeta o script no `<head>` apenas quando montado, e usá-lo nessas três páginas. Manter a `<meta name="google-adsense-account">` no `index.html` (necessária para verificação da conta).
-
-### Mudança 2 — Remover banners de páginas/estados sem conteúdo
-
-- Remover o `<AdBanner>` do `LotteryDetailModal` (modal não é "página de conteúdo" do ponto de vista de SEO/AdSense — é um overlay).
-- Confirmar que `NotFound`, `PrivacyPolicy`, `TermsOfUse`, `AgeGate` não tenham `<AdBanner>` (já não têm).
-
-### Mudança 3 — Permitir crawler do Google passar pelo AgeGate
-
-Detectar bots conhecidos (`Googlebot`, `AdsBot-Google`, `Mediapartners-Google`) via `navigator.userAgent` no `AgeGate.tsx` e considerá-los já verificados. Isso deixa o conteúdo da página inicial visível para indexação, sem afetar usuários reais.
-
-### Mudança 4 — Reforçar conteúdo nas páginas institucionais (opcional, mas recomendado)
-
-Após a aprovação, considerar enriquecer `PrivacyPolicy` e `TermsOfUse` (mas **sem ads**) para evitar a flag de "conteúdo superficial" caso o Google as indexe.
-
----
-
-## Arquivos afetados
-
-| Arquivo | Ação |
+| Campo do app | Campo no HubSpot |
 |---|---|
-| `index.html` | Remover `<script async ...adsbygoogle.js>`. Manter apenas `<meta name="google-adsense-account">`. |
-| `src/hooks/useAdSenseScript.ts` | **Criar** — injeta o script `adsbygoogle.js` no `<head>` apenas no mount; remove no unmount. |
-| `src/pages/Index.tsx` | Chamar `useAdSenseScript()` no topo. |
-| `src/pages/History.tsx` | Chamar `useAdSenseScript()` no topo. |
-| `src/pages/SpecialDraws.tsx` | Chamar `useAdSenseScript()` no topo. |
-| `src/components/AgeGate.tsx` | Detectar bots Google → auto-bypass. |
-| `src/components/LotteryDetailModal.tsx` | Remover os 2 `<AdBanner>` internos (sidebar + inline). |
+| Nome completo | `firstname` + `lastname` (separados pelo primeiro espaço) |
+| E-mail | `email` (chave única — atualiza se já existir) |
+| Celular | `phone` |
+| Data de nascimento | `date_of_birth` (propriedade customizada) |
+| Loterias favoritas | `favorite_lotteries` (propriedade customizada, lista) |
+| Aceita WhatsApp marketing | `whatsapp_marketing_opt_in` (booleano) |
+| Aceita E-mail marketing | `email_marketing_opt_in` (booleano) + status legal de subscription |
+| Origem | `lead_source` = "Lottos App" |
 
----
+> As propriedades customizadas (`date_of_birth`, `favorite_lotteries`, etc.) podem ser criadas automaticamente pela edge function na primeira execução, ou você pode criá-las manualmente no HubSpot antes — vou criar via código para facilitar.
 
-## Resultado esperado
+### 4. Modificar o `RegistrationForm`
+- Após o `INSERT` bem-sucedido no Supabase, chamar a edge function via `supabase.functions.invoke('sync-hubspot-contact', ...)`
+- Mostrar toast de sucesso normalmente (sem expor falhas do CRM ao usuário final)
+- Logar erros no console e nos logs da edge function para você acompanhar
 
-- AdSense só carrega quando há conteúdo substancial visível.
-- Crawler do Google indexa o conteúdo real (Index, History, SpecialDraws).
-- AgeGate, 404, política e termos ficam **100% sem ads**.
-- Após aplicar as mudanças e publicar, solicitar revisão no Google AdSense.
+### 5. Tratamento de erros e resiliência
+- Se o HubSpot estiver fora do ar ou retornar erro, o cadastro **não é revertido** — fica salvo no Supabase
+- Erros ficam visíveis nos logs da edge function para diagnóstico
+- Possível adicionar retry automático no futuro, se necessário
 
----
+## Detalhes técnicos
 
-## Observação importante
+- **Endpoint HubSpot usado:** `POST /crm/v3/objects/contacts` para criação e `PATCH /crm/v3/objects/contacts/{email}?idProperty=email` para upsert
+- **Autenticação:** via Lovable Connector Gateway (`https://connector-gateway.lovable.dev/hubspot/...`) — sem expor tokens no frontend
+- **CORS:** configurado para permitir chamadas do app
+- **Validação:** Zod no input da edge function para evitar dados inválidos
 
-A tela do AgeGate é **legalmente obrigatória** (loteria/jogos = +18 BR). Não pode ser removida. A solução de bypass para bots é prática comum e aceita, pois o conteúdo informativo (resultados, estatísticas) não é restrito por idade — apenas a interação com geradores de aposta.
+## O que NÃO está no escopo deste plano
 
+- Sincronização retroativa dos cadastros já existentes no banco (você pediu apenas tempo real para novos cadastros)
+- Pipeline de vendas, deals ou tarefas no HubSpot
+- Listas segmentadas automáticas (mas as propriedades enviadas permitem você criá-las manualmente no HubSpot)
+- Webhook reverso (HubSpot → app)
+
+Se quiser incluir a sincronização retroativa depois, posso adicionar um botão admin separado.
+
+## Próximo passo após aprovação
+
+1. Solicitarei a conexão da sua conta HubSpot
+2. Implementarei a edge function e a integração no formulário
+3. Você poderá testar fazendo um novo cadastro e verificando no painel do HubSpot
