@@ -99,6 +99,31 @@ export function RegistrationForm() {
         return;
       }
 
+      // Sync contact to HubSpot CRM in real time (fire and continue).
+      // Failure here must NOT block the user — the registration is already
+      // saved in our database.
+      try {
+        const { error: hubspotError } = await supabase.functions.invoke(
+          "sync-hubspot-contact",
+          {
+            body: {
+              fullName: data.fullName,
+              email: data.email,
+              phone: data.phone,
+              birthDate: format(data.birthDate, "yyyy-MM-dd"),
+              favoriteLotteries: data.favoriteLotteries,
+              acceptWhatsapp: data.acceptWhatsapp,
+              acceptEmail: data.acceptEmail
+            }
+          }
+        );
+        if (hubspotError) {
+          console.error("HubSpot sync failed:", hubspotError);
+        }
+      } catch (hubspotErr) {
+        console.error("HubSpot sync exception:", hubspotErr);
+      }
+
       setIsSuccess(true);
       toast({
         title: "Cadastro realizado! 🎉",
