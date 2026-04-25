@@ -1,70 +1,95 @@
 ## Objetivo
 
-Enviar automaticamente cada novo cadastro do app (formulário `RegistrationForm`) para o **HubSpot CRM**, criando ou atualizando o contato em tempo real, com todos os dados e consentimentos de marketing devidamente mapeados.
+Transformar o **Gerador de Palpites Inteligentes** da home em uma ferramenta de recomendação baseada em dados, exibindo **probabilidades** e **justificativas** para cada palpite gerado.
 
-## Como vai funcionar
+## O que será feito
 
-1. Usuário preenche o formulário de cadastro no app
-2. Os dados são salvos na tabela `user_registrations` (como já acontece hoje)
-3. Imediatamente depois, uma **edge function** envia esses dados ao HubSpot via API
-4. O contato aparece no seu painel do HubSpot com todas as informações e tags
-5. Se houver erro no HubSpot, o cadastro local **não é perdido** — fica salvo no app e logado para revisão
+### 1. Estratégias de geração (escolha do usuário)
+Adicionar três botões de estratégia no `QuickBetGenerator`:
+- **Quentes** — prioriza dezenas mais sorteadas
+- **Frias** — prioriza dezenas menos sorteadas (teoria do "atraso")
+- **Equilibrada** — mix 50/50 (recomendada)
 
-## Etapas da implementação
+A geração deixa de ser 100% aleatória e passa a sortear dentro do pool de dezenas filtrado pela estratégia, usando dados de frequência da modalidade.
 
-### 1. Conectar HubSpot ao projeto
-- Você será solicitado a fazer login na sua conta HubSpot via OAuth (sem precisar copiar API keys manualmente)
-- O token de acesso fica seguro no Lovable Cloud
+### 2. Justificativas por dezena
+Após gerar, cada bola exibirá um tooltip / legenda mostrando:
+- Frequência absoluta (ex: "saiu 42x nos últimos 100 sorteios")
+- Classificação (Quente / Morna / Fria)
+- Cor sutil de borda indicando temperatura
 
-### 2. Criar a edge function `sync-hubspot-contact`
-- Recebe os dados do cadastro
-- Faz a chamada autenticada para a API do HubSpot via gateway do Lovable
-- Cria/atualiza o contato (deduplica por e-mail automaticamente)
-- Retorna sucesso ou erro com detalhes nos logs
+### 3. Painel de probabilidades e análise
+Abaixo das bolas geradas, um card "Análise do palpite" com:
+- **Probabilidade matemática** de acerto da faixa principal (combinatória C(n,k), ex: Mega-Sena ≈ 1 em 50.063.860)
+- **Distribuição** do palpite: X dezenas quentes, Y mornas, Z frias
+- **Soma** das dezenas e faixa típica esperada (média histórica)
+- **Pares vs ímpares** e **baixas vs altas** (split em torno do meio)
+- **Justificativa textual curta** explicando porque o palpite é considerado equilibrado/agressivo (ex: "Palpite equilibrado: 3 quentes + 3 frias, soma dentro da faixa estatística mais comum")
 
-### 3. Mapeamento dos campos
+### 4. Aviso de transparência
+Pequena nota fixa explicando que loterias são jogos de azar e que estatísticas históricas **não alteram a probabilidade real** de cada sorteio — apenas oferecem critérios para escolher números. Essencial para conformidade e expectativa do usuário.
 
-| Campo do app | Campo no HubSpot |
-|---|---|
-| Nome completo | `firstname` + `lastname` (separados pelo primeiro espaço) |
-| E-mail | `email` (chave única — atualiza se já existir) |
-| Celular | `phone` |
-| Data de nascimento | `date_of_birth` (propriedade customizada) |
-| Loterias favoritas | `favorite_lotteries` (propriedade customizada, lista) |
-| Aceita WhatsApp marketing | `whatsapp_marketing_opt_in` (booleano) |
-| Aceita E-mail marketing | `email_marketing_opt_in` (booleano) + status legal de subscription |
-| Origem | `lead_source` = "Lottos App" |
-
-> As propriedades customizadas (`date_of_birth`, `favorite_lotteries`, etc.) podem ser criadas automaticamente pela edge function na primeira execução, ou você pode criá-las manualmente no HubSpot antes — vou criar via código para facilitar.
-
-### 4. Modificar o `RegistrationForm`
-- Após o `INSERT` bem-sucedido no Supabase, chamar a edge function via `supabase.functions.invoke('sync-hubspot-contact', ...)`
-- Mostrar toast de sucesso normalmente (sem expor falhas do CRM ao usuário final)
-- Logar erros no console e nos logs da edge function para você acompanhar
-
-### 5. Tratamento de erros e resiliência
-- Se o HubSpot estiver fora do ar ou retornar erro, o cadastro **não é revertido** — fica salvo no Supabase
-- Erros ficam visíveis nos logs da edge function para diagnóstico
-- Possível adicionar retry automático no futuro, se necessário
+### 5. Compatibilidade
+- Mantém o sistema atual de 2 gerações grátis + anúncio
+- Mantém pré-seleção via `preselectedId` (Dupla de Páscoa)
+- Federal e Loteca continuam fora (não se aplicam)
+- +Milionária mantém trevos, Timemania mantém Time, Dia de Sorte mantém Mês — tudo aleatório (não há frequência relevante)
 
 ## Detalhes técnicos
 
-- **Endpoint HubSpot usado:** `POST /crm/v3/objects/contacts` para criação e `PATCH /crm/v3/objects/contacts/{email}?idProperty=email` para upsert
-- **Autenticação:** via Lovable Connector Gateway (`https://connector-gateway.lovable.dev/hubspot/...`) — sem expor tokens no frontend
-- **CORS:** configurado para permitir chamadas do app
-- **Validação:** Zod no input da edge function para evitar dados inválidos
+**Arquivos a editar/criar:**
+- `src/lib/lotteryStats.ts` (novo) — utilitários puros: `calculateOdds(maxNumber, selectCount)`, `classifyTemperature(frequency, allFrequencies)`, `analyzeBet(numbers, frequencyData)` retornando soma, pares/ímpares, baixas/altas, distribuição quente/fria, justificativa.
+- `src/data/lotteryData.ts` — reaproveitar `generateFrequencyData` e `generateSmartPicks` já existentes; adicionar opção de retornar dezenas com metadata (frequência por dezena selecionada).
+- `src/components/QuickBetGenerator.tsx` — adicionar selector de estratégia, integrar geração baseada em frequência, renderizar painel de análise.
+- `src/components/BetAnalysisCard.tsx` (novo) — componente do painel de análise/probabilidade.
+- `src/components/LotteryBall.tsx` — aceitar prop opcional `temperature?: 'hot' | 'warm' | 'cold'` para borda colorida discreta (sem quebrar uso atual).
 
-## O que NÃO está no escopo deste plano
+**Cálculo de odds (combinatória):**
+```ts
+// C(n, k) = n! / (k! * (n-k)!)
+function combinations(n: number, k: number): number { ... }
+const odds = combinations(maxNumber, selectCount); // "1 em X"
+```
 
-- Sincronização retroativa dos cadastros já existentes no banco (você pediu apenas tempo real para novos cadastros)
-- Pipeline de vendas, deals ou tarefas no HubSpot
-- Listas segmentadas automáticas (mas as propriedades enviadas permitem você criá-las manualmente no HubSpot)
-- Webhook reverso (HubSpot → app)
+**Classificação de temperatura:** ordenar frequências, top 33% = quentes, meio 34% = mornas, bottom 33% = frias.
 
-Se quiser incluir a sincronização retroativa depois, posso adicionar um botão admin separado.
+**Justificativa textual:** gerada por regras simples baseadas em (a) estratégia escolhida, (b) distribuição quente/fria do palpite, (c) se soma cai na faixa central ±1 desvio.
 
-## Próximo passo após aprovação
+**Sem backend:** toda análise é client-side usando os mesmos dados de frequência simulados que o `SmartPickGenerator` já usa (`generateFrequencyData`). Quando integração real com histórico da Caixa estiver pronta, basta trocar a fonte da frequência.
 
-1. Solicitarei a conexão da sua conta HubSpot
-2. Implementarei a edge function e a integração no formulário
-3. Você poderá testar fazendo um novo cadastro e verificando no painel do HubSpot
+## Layout (mobile-first, 390px)
+
+````text
+┌─────────────────────────────────┐
+│   🎲  Gerador de Palpites       │
+│   Inteligentes                  │
+├─────────────────────────────────┤
+│   [Select: Mega-Sena      ▼]    │
+│                                 │
+│   [🔥 Quentes][❄️ Frias][⚖️ Eq.]│
+│                                 │
+│   [   Gerar Aposta (2)     ]    │
+│                                 │
+│   ⚪ ⚪ ⚪ ⚪ ⚪ ⚪              │
+│   (cada bola com borda          │
+│    quente/morna/fria)           │
+│                                 │
+│ ┌─ Análise do Palpite ────────┐ │
+│ │ Chance: 1 em 50.063.860     │ │
+│ │ 🔥 3 quentes ❄️ 3 frias    │ │
+│ │ Soma: 178 (faixa típ.150-210)│ │
+│ │ Pares 4 / Ímpares 2         │ │
+│ │ "Palpite equilibrado..."    │ │
+│ └─────────────────────────────┘ │
+│                                 │
+│   [Copiar Números]              │
+│                                 │
+│  ⚠️ Estatísticas não alteram   │
+│  a probabilidade do sorteio.   │
+└─────────────────────────────────┘
+````
+
+## Fora do escopo
+- Treinar modelos de ML / IA generativa para palpites
+- Buscar histórico real dos últimos 100 sorteios da Caixa (continua usando `generateFrequencyData` simulado já existente)
+- Salvar palpites no backend / histórico do usuário

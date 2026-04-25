@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LotteryBall } from "./LotteryBall";
-import { LotteryResult } from "@/data/lotteryData";
-import { Dices, RefreshCw, Copy, Check, Clover, Heart, CalendarDays } from "lucide-react";
+import { LotteryResult, generateFrequencyData, generateSmartPicks, NumberFrequency } from "@/data/lotteryData";
+import { analyzeBet, buildTemperatureMap, BetAnalysis } from "@/lib/lotteryStats";
+import { BetAnalysisCard } from "./BetAnalysisCard";
+import { Dices, RefreshCw, Copy, Check, Clover, Heart, CalendarDays, Flame, Snowflake, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
@@ -20,6 +22,14 @@ interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
   preselectedId?: string;
 }
+
+type Strategy = "hot" | "cold" | "balanced";
+
+const strategyOptions: { id: Strategy; label: string; icon: React.ReactNode; color: string }[] = [
+  { id: "hot", label: "Quentes", icon: <Flame className="w-3.5 h-3.5" />, color: "text-orange-400" },
+  { id: "cold", label: "Frias", icon: <Snowflake className="w-3.5 h-3.5" />, color: "text-sky-400" },
+  { id: "balanced", label: "Equilibrada", icon: <Scale className="w-3.5 h-3.5" />, color: "text-emerald-400" },
+];
 
 const variantMap: Record<string, string> = {
   "lottery-megasena": "megasena",
@@ -82,8 +92,20 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
   const [copied, setCopied] = useState(false);
   const [freeGenerations, setFreeGenerations] = useState(2);
   const [showVideoAd, setShowVideoAd] = useState(false);
+  const [strategy, setStrategy] = useState<Strategy>("balanced");
+  const [analysis, setAnalysis] = useState<BetAnalysis | null>(null);
+  const [frequencyData, setFrequencyData] = useState<NumberFrequency[]>([]);
 
   const selected = lotteries.find((l) => l.id === selectedId);
+
+  // Reset analysis when lottery changes
+  useEffect(() => {
+    setNumbers([]);
+    setAnalysis(null);
+    setTrevos([]);
+    setTimeCoracao("");
+    setMesSorte("");
+  }, [selectedId]);
 
   const generate = () => {
     if (!selected) return;
@@ -107,14 +129,21 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
     setTrevos([]);
     setTimeCoracao("");
     setMesSorte("");
+    setAnalysis(null);
     setTimeout(() => {
       if (selected.id === "federal" || selected.id === "loteca") {
         toast.info(`Geração aleatória não disponível para ${selected.name}`);
         setIsSpinning(false);
         return;
       }
-      const nums = generateRandomNumbers(selected.maxNumber, selected.selectCount);
+      // Generate frequency data and use strategy-aware smart picks
+      const freqData = generateFrequencyData(selected.maxNumber);
+      const nums = generateSmartPicks(freqData, selected.selectCount, strategy);
+      setFrequencyData(freqData);
       setNumbers(nums);
+      setAnalysis(
+        analyzeBet(nums, freqData, selected.maxNumber, selected.selectCount, strategy)
+      );
 
       // Special fields
       if (selected.id === "maismilionaria") {
@@ -151,6 +180,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
   };
 
   const ballVariant = selected ? variantMap[selected.color] as any : "default";
+  const tempMap = analysis ? new Map(analysis.perNumber.map((p) => [p.number, p])) : null;
 
   return (
     <Card className="card-glass border-primary/30 shadow-[0_0_30px_-5px_hsl(var(--primary)/0.15)] relative overflow-hidden">
@@ -185,6 +215,33 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
           </SelectContent>
         </Select>
 
+        {/* Strategy selector */}
+        <div className="space-y-2">
+          <div className="text-xs font-semibold text-muted-foreground text-center">
+            Estratégia de recomendação
+          </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {strategyOptions.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setStrategy(s.id)}
+                className={cn(
+                  "flex flex-col items-center gap-1 px-2 py-2 rounded-xl border-2 transition-all",
+                  strategy === s.id
+                    ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)/0.2)]"
+                    : "border-border bg-secondary/30 hover:border-primary/40"
+                )}
+              >
+                <span className={strategy === s.id ? s.color : "text-muted-foreground"}>
+                  {s.icon}
+                </span>
+                <span className="text-xs font-medium text-foreground">{s.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <Button
           onClick={generate}
           size="lg"
@@ -208,15 +265,31 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
         {numbers.length > 0 &&
         <div className="space-y-4 animate-fade-in">
             <div className="flex flex-wrap gap-2 justify-center py-4 px-2 rounded-xl bg-background/50 border border-border/50">
-              {numbers.map((num, idx) =>
-            <LotteryBall
-              key={`${num}-${idx}`}
-              number={num}
-              size={numbers.length > 10 ? "sm" : "md"}
-              variant={ballVariant}
-              delay={idx * 80} />
-            )}
+              {numbers.map((num, idx) => {
+                const meta = tempMap?.get(num);
+                const tempLabel = meta?.temperature === "hot" ? "Quente" : meta?.temperature === "cold" ? "Fria" : "Morna";
+                return (
+                  <LotteryBall
+                    key={`${num}-${idx}`}
+                    number={num}
+                    size={numbers.length > 10 ? "sm" : "md"}
+                    variant={ballVariant}
+                    delay={idx * 80}
+                    temperature={meta?.temperature}
+                    title={meta ? `Dezena ${num} — ${tempLabel} (saiu ${meta.frequency}x nos últimos 100 sorteios)` : undefined}
+                  />
+                );
+              })}
             </div>
+
+            {/* Legend */}
+            {analysis && (
+              <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground -mt-2">
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-orange-400" /> Quente</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-yellow-300" /> Morna</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-400" /> Fria</span>
+              </div>
+            )}
 
             {/* Trevos - +Milionária */}
             {trevos.length > 0 && (
@@ -265,6 +338,11 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
                 </>
             }
             </Button>
+
+            {/* Analysis card */}
+            {analysis && selected && (
+              <BetAnalysisCard analysis={analysis} lotteryName={selected.name} />
+            )}
           </div>
         }
 
