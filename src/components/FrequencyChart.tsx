@@ -10,14 +10,6 @@ interface FrequencyChartProps {
 export function FrequencyChart({ data, maxNumber, title }: FrequencyChartProps) {
   const maxFreq = Math.max(...data.map(d => d.frequency));
   const sortedByNumber = [...data].sort((a, b) => a.number - b.number);
-  
-  // Split into rows for better display
-  const itemsPerRow = maxNumber <= 25 ? 5 : 10;
-  const mobileItemsPerRow = maxNumber <= 25 ? 5 : 8;
-  const rows = [];
-  for (let i = 0; i < sortedByNumber.length; i += itemsPerRow) {
-    rows.push(sortedByNumber.slice(i, i + itemsPerRow));
-  }
 
   const getHeatColor = (frequency: number) => {
     const ratio = frequency / maxFreq;
@@ -35,13 +27,12 @@ export function FrequencyChart({ data, maxNumber, title }: FrequencyChartProps) 
       )}
       
       <div className="space-y-1 sm:space-y-2">
-        {rows.map((row, rowIdx) => (
-          <div key={rowIdx} className="flex gap-0.5 sm:gap-1 justify-center flex-wrap">
-            {row.map((item) => (
+        <div className="flex flex-wrap gap-0.5 sm:gap-1 justify-center">
+          {sortedByNumber.map((item) => (
               <div
                 key={item.number}
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-md sm:rounded-lg flex flex-col items-center justify-center font-mono transition-all duration-300 hover:scale-110 cursor-pointer group relative",
+                  "w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-lg flex flex-col items-center justify-center font-mono transition-all duration-300 hover:scale-110 cursor-pointer group relative shrink-0",
                   getHeatColor(item.frequency)
                 )}
                 title={`Dezena ${item.number}: ${item.frequency} vezes`}
@@ -54,9 +45,8 @@ export function FrequencyChart({ data, maxNumber, title }: FrequencyChartProps) 
                   <span className="text-primary font-bold">{item.frequency}x</span>
                 </div>
               </div>
-            ))}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className="flex items-center justify-center gap-3 sm:gap-4 pt-1 sm:pt-2">
