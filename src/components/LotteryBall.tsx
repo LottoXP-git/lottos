@@ -9,10 +9,10 @@ interface LotteryBallProps {
 }
 
 const sizeClasses = {
-  xs: "w-6 h-6 text-[10px]",
-  sm: "w-8 h-8 text-xs",
-  md: "w-11 h-11 text-sm",
-  lg: "w-14 h-14 text-lg",
+  xs: "w-7 h-7 text-xs sm:w-7 sm:h-7 sm:text-xs",
+  sm: "w-10 h-10 text-sm sm:w-10 sm:h-10 sm:text-sm",
+  md: "w-12 h-12 text-base sm:w-12 sm:h-12 sm:text-base",
+  lg: "w-16 h-16 text-xl sm:w-16 sm:h-16 sm:text-xl",
 };
 
 const variantClasses = {
