@@ -49,7 +49,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
         <DialogHeader className="space-y-0.5 sm:space-y-1">
           <DialogTitle className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-3 flex-wrap leading-tight">
               {lottery.name}
-              <span className="text-base sm:text-2xl font-normal text-muted-foreground">
+              <span className="text-lg sm:text-3xl font-bold text-primary">
                 #{lottery.concurso}
               </span>
             </DialogTitle>
