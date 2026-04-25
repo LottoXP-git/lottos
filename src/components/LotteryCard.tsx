@@ -177,23 +177,23 @@ export function LotteryCard({
           ) : result.id === "duplasena" ? (
             <>
               <div className="w-full text-xs text-center text-white/85 font-medium mb-1">1º Sorteio</div>
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.slice(0, 6).map((num, idx) => (
-                  <LotteryBall key={`s1-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={idx * 80} />
+                  <LotteryBall key={`s1-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
               </div>
               <div className="w-full text-xs text-center text-white/85 font-medium mt-2 mb-1">2º Sorteio</div>
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.slice(6).map((num, idx) => (
-                  <LotteryBall key={`s2-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
+                  <LotteryBall key={`s2-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
                 ))}
               </div>
             </>
           ) : result.id === "maismilionaria" ? (
             <>
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.map((num, idx) => (
-                  <LotteryBall key={`n-${idx}`} number={num} size="md" variant={variantMap[result.color]} delay={idx * 80} />
+                  <LotteryBall key={`n-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
               </div>
               {result.trevos && result.trevos.length > 0 && (
@@ -203,9 +203,9 @@ export function LotteryCard({
                     <span className="text-xs text-center text-white/90 font-medium">Trevos</span>
                     <Clover className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <div className="flex flex-wrap gap-2 justify-center">
+                  <div className="flex flex-nowrap gap-1.5 justify-center">
                     {result.trevos.map((trevo, idx) => (
-                      <div key={`t-${idx}`} className="w-10 h-10 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-sm font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
+                      <div key={`t-${idx}`} className="w-8 h-8 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-xs font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
                         {trevo}
                       </div>
                     ))}
