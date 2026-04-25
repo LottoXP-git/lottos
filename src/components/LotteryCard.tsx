@@ -117,14 +117,14 @@ export function LotteryCard({
 
       <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base sm:text-xl font-bold text-white truncate drop-shadow">
-            {result.name}
+          <CardTitle className="text-base sm:text-xl font-bold text-white truncate drop-shadow flex items-center gap-2 flex-wrap min-w-0">
+            <span className="truncate">{result.name}</span>
+            <span className="font-mono font-bold text-lg sm:text-2xl text-white/95 drop-shadow shrink-0">
+              #{result.concurso}
+            </span>
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
-            <Badge variant="outline" className="font-mono text-[10px] sm:text-xs px-1.5 sm:px-2.5 bg-white/20 text-white border-white/30 backdrop-blur-sm">
-              {result.concurso}
-            </Badge>
           </div>
         </div>
         <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/85">
