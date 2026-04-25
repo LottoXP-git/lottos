@@ -6,6 +6,8 @@ interface LotteryBallProps {
   variant?: "default" | "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
   animated?: boolean;
   delay?: number;
+  temperature?: "hot" | "warm" | "cold";
+  title?: string;
 }
 
 const sizeClasses = {
@@ -36,17 +38,27 @@ const variantClasses = {
   loteca: "bg-gradient-to-br from-red-700 to-red-900",
 };
 
+const temperatureRingClasses: Record<NonNullable<LotteryBallProps["temperature"]>, string> = {
+  hot: "ring-2 ring-orange-400 shadow-[0_0_8px_hsl(25_95%_55%/0.6)]",
+  warm: "ring-2 ring-yellow-300/80",
+  cold: "ring-2 ring-sky-300 shadow-[0_0_8px_hsl(200_90%_60%/0.5)]",
+};
+
 export function LotteryBall({
   number,
   size = "md",
   variant = "default",
   animated = true,
   delay = 0,
+  temperature,
+  title,
 }: LotteryBallProps) {
   return (
     <div
+      title={title}
       className={cn(
-        "rounded-full flex items-center justify-center font-mono font-extrabold shadow-lg ring-2 ring-white/90 transition-all duration-300 hover:scale-110 text-white leading-none",
+        "rounded-full flex items-center justify-center font-mono font-extrabold shadow-lg transition-all duration-300 hover:scale-110 text-white leading-none",
+        temperature ? temperatureRingClasses[temperature] : "ring-2 ring-white/90",
         sizeClasses[size],
         variantClasses[variant],
         animated && "animate-bounce-in opacity-0"
