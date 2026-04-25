@@ -71,10 +71,9 @@ const Index = () => {
             }
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
-            <span className="text-accent">Loterias </span>
-            <span className="text-gradient text-accent">Caixa</span>
-          </h1>
+           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
+             <span className="text-gradient">Lottos.app</span>
+           </h1>
           
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
             Acompanhe os resultados de todas as loterias, analise estatísticas de frequência 
