@@ -163,7 +163,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                     <span className="font-black text-white text-6xl sm:text-7xl leading-none drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
                       30
                     </span>
-                    <svg viewBox="0 0 64 64" className="absolute -top-1 -right-4 w-7 h-7 text-lime-300" aria-hidden>
+                    <svg viewBox="0 0 64 64" className="mega30-clover absolute -top-1 -right-4 w-7 h-7 text-lime-300" aria-hidden>
                       <g fill="currentColor">
                         <path d="M32 32c-3-9 3-18 11-18 6 0 10 5 9 11-1 7-9 11-20 7z" />
                         <path d="M32 32c9-3 18 3 18 11 0 6-5 10-11 9-7-1-11-9-7-20z" />
@@ -190,10 +190,10 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                 Prêmio Estimado
               </span>
               <div
-                className="font-black text-5xl sm:text-6xl leading-none mt-1 bg-clip-text text-transparent drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]"
+                className="mega30-shimmer font-black text-5xl sm:text-6xl leading-none mt-1 bg-clip-text text-transparent drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]"
                 style={{
                   backgroundImage:
-                    "linear-gradient(180deg, #FFF1B8 0%, #F0C24C 35%, #B07A1C 70%, #FFE395 100%)",
+                    "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
                 }}
               >
                 R$ 150
