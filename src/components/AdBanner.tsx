@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 type AdFormat = "leaderboard" | "inline" | "sidebar" | "interstitial";
 
@@ -42,6 +43,10 @@ const adSlotConfig: Record<AdFormat, { slot: string; format: string; style: Reac
 export function AdBanner({ format = "leaderboard", className, slot }: AdBannerProps) {
   const adRef = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
+  const impressionTracked = useRef(false);
+
+  const config = adSlotConfig[format];
+  const adSlot = slot ?? config.slot;
 
   useEffect(() => {
     if (pushed.current) return;
@@ -53,11 +58,71 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
     }
   }, []);
 
-  const config = adSlotConfig[format];
-  const adSlot = slot ?? config.slot;
+  // Track impression when 50% of the ad is visible for >=1s
+  useEffect(() => {
+    const el = adRef.current;
+    if (!el || impressionTracked.current) return;
+
+    let timer: number | undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            timer = window.setTimeout(() => {
+              if (impressionTracked.current) return;
+              impressionTracked.current = true;
+              supabase
+                .from("ad_events")
+                .insert({
+                  slot: adSlot,
+                  event_type: "impression",
+                  page: window.location.pathname,
+                  format,
+                  user_agent: navigator.userAgent.slice(0, 255),
+                })
+                .then(({ error }) => {
+                  if (error) console.warn("ad impression track failed", error.message);
+                });
+              observer.disconnect();
+            }, 1000);
+          } else if (timer) {
+            window.clearTimeout(timer);
+            timer = undefined;
+          }
+        });
+      },
+      { threshold: [0, 0.5, 1] },
+    );
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [adSlot, format]);
+
+  // Track click on the ad container (best-effort: AdSense iframe steals real clicks,
+  // so we listen for pointerdown — a strong signal the user engaged the ad area).
+  const handlePointerDown = () => {
+    supabase
+      .from("ad_events")
+      .insert({
+        slot: adSlot,
+        event_type: "click",
+        page: window.location.pathname,
+        format,
+        user_agent: navigator.userAgent.slice(0, 255),
+      })
+      .then(({ error }) => {
+        if (error) console.warn("ad click track failed", error.message);
+      });
+  };
 
   return (
-    <div className={cn("w-full overflow-hidden animate-fade-in", className)}>
+    <div
+      className={cn("w-full overflow-hidden animate-fade-in", className)}
+      onPointerDown={handlePointerDown}
+    >
       <ins
         className="adsbygoogle block animate-fade-in"
         ref={adRef}
