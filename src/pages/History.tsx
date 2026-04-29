@@ -36,6 +36,7 @@ import { ptBR } from "date-fns/locale";
 import { Search, CalendarIcon, Filter, X, History as HistoryIcon, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
+import { AdBanner } from "@/components/AdBanner";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -261,6 +262,9 @@ const History = () => {
             <span className="font-semibold text-foreground">{filteredResults.length}</span> resultados
           </p>
         </div>
+
+        {/* Ad - leaderboard entre filtros e resultados */}
+        <AdBanner format="leaderboard" slot="8331815579" className="mb-6 rounded-xl" />
 
         {/* Results - Cards on mobile, Table on desktop */}
         {paginatedResults.length === 0 ? (

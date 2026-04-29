@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Flame, Calendar, Gift, Trophy, Star, Clover, Heart, CalendarDays, Dribbble } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
+import { AdBanner } from "@/components/AdBanner";
 
 interface SpecialDrawRule {
   id: string;
@@ -214,6 +215,9 @@ export default function SpecialDraws() {
             <span className="text-xs text-muted-foreground">Prêmio Acumulado</span>
           </div>
         </div>
+
+        {/* Ad - leaderboard antes do grid de cards */}
+        <AdBanner format="leaderboard" slot="8331815579" className="rounded-xl" />
 
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
