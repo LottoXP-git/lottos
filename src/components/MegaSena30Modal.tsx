@@ -48,7 +48,7 @@ const SPECIAL = {
 function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
+      <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent" />
         <AnimatePresence mode="popLayout">
           <motion.span
@@ -57,13 +57,13 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-2xl sm:text-3xl font-bold font-mono text-emerald-500"
+            className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-emerald-500"
           >
             {String(value).padStart(2, "0")}
           </motion.span>
         </AnimatePresence>
       </div>
-      <span className="text-[10px] sm:text-xs text-muted-foreground mt-1.5 uppercase tracking-wider font-medium">
+      <span className="text-[9px] sm:text-[10px] md:text-xs text-muted-foreground mt-1 sm:mt-1.5 uppercase tracking-wider font-medium">
         {label}
       </span>
     </div>
@@ -89,7 +89,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border p-0">
+      <DialogContent className="w-[calc(100vw-1rem)] sm:w-full max-w-lg max-h-[92vh] overflow-y-auto bg-card border-border p-0 gap-0">
         {/* Hero Poster — inspirado no cartaz oficial */}
         <div
           className="relative overflow-hidden rounded-t-lg"
@@ -110,26 +110,26 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
 
           {/* Floating decorative balls (gold) */}
           <motion.div
-            className="absolute top-4 left-6 w-6 h-8 rounded-full pointer-events-none"
+            className="absolute top-3 left-4 w-4 h-6 sm:w-6 sm:h-8 rounded-full pointer-events-none"
             style={{ background: "radial-gradient(circle at 30% 30%, #FFE7A0, #B07A1C)" }}
             animate={{ y: [-3, 3, -3] }}
             transition={{ duration: 4, repeat: Infinity }}
           />
           <motion.div
-            className="absolute top-8 right-10 w-7 h-9 rounded-full pointer-events-none"
+            className="absolute top-6 right-6 sm:right-10 w-5 h-7 sm:w-7 sm:h-9 rounded-full pointer-events-none"
             style={{ background: "radial-gradient(circle at 30% 30%, #FFE7A0, #B07A1C)" }}
             animate={{ y: [3, -3, 3] }}
             transition={{ duration: 4.5, repeat: Infinity }}
           />
           <motion.div
-            className="absolute bottom-6 right-6 w-5 h-7 rounded-full opacity-80 pointer-events-none"
+            className="absolute bottom-4 right-4 w-4 h-6 sm:w-5 sm:h-7 rounded-full opacity-80 pointer-events-none"
             style={{ background: "radial-gradient(circle at 30% 30%, #FFE7A0, #B07A1C)" }}
             animate={{ y: [-2, 4, -2] }}
             transition={{ duration: 5, repeat: Infinity }}
           />
 
-          <div className="relative px-6 pt-8 pb-7 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 mb-3">
+          <div className="relative px-4 sm:px-6 pt-5 sm:pt-7 pb-5 sm:pb-7 text-center">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 mb-2">
               <Trophy className="w-3.5 h-3.5 text-amber-300" />
               <span className="text-[10px] font-bold text-emerald-100 uppercase tracking-[0.2em]">
                 Concurso Especial
@@ -138,7 +138,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
 
             {status !== "upcoming" && (
               <div
-                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3 ml-2 border text-[10px] font-extrabold uppercase tracking-wider ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full mb-2 ml-1.5 border text-[10px] font-extrabold uppercase tracking-wider ${
                   status === "one-day"
                     ? "bg-amber-400 border-amber-300 text-emerald-950 animate-pulse"
                     : status === "live"
@@ -154,16 +154,16 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
 
             <DialogHeader>
               <DialogTitle asChild>
-                <div className="flex items-end justify-center gap-2 leading-none mt-2">
+                <div className="flex items-end justify-center gap-1.5 sm:gap-2 leading-none mt-1">
                   <div className="font-black text-lime-300 text-left drop-shadow-[0_2px_0_rgba(0,0,0,0.5)]">
-                    <div className="text-3xl sm:text-4xl tracking-tight">MEGA</div>
-                    <div className="text-3xl sm:text-4xl tracking-tight -mt-1">SENA</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl tracking-tight">MEGA</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl tracking-tight -mt-1">SENA</div>
                   </div>
                   <div className="relative flex items-end">
-                    <span className="font-black text-white text-6xl sm:text-7xl leading-none drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
+                    <span className="font-black text-white text-5xl sm:text-6xl md:text-7xl leading-none drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
                       30
                     </span>
-                    <svg viewBox="0 0 64 64" className="mega30-clover absolute -top-1 -right-4 w-7 h-7 text-lime-300" aria-hidden>
+                    <svg viewBox="0 0 64 64" className="mega30-clover absolute -top-1 -right-3 sm:-right-4 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-lime-300" aria-hidden>
                       <g fill="currentColor">
                         <path d="M32 32c-3-9 3-18 11-18 6 0 10 5 9 11-1 7-9 11-20 7z" />
                         <path d="M32 32c9-3 18 3 18 11 0 6-5 10-11 9-7-1-11-9-7-20z" />
@@ -171,7 +171,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                         <path d="M32 32c-9 3-18-3-18-11 0-6 5-10 11-9 7 1 11 9 7 20z" />
                       </g>
                     </svg>
-                    <span className="ml-2 mb-1 italic font-light text-lime-300 text-base">anos</span>
+                    <span className="ml-1 sm:ml-2 mb-0.5 sm:mb-1 italic font-light text-lime-300 text-sm sm:text-base">anos</span>
                   </div>
                 </div>
               </DialogTitle>
@@ -184,13 +184,13 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring" }}
-              className="mt-5"
+              className="mt-3 sm:mt-4"
             >
               <span className="text-[10px] font-bold text-emerald-200/80 uppercase tracking-[0.25em]">
                 Prêmio Estimado
               </span>
               <div
-                className="mega30-shimmer font-black text-5xl sm:text-6xl leading-none mt-1 bg-clip-text text-transparent drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]"
+                className="mega30-shimmer font-black text-4xl sm:text-5xl md:text-6xl leading-none mt-1 bg-clip-text text-transparent drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]"
                 style={{
                   backgroundImage:
                     "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
@@ -199,7 +199,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                 R$ 150
               </div>
               <div
-                className="font-black text-2xl sm:text-3xl leading-none mt-1 italic bg-clip-text text-transparent"
+                className="font-black text-xl sm:text-2xl md:text-3xl leading-none mt-0.5 sm:mt-1 italic bg-clip-text text-transparent"
                 style={{
                   backgroundImage: "linear-gradient(180deg, #FFE69A 0%, #C99528 100%)",
                 }}
@@ -214,7 +214,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
           <div className="relative h-1 bg-gradient-to-r from-lime-400 via-amber-300 to-lime-400" />
         </div>
 
-        <div className="px-6 pb-6 space-y-5">
+        <div className="px-4 sm:px-6 pt-4 pb-4 sm:pb-6 space-y-3 sm:space-y-4">
           {/* Countdown */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-1.5 mb-3">
@@ -231,27 +231,28 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
             </div>
 
             {!isExpired && status !== "live" && status !== "finished" && (
-              <div className="flex items-center justify-center gap-2 sm:gap-3">
+              <div className="flex items-center justify-center gap-1 sm:gap-2 md:gap-3">
                 <CountdownUnit value={countdown.days} label="Dias" />
-                <span className="text-xl font-bold text-muted-foreground mt-[-20px]">:</span>
+                <span className="text-base sm:text-xl font-bold text-muted-foreground mt-[-16px] sm:mt-[-20px]">:</span>
                 <CountdownUnit value={countdown.hours} label="Horas" />
-                <span className="text-xl font-bold text-muted-foreground mt-[-20px]">:</span>
+                <span className="text-base sm:text-xl font-bold text-muted-foreground mt-[-16px] sm:mt-[-20px]">:</span>
                 <CountdownUnit value={countdown.minutes} label="Min" />
-                <span className="text-xl font-bold text-muted-foreground mt-[-20px]">:</span>
+                <span className="text-base sm:text-xl font-bold text-muted-foreground mt-[-16px] sm:mt-[-20px]">:</span>
                 <CountdownUnit value={countdown.seconds} label="Seg" />
               </div>
             )}
           </div>
 
           {/* Date */}
-          <div className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-secondary/50 border border-border">
+          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg sm:rounded-xl bg-secondary/50 border border-border">
             <Calendar className="w-4 h-4 text-emerald-500" />
-            <span className="text-sm text-foreground font-medium">
-              Sorteio: Domingo, 24 de Maio de 2026 às 11h
+            <span className="text-xs sm:text-sm text-foreground font-medium text-center">
+              <span className="sm:hidden">Dom, 24/05/2026 · 11h</span>
+              <span className="hidden sm:inline">Sorteio: Domingo, 24 de Maio de 2026 às 11h</span>
             </span>
           </div>
 
-          <p className="text-sm text-muted-foreground text-center leading-relaxed">
+          <p className="text-xs sm:text-sm text-muted-foreground text-center leading-relaxed">
             {SPECIAL.description}
           </p>
 
@@ -262,24 +263,24 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + idx * 0.1 }}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/10"
+                className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/10"
               >
-                <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
                   {idx === 0 ? <TrendingUp className="w-3.5 h-3.5 text-emerald-500" /> :
                    idx === 1 ? <PartyPopper className="w-3.5 h-3.5 text-emerald-500" /> :
                    idx === 2 ? <Sparkles className="w-3.5 h-3.5 text-emerald-500" /> :
                    <Gift className="w-3.5 h-3.5 text-emerald-500" />}
                 </div>
-                <span className="text-sm text-foreground">{item}</span>
+                <span className="text-xs sm:text-sm text-foreground leading-snug">{item}</span>
               </motion.div>
             ))}
           </div>
 
           <Button
-            className="w-full h-12 text-base font-bold gap-2 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-600 hover:via-emerald-700 hover:to-amber-600 text-white shadow-lg"
+            className="w-full h-11 sm:h-12 text-sm sm:text-base font-bold gap-2 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-600 hover:via-emerald-700 hover:to-amber-600 text-white shadow-lg"
             onClick={() => onGeneratePicks ? onGeneratePicks() : onOpenChange(false)}
           >
-            <Sparkles className="w-5 h-5" />
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             Gerar Palpites para a Mega-Sena 30 Anos
           </Button>
         </div>
