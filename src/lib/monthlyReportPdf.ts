@@ -51,6 +51,7 @@ function generateFrequencyFromHistory(history: LotteryResult[], maxNumber: numbe
 export interface ReportEntry {
   result: LotteryResult;
   frequency: NumberFrequency[];
+  drawsCount?: number;
 }
 
 export function buildReportEntries(results: LotteryResult[]): ReportEntry[] {
@@ -64,7 +65,51 @@ export function buildReportEntries(results: LotteryResult[]): ReportEntry[] {
         ...f,
         frequency: f.frequency + ((f.number * 7) % 13) + 1,
       })).sort((a, b) => b.frequency - a.frequency);
-      return { result: r, frequency: enriched };
+      return { result: r, frequency: enriched, drawsCount: 1 };
+    });
+}
+
+/**
+ * Build report entries from real history per lottery, filtered by a date window.
+ * `historyByLottery` maps lottery id -> list of recent draws (any length).
+ * `days` defines the window relative to today; falls back to all draws if a
+ * lottery has no draws inside the window.
+ */
+export function buildReportEntriesFromHistory(
+  results: LotteryResult[],
+  historyByLottery: Record<string, LotteryResult[]>,
+  days: number,
+): ReportEntry[] {
+  const cutoff = new Date();
+  cutoff.setHours(0, 0, 0, 0);
+  cutoff.setDate(cutoff.getDate() - days);
+
+  const parseDate = (s: string): Date | null => {
+    if (!s) return null;
+    const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  };
+
+  return results
+    .filter((r) => NUMERIC_LOTTERY_IDS.has(r.id) && r.maxNumber && r.selectCount)
+    .map((r) => {
+      const all = historyByLottery[r.id] || [r];
+      const filtered = all.filter((d) => {
+        const dt = parseDate(d.date);
+        return dt ? dt >= cutoff : false;
+      });
+      const used = filtered.length > 0 ? filtered : [r];
+      const freq = generateFrequencyFromHistory(used, r.maxNumber);
+      // If only 1 draw available (no real history), apply spread so hot/cold are meaningful.
+      const enriched = used.length <= 1
+        ? freq.map((f) => ({
+            ...f,
+            frequency: f.frequency + ((f.number * 7) % 13) + 1,
+          })).sort((a, b) => b.frequency - a.frequency)
+        : freq;
+      return { result: r, frequency: enriched, drawsCount: used.length };
     });
 }
 
@@ -86,12 +131,17 @@ function drawFooter(doc: jsPDF) {
   }
 }
 
-export function generateMonthlyReportPdf(entries: ReportEntry[]): void {
+export function generateMonthlyReportPdf(
+  entries: ReportEntry[],
+  options: { periodLabel?: string; periodDays?: number } = {},
+): void {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const now = new Date();
   const monthName = MONTHS_PT[now.getMonth()];
   const year = now.getFullYear();
   const pageWidth = doc.internal.pageSize.getWidth();
+  const periodLabel = options.periodLabel
+    || (options.periodDays ? `Últimos ${options.periodDays} dias` : `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} de ${year}`);
 
   // Cover
   doc.setFillColor(255, 122, 0);
@@ -107,12 +157,7 @@ export function generateMonthlyReportPdf(entries: ReportEntry[]): void {
   doc.setTextColor(40, 40, 40);
   doc.setFontSize(20);
   doc.setFont("helvetica", "bold");
-  doc.text(
-    `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} de ${year}`,
-    pageWidth / 2,
-    80,
-    { align: "center" },
-  );
+  doc.text(periodLabel, pageWidth / 2, 80, { align: "center" });
 
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
@@ -154,11 +199,12 @@ export function generateMonthlyReportPdf(entries: ReportEntry[]): void {
     let cursorY = 35;
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(10);
-    doc.text(
-      `Faixa: 1 a ${result.maxNumber} · Selecionar: ${result.selectCount} dezenas`,
-      15,
-      cursorY,
-    );
+    const drawsInfo = entries.find((e) => e.result.id === result.id)?.drawsCount;
+    const baseInfo = `Faixa: 1 a ${result.maxNumber} · Selecionar: ${result.selectCount} dezenas`;
+    const periodInfo = drawsInfo
+      ? ` · Período: ${periodLabel} (${drawsInfo} concurso${drawsInfo > 1 ? "s" : ""})`
+      : ` · Período: ${periodLabel}`;
+    doc.text(baseInfo + periodInfo, 15, cursorY);
     cursorY += 10;
 
     const hot = frequency.slice(0, 10);
@@ -260,5 +306,6 @@ export function generateMonthlyReportPdf(entries: ReportEntry[]): void {
   }
 
   drawFooter(doc);
-  doc.save(`relatorio-loterias-${monthName}-${year}.pdf`);
+  const slug = (options.periodDays ? `${options.periodDays}d` : `${monthName}-${year}`);
+  doc.save(`relatorio-loterias-${slug}.pdf`);
 }
