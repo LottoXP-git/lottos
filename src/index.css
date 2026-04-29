@@ -281,3 +281,62 @@
     50% { box-shadow: 0 0 40px hsl(45, 93%, 58%, 0.6); }
   }
 }
+
+@layer components {
+  /* Mega 30 — efeitos sutis e GPU-friendly */
+
+  .mega30-balloon {
+    will-change: transform;
+    animation: mega30-float-rotate 6s ease-in-out infinite;
+  }
+  .mega30-balloon-2 { animation-duration: 7s; animation-delay: -1.5s; }
+  .mega30-balloon-3 { animation-duration: 5.5s; animation-delay: -0.8s; }
+  .mega30-balloon-4 { animation-duration: 8s; animation-delay: -2.2s; }
+
+  @keyframes mega30-float-rotate {
+    0%   { transform: translate3d(0, 0, 0) rotate(-2deg); }
+    50%  { transform: translate3d(0, -6px, 0) rotate(2deg); }
+    100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  }
+
+  .mega30-shimmer {
+    background-size: 200% 100% !important;
+    will-change: background-position;
+    animation: mega30-shimmer 4s linear infinite;
+  }
+  @keyframes mega30-shimmer {
+    0%   { background-position: 200% 50%; }
+    100% { background-position: -100% 50%; }
+  }
+
+  .mega30-clover {
+    transform-origin: 50% 50%;
+    will-change: transform;
+    animation: mega30-clover-spin 8s ease-in-out infinite;
+  }
+  @keyframes mega30-clover-spin {
+    0%   { transform: rotate(-6deg) scale(1); }
+    50%  { transform: rotate(8deg) scale(1.06); }
+    100% { transform: rotate(-6deg) scale(1); }
+  }
+
+  .mega30-glint {
+    will-change: transform, opacity;
+    animation: mega30-glint 6s ease-in-out infinite;
+  }
+  @keyframes mega30-glint {
+    0%, 100% { transform: translate3d(-30%, 0, 0) rotate(-18deg); opacity: 0; }
+    20%      { opacity: 0.35; }
+    50%      { transform: translate3d(30%, 0, 0) rotate(-18deg); opacity: 0.35; }
+    80%      { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mega30-balloon,
+    .mega30-shimmer,
+    .mega30-clover,
+    .mega30-glint {
+      animation: none !important;
+    }
+  }
+}
