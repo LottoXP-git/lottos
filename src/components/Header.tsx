@@ -1,4 +1,4 @@
-import { Home, History, Sparkles } from "lucide-react";
+import { Home, History, Sparkles, FileText } from "lucide-react";
 import { NavLink } from "./NavLink";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
@@ -52,6 +52,18 @@ export function Header() {
             >
               <Sparkles className="w-4 h-4" />
               <span className="hidden sm:inline">Especiais</span>
+            </NavLink>
+
+            <NavLink
+              to="/relatorio-mensal"
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              )}
+              activeClassName="!text-primary bg-primary/10 hover:bg-primary/15"
+            >
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Relatório</span>
             </NavLink>
           </nav>
           
