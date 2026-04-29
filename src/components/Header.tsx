@@ -51,7 +51,7 @@ export function Header() {
               activeClassName="!text-primary bg-primary/10 hover:bg-primary/15"
             >
               <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Relatório</span>
+              <span className="hidden sm:inline">Estatísticas</span>
             </NavLink>
           </nav>
           
