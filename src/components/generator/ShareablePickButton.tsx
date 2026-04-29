@@ -5,6 +5,8 @@ import { toast } from "sonner";
 
 interface ShareablePickButtonProps {
   lotteryName: string;
+  /** Lottery color token, e.g. "lottery-megasena" */
+  lotteryColor?: string;
   numbers: number[];
   trevos?: number[];
   timeCoracao?: string;
@@ -13,10 +15,35 @@ interface ShareablePickButtonProps {
   rarityEmoji?: string;
   levelName: string;
   levelEmoji: string;
-  accentColor?: string; // hex
 }
 
-const DEFAULT_ACCENT = "#f97316";
+/** Card identity per modality — mirrors LotteryCard / LotteryBall palettes. */
+interface ModalityTheme {
+  bgFrom: string;
+  bgTo: string;
+  ballFrom: string;
+  ballTo: string;
+  accent: string; // for chips / banner
+  text: string;
+}
+
+const THEMES: Record<string, ModalityTheme> = {
+  "lottery-megasena":      { bgFrom: "#059669", bgTo: "#064e3b", ballFrom: "#047857", ballTo: "#022c22", accent: "#ffffff", text: "#ffffff" },
+  "lottery-lotofacil":     { bgFrom: "#7e22ce", bgTo: "#3b0764", ballFrom: "#7e22ce", ballTo: "#581c87", accent: "#ffffff", text: "#ffffff" },
+  "lottery-quina":         { bgFrom: "#3730a3", bgTo: "#0c1c4a", ballFrom: "#1e40af", ballTo: "#1e1b4b", accent: "#ffffff", text: "#ffffff" },
+  "lottery-lotomania":     { bgFrom: "#f97316", bgTo: "#9a3412", ballFrom: "#ea580c", ballTo: "#7c2d12", accent: "#fff7ed", text: "#ffffff" },
+  "lottery-duplasena":     { bgFrom: "#be123c", bgTo: "#7f1d1d", ballFrom: "#b91c1c", ballTo: "#7f1d1d", accent: "#ffffff", text: "#ffffff" },
+  "lottery-diadesorte":    { bgFrom: "#f59e0b", bgTo: "#b45309", ballFrom: "#d97706", ballTo: "#78350f", accent: "#fff7ed", text: "#ffffff" },
+  "lottery-supersete":     { bgFrom: "#84cc16", bgTo: "#3f6212", ballFrom: "#4d7c0f", ballTo: "#1a2e05", accent: "#ffffff", text: "#ffffff" },
+  "lottery-maismilionaria":{ bgFrom: "#4338ca", bgTo: "#1e1b4b", ballFrom: "#3730a3", ballTo: "#1e1b4b", accent: "#ffffff", text: "#ffffff" },
+  "lottery-timemania":     { bgFrom: "#facc15", bgTo: "#a16207", ballFrom: "#15803d", ballTo: "#14532d", accent: "#0f172a", text: "#ffffff" },
+  "lottery-federal":       { bgFrom: "#0284c7", bgTo: "#1e3a8a", ballFrom: "#075985", ballTo: "#1e3a8a", accent: "#ffffff", text: "#ffffff" },
+  "lottery-loteca":        { bgFrom: "#ef4444", bgTo: "#7f1d1d", ballFrom: "#b91c1c", ballTo: "#7f1d1d", accent: "#ffffff", text: "#ffffff" },
+};
+
+const DEFAULT_THEME: ModalityTheme = {
+  bgFrom: "#f97316", bgTo: "#7c2d12", ballFrom: "#ea580c", ballTo: "#7c2d12", accent: "#ffffff", text: "#ffffff",
+};
 
 function drawRoundedRect(
   ctx: CanvasRenderingContext2D,
@@ -35,6 +62,12 @@ function drawRoundedRect(
   ctx.closePath();
 }
 
+function todayBR() {
+  return new Date().toLocaleDateString("pt-BR", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+  });
+}
+
 function buildCard(props: ShareablePickButtonProps): HTMLCanvasElement {
   const W = 1080;
   const H = 1350;
@@ -42,131 +75,188 @@ function buildCard(props: ShareablePickButtonProps): HTMLCanvasElement {
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext("2d")!;
-  const accent = props.accentColor || DEFAULT_ACCENT;
+  const theme = THEMES[props.lotteryColor ?? ""] ?? DEFAULT_THEME;
 
-  // Background gradient
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, "#0b1020");
-  bg.addColorStop(1, "#1a0f00");
+  // ===== Background — full modality gradient (mirrors card) =====
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, theme.bgFrom);
+  bg.addColorStop(1, theme.bgTo);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
-  // Glow blob
-  const glow = ctx.createRadialGradient(W / 2, 220, 30, W / 2, 220, 600);
-  glow.addColorStop(0, accent + "55");
-  glow.addColorStop(1, "transparent");
-  ctx.fillStyle = glow;
+  // Subtle highlight glow top-left, like the card's ::before overlay
+  const overlay = ctx.createLinearGradient(0, 0, W, H * 0.6);
+  overlay.addColorStop(0, "rgba(255,255,255,0.18)");
+  overlay.addColorStop(0.5, "rgba(255,255,255,0)");
+  ctx.fillStyle = overlay;
   ctx.fillRect(0, 0, W, H);
 
-  // Header
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 56px Inter, system-ui, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("LOTTOS", W / 2, 130);
+  // ===== Top brand strip =====
+  ctx.fillStyle = "rgba(255,255,255,0.92)";
+  ctx.font = "800 30px Inter, system-ui, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText("LOTTOS", 60, 70);
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
+  ctx.font = "500 22px Inter, system-ui, sans-serif";
+  ctx.textAlign = "right";
+  ctx.fillText(`Palpite • ${todayBR()}`, W - 60, 70);
 
-  ctx.fillStyle = "rgba(255,255,255,0.7)";
-  ctx.font = "500 30px Inter, system-ui, sans-serif";
-  ctx.fillText("Meu palpite da sorte", W / 2, 180);
+  // ===== Card-style header (name + "MEU PALPITE") =====
+  ctx.textAlign = "left";
+  ctx.fillStyle = theme.text;
+  ctx.font = "bold 72px Inter, system-ui, sans-serif";
+  ctx.shadowColor = "rgba(0,0,0,0.25)";
+  ctx.shadowBlur = 8;
+  ctx.fillText(props.lotteryName, 60, 200);
+  ctx.shadowBlur = 0;
 
-  // Lottery chip
-  ctx.font = "bold 36px Inter, system-ui, sans-serif";
-  const chipText = props.lotteryName.toUpperCase();
-  const chipW = ctx.measureText(chipText).width + 80;
-  drawRoundedRect(ctx, (W - chipW) / 2, 230, chipW, 70, 35);
-  ctx.fillStyle = accent;
-  ctx.fill();
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(chipText, W / 2, 280);
+  ctx.fillStyle = "rgba(255,255,255,0.85)";
+  ctx.font = "600 30px Inter, system-ui, sans-serif";
+  ctx.fillText("Meu palpite da sorte", 60, 250);
 
-  // Rarity badge
+  // Rarity chip (top-right under brand)
   if (props.rarityLabel) {
-    ctx.font = "600 28px Inter, system-ui, sans-serif";
-    const txt = `${props.rarityEmoji ?? "✨"} Palpite ${props.rarityLabel}`;
-    const w = ctx.measureText(txt).width + 60;
-    drawRoundedRect(ctx, (W - w) / 2, 340, w, 56, 28);
-    ctx.fillStyle = "rgba(255,255,255,0.1)";
+    ctx.font = "700 26px Inter, system-ui, sans-serif";
+    const txt = `${props.rarityEmoji ?? "✨"} ${props.rarityLabel}`;
+    ctx.textAlign = "right";
+    const padX = 22;
+    const w = ctx.measureText(txt).width + padX * 2;
+    const x = W - 60 - w;
+    const y = 110;
+    drawRoundedRect(ctx, x, y, w, 50, 25);
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.fillStyle = "#ffffff";
-    ctx.fillText(txt, W / 2, 378);
+    ctx.fillText(txt, W - 60 - padX, y + 35);
+    ctx.textAlign = "left";
   }
 
-  // Balls
+  // ===== Inner panel (like CardContent area) =====
+  const panelX = 60;
+  const panelY = 300;
+  const panelW = W - 120;
+  const panelH = 820;
+  drawRoundedRect(ctx, panelX, panelY, panelW, panelH, 36);
+  ctx.fillStyle = "rgba(255,255,255,0.10)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // ===== Balls (modality colors, like LotteryBall) =====
   const nums = props.numbers;
-  const ballSize = nums.length > 10 ? 110 : 140;
-  const gap = nums.length > 10 ? 18 : 28;
+  const ballSize = nums.length > 10 ? 100 : 140;
+  const gap = nums.length > 10 ? 16 : 26;
   const perRow = Math.min(nums.length, nums.length > 10 ? 5 : 6);
   const rows = Math.ceil(nums.length / perRow);
   const totalW = perRow * ballSize + (perRow - 1) * gap;
   const startX = (W - totalW) / 2;
-  const startY = 470;
+  const ballsBlockH = rows * ballSize + (rows - 1) * gap;
+  const startY = panelY + (panelH - ballsBlockH) / 2 - 40;
 
   nums.forEach((n, i) => {
     const row = Math.floor(i / perRow);
     const col = i % perRow;
-    const x = startX + col * (ballSize + gap) + ballSize / 2;
-    const y = startY + row * (ballSize + gap) + ballSize / 2;
+    const cx = startX + col * (ballSize + gap) + ballSize / 2;
+    const cy = startY + row * (ballSize + gap) + ballSize / 2;
 
-    const grad = ctx.createRadialGradient(x - ballSize / 4, y - ballSize / 4, 5, x, y, ballSize / 2);
-    grad.addColorStop(0, "#ffffff");
-    grad.addColorStop(0.15, accent);
-    grad.addColorStop(1, "#000000");
+    // Ball gradient mirrors LotteryBall variant (br gradient)
+    const grad = ctx.createLinearGradient(
+      cx - ballSize / 2, cy - ballSize / 2,
+      cx + ballSize / 2, cy + ballSize / 2
+    );
+    grad.addColorStop(0, theme.ballFrom);
+    grad.addColorStop(1, theme.ballTo);
+
+    // Soft drop shadow
+    ctx.shadowColor = "rgba(0,0,0,0.45)";
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 4;
+
     ctx.beginPath();
-    ctx.arc(x, y, ballSize / 2, 0, Math.PI * 2);
+    ctx.arc(cx, cy, ballSize / 2, 0, Math.PI * 2);
     ctx.fillStyle = grad;
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.9)";
-    ctx.lineWidth = 4;
+
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    // White ring (matches ring-2 ring-white/90)
+    ctx.strokeStyle = "rgba(255,255,255,0.92)";
+    ctx.lineWidth = 5;
     ctx.stroke();
 
+    // Highlight gloss
+    const gloss = ctx.createRadialGradient(
+      cx - ballSize / 4, cy - ballSize / 4, 4,
+      cx - ballSize / 4, cy - ballSize / 4, ballSize / 2
+    );
+    gloss.addColorStop(0, "rgba(255,255,255,0.35)");
+    gloss.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.beginPath();
+    ctx.arc(cx, cy, ballSize / 2 - 3, 0, Math.PI * 2);
+    ctx.fillStyle = gloss;
+    ctx.fill();
+
+    // Number
     ctx.fillStyle = "#ffffff";
-    ctx.font = `bold ${ballSize * 0.42}px JetBrains Mono, monospace`;
+    ctx.font = `800 ${ballSize * 0.42}px JetBrains Mono, monospace`;
+    ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.shadowColor = "rgba(0,0,0,0.7)";
-    ctx.shadowBlur = 6;
-    ctx.fillText(String(n).padStart(2, "0"), x, y + 4);
+    ctx.shadowColor = "rgba(0,0,0,0.6)";
+    ctx.shadowBlur = 4;
+    ctx.fillText(String(n).padStart(2, "0"), cx, cy + 3);
     ctx.shadowBlur = 0;
   });
   ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "center";
 
-  let extrasY = startY + rows * (ballSize + gap) + 30;
+  // ===== Extras (Trevos / Time / Mês) — pill chips like the card =====
+  let extrasY = startY + ballsBlockH + 70;
 
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "600 30px Inter, system-ui, sans-serif";
-  if (props.trevos && props.trevos.length) {
-    ctx.fillText(`Trevos: ${props.trevos.join(" • ")}`, W / 2, extrasY);
-    extrasY += 50;
-  }
-  if (props.timeCoracao) {
-    ctx.fillText(`Time: ${props.timeCoracao}`, W / 2, extrasY);
-    extrasY += 50;
-  }
-  if (props.mesSorte) {
-    ctx.fillText(`Mês: ${props.mesSorte}`, W / 2, extrasY);
-    extrasY += 50;
+  function drawChip(label: string, value: string) {
+    ctx.font = "600 28px Inter, system-ui, sans-serif";
+    const txt = `${label} ${value}`;
+    const w = ctx.measureText(txt).width + 60;
+    const x = (W - w) / 2;
+    drawRoundedRect(ctx, x, extrasY, w, 56, 28);
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(txt, W / 2, extrasY + 38);
+    extrasY += 70;
   }
 
-  // Footer band
-  drawRoundedRect(ctx, 60, H - 230, W - 120, 170, 28);
-  ctx.fillStyle = "rgba(255,255,255,0.07)";
+  if (props.trevos && props.trevos.length) drawChip("🍀 Trevos:", props.trevos.join(" • "));
+  if (props.timeCoracao) drawChip("❤ Time:", props.timeCoracao);
+  if (props.mesSorte) drawChip("📅 Mês:", props.mesSorte);
+
+  // ===== Footer band =====
+  drawRoundedRect(ctx, 60, H - 180, W - 120, 130, 28);
+  ctx.fillStyle = "rgba(0,0,0,0.28)";
   ctx.fill();
-  ctx.strokeStyle = "rgba(255,255,255,0.18)";
+  ctx.strokeStyle = "rgba(255,255,255,0.20)";
   ctx.lineWidth = 2;
   ctx.stroke();
 
   ctx.textAlign = "left";
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 36px Inter, system-ui, sans-serif";
-  ctx.fillText(`${props.levelEmoji}  ${props.levelName}`, 100, H - 165);
-  ctx.fillStyle = "rgba(255,255,255,0.7)";
-  ctx.font = "500 26px Inter, system-ui, sans-serif";
-  ctx.fillText("Gerado em lottos.lovable.app", 100, H - 110);
-  ctx.fillStyle = accent;
-  ctx.font = "bold 26px Inter, system-ui, sans-serif";
+  ctx.font = "bold 34px Inter, system-ui, sans-serif";
+  ctx.fillText(`${props.levelEmoji}  ${props.levelName}`, 100, H - 115);
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
+  ctx.font = "500 24px Inter, system-ui, sans-serif";
+  ctx.fillText("lottos.lovable.app", 100, H - 75);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 24px Inter, system-ui, sans-serif";
   ctx.textAlign = "right";
-  ctx.fillText("#PalpiteDaSorte", W - 100, H - 110);
+  ctx.fillText("#PalpiteDaSorte", W - 100, H - 75);
 
   return canvas;
 }
@@ -202,7 +292,7 @@ export function ShareablePickButton(props: ShareablePickButtonProps) {
         URL.revokeObjectURL(url);
         toast.success("Imagem baixada!");
       }
-    } catch (e) {
+    } catch {
       toast.error("Não foi possível compartilhar agora");
     } finally {
       setBusy(false);
