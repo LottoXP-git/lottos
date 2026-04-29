@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Gift, Calendar, Clock, TrendingUp, Sparkles, Star, PartyPopper } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MEGA_SENA_30_DATE } from "@/utils/megaSena30Date";
+import { MEGA_SENA_30_DATE, getMegaSena30Status } from "@/utils/megaSena30Date";
 
 interface MegaSena30ModalProps {
   open: boolean;
@@ -72,11 +72,13 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
 
 export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSena30ModalProps) {
   const [countdown, setCountdown] = useState<CountdownValues>(getCountdown(SPECIAL.date));
+  const [status, setStatus] = useState(() => getMegaSena30Status());
 
   useEffect(() => {
     if (!open) return;
     const interval = setInterval(() => {
       setCountdown(getCountdown(SPECIAL.date));
+      setStatus(getMegaSena30Status());
     }, 1000);
     return () => clearInterval(interval);
   }, [open]);
@@ -111,6 +113,22 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
               </span>
             </div>
 
+            {status !== "upcoming" && (
+              <div
+                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3 ml-2 border text-xs font-semibold uppercase tracking-wider ${
+                  status === "one-day"
+                    ? "bg-amber-500/20 border-amber-400/40 text-amber-200 animate-pulse"
+                    : status === "live"
+                    ? "bg-rose-500/20 border-rose-400/40 text-rose-200 animate-pulse"
+                    : "bg-emerald-500/20 border-emerald-400/40 text-emerald-200"
+                }`}
+              >
+                {status === "one-day" && "Falta 1 dia"}
+                {status === "live" && "Ao vivo agora"}
+                {status === "finished" && "Sorteio realizado"}
+              </div>
+            )}
+
             <DialogHeader>
               <DialogTitle className="text-3xl sm:text-4xl font-extrabold text-foreground mb-1">
                 {SPECIAL.name}
@@ -140,11 +158,17 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
             <div className="flex items-center justify-center gap-1.5 mb-3">
               <Clock className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-                {isExpired ? "Sorteio realizado!" : "Contagem Regressiva"}
+                {status === "finished"
+                  ? "Sorteio realizado!"
+                  : status === "live"
+                  ? "Sorteio acontecendo agora"
+                  : status === "one-day"
+                  ? "Última chance — falta 1 dia"
+                  : "Contagem Regressiva"}
               </span>
             </div>
 
-            {!isExpired && (
+            {!isExpired && status !== "live" && status !== "finished" && (
               <div className="flex items-center justify-center gap-2 sm:gap-3">
                 <CountdownUnit value={countdown.days} label="Dias" />
                 <span className="text-xl font-bold text-muted-foreground mt-[-20px]">:</span>

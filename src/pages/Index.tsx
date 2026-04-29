@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -18,7 +18,8 @@ import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
 import { MegaSena30Modal } from "@/components/MegaSena30Modal";
-import { isMegaSena30AnosActive } from "@/utils/megaSena30Date";
+import { isMegaSena30AnosActive, getMegaSena30Status, MegaSena30Status } from "@/utils/megaSena30Date";
+import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 
 const Index = () => {
@@ -30,6 +31,19 @@ const Index = () => {
   const [quickBetPreselect, setQuickBetPreselect] = useState<string | undefined>();
   const showDuplaDePascoa = isDuplaDePascoaActive();
   const showMegaSena30 = isMegaSena30AnosActive();
+
+  // Live status for the Mega-Sena 30 Anos draw — updates every 30s.
+  const [megaSena30Status, setMegaSena30Status] = useState<MegaSena30Status>(() => getMegaSena30Status());
+  useEffect(() => {
+    if (!showMegaSena30) return;
+    const tick = () => setMegaSena30Status(getMegaSena30Status());
+    tick();
+    const id = setInterval(tick, 30_000);
+    return () => clearInterval(id);
+  }, [showMegaSena30]);
+
+  // Schedule local notifications (1 day before + live).
+  useMegaSena30Notifications(showMegaSena30);
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
@@ -177,9 +191,32 @@ const Index = () => {
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Concurso Especial</span>
                     <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300 animate-pulse">30 ANOS</span>
+                    {megaSena30Status === "one-day" && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-amber-500/30 border border-amber-400/40 text-[10px] font-bold text-amber-200 animate-pulse">
+                        FALTA 1 DIA
+                      </span>
+                    )}
+                    {megaSena30Status === "live" && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-rose-500/30 border border-rose-400/40 text-[10px] font-bold text-rose-200 animate-pulse">
+                        AO VIVO
+                      </span>
+                    )}
+                    {megaSena30Status === "finished" && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400/40 text-[10px] font-bold text-emerald-200">
+                        REALIZADO
+                      </span>
+                    )}
                   </div>
                   <h3 className="text-lg sm:text-xl font-bold text-foreground">Mega-Sena 30 Anos</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">Sorteio especial · Domingo, 24/05/2026 às 11h</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">
+                    {megaSena30Status === "live"
+                      ? "Sorteio acontecendo agora — acompanhe os números!"
+                      : megaSena30Status === "finished"
+                      ? "Sorteio realizado · Confira o resultado"
+                      : megaSena30Status === "one-day"
+                      ? "Última chance — sorteio amanhã às 11h"
+                      : "Sorteio especial · Domingo, 24/05/2026 às 11h"}
+                  </p>
                 </div>
               </div>
               <div className="text-right shrink-0">
