@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { isNativeIOS } from "@/lib/platform";
 
 type AdFormat = "leaderboard" | "inline" | "sidebar" | "interstitial";
 
@@ -48,7 +49,13 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
   const config = adSlotConfig[format];
   const adSlot = slot ?? config.slot;
 
+  // App Store compliance: AdSense em WebView viola a política do AdSense e
+  // costuma causar rejeição na revisão da Apple. Esconder no iOS nativo até
+  // integrarmos o SDK nativo (AdMob) numa próxima fase.
+  const skipRender = isNativeIOS();
+
   useEffect(() => {
+    if (skipRender) return;
     if (pushed.current) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -56,10 +63,11 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
     } catch (e) {
       console.error("AdSense push error:", e);
     }
-  }, []);
+  }, [skipRender]);
 
   // Track impression when 50% of the ad is visible for >=1s
   useEffect(() => {
+    if (skipRender) return;
     const el = adRef.current;
     if (!el || impressionTracked.current) return;
 
@@ -99,7 +107,7 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
       observer.disconnect();
       if (timer) window.clearTimeout(timer);
     };
-  }, [adSlot, format]);
+  }, [adSlot, format, skipRender]);
 
   // Track click on the ad container (best-effort: AdSense iframe steals real clicks,
   // so we listen for pointerdown — a strong signal the user engaged the ad area).
@@ -117,6 +125,8 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
         if (error) console.warn("ad click track failed", error.message);
       });
   };
+
+  if (skipRender) return null;
 
   return (
     <div
