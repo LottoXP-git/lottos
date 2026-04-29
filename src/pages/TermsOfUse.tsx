@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FileText } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 
 export default function TermsOfUse() {
   return (
@@ -15,6 +16,8 @@ export default function TermsOfUse() {
         <p className="text-sm text-muted-foreground mb-6">
           Última atualização: {new Date().toLocaleDateString("pt-BR")}
         </p>
+
+        <AdBanner format="leaderboard" slot="8331815579" className="mb-8 rounded-xl" />
 
         <div className="prose prose-sm dark:prose-invert space-y-6 text-muted-foreground">
           <section className="space-y-2">
