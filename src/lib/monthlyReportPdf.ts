@@ -83,22 +83,38 @@ export function buildReportEntriesFromHistory(
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - days);
+  return buildReportEntriesFromRange(results, historyByLottery, cutoff, new Date());
+}
 
-  const parseDate = (s: string): Date | null => {
-    if (!s) return null;
-    const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  };
+const parseDrawDate = (s: string): Date | null => {
+  if (!s) return null;
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+};
+
+/**
+ * Build report entries restricted to draws inside [startDate, endDate] (inclusive).
+ */
+export function buildReportEntriesFromRange(
+  results: LotteryResult[],
+  historyByLottery: Record<string, LotteryResult[]>,
+  startDate: Date,
+  endDate: Date,
+): ReportEntry[] {
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999);
 
   return results
     .filter((r) => NUMERIC_LOTTERY_IDS.has(r.id) && r.maxNumber && r.selectCount)
     .map((r) => {
       const all = historyByLottery[r.id] || [r];
       const filtered = all.filter((d) => {
-        const dt = parseDate(d.date);
-        return dt ? dt >= cutoff : false;
+        const dt = parseDrawDate(d.date);
+        return dt ? dt >= start && dt <= end : false;
       });
       const used = filtered.length > 0 ? filtered : [r];
       const freq = generateFrequencyFromHistory(used, r.maxNumber);
