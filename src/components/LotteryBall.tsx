@@ -8,6 +8,7 @@ interface LotteryBallProps {
   delay?: number;
   temperature?: "hot" | "warm" | "cold";
   title?: string;
+  entrance?: "bounce" | "cascade" | "flip" | "pop" | "spin";
 }
 
 const sizeClasses = {
@@ -52,7 +53,15 @@ export function LotteryBall({
   delay = 0,
   temperature,
   title,
+  entrance = "bounce",
 }: LotteryBallProps) {
+  const entranceClass = {
+    bounce: "ball-entrance-bounce",
+    cascade: "ball-entrance-cascade",
+    flip: "ball-entrance-flip",
+    pop: "ball-entrance-pop",
+    spin: "ball-entrance-spin",
+  }[entrance];
   return (
     <div
       title={title}
@@ -61,7 +70,7 @@ export function LotteryBall({
         temperature ? temperatureRingClasses[temperature] : "ring-2 ring-white/90",
         sizeClasses[size],
         variantClasses[variant],
-        animated && "animate-bounce-in opacity-0"
+        animated && entranceClass
       )}
       style={{
         ...(animated ? { animationDelay: `${delay}ms`, animationFillMode: "forwards" } : {}),

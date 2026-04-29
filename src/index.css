@@ -340,3 +340,56 @@
     }
   }
 }
+
+@layer components {
+  /* Ball entrance variations — GPU-friendly, ~600ms */
+  .ball-entrance-bounce { animation: ball-entrance-bounce 0.6s ease-out forwards; opacity: 0; }
+  @keyframes ball-entrance-bounce {
+    0%   { opacity: 0; transform: scale(0.3); }
+    50%  { transform: scale(1.08); opacity: 1; }
+    70%  { transform: scale(0.92); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .ball-entrance-cascade { animation: ball-entrance-cascade 0.55s cubic-bezier(.2,.8,.2,1) forwards; opacity: 0; }
+  @keyframes ball-entrance-cascade {
+    0%   { opacity: 0; transform: translate3d(0,-28px,0) scale(0.6); }
+    60%  { opacity: 1; transform: translate3d(0,4px,0) scale(1.05); }
+    100% { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+  }
+
+  .ball-entrance-flip {
+    animation: ball-entrance-flip 0.7s ease-out forwards;
+    opacity: 0;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  @keyframes ball-entrance-flip {
+    0%   { opacity: 0; transform: perspective(420px) rotateY(90deg) scale(0.8); }
+    60%  { opacity: 1; transform: perspective(420px) rotateY(-12deg) scale(1.04); }
+    100% { opacity: 1; transform: perspective(420px) rotateY(0deg) scale(1); }
+  }
+
+  .ball-entrance-pop { animation: ball-entrance-pop 0.5s cubic-bezier(.34,1.56,.64,1) forwards; opacity: 0; }
+  @keyframes ball-entrance-pop {
+    0%   { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .ball-entrance-spin { animation: ball-entrance-spin 0.7s ease-out forwards; opacity: 0; }
+  @keyframes ball-entrance-spin {
+    0%   { opacity: 0; transform: rotate(-180deg) scale(0.5); }
+    100% { opacity: 1; transform: rotate(0deg) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ball-entrance-bounce,
+    .ball-entrance-cascade,
+    .ball-entrance-flip,
+    .ball-entrance-pop,
+    .ball-entrance-spin {
+      animation: none !important;
+      opacity: 1 !important;
+    }
+  }
+}
