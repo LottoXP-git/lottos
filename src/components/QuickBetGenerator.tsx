@@ -335,6 +335,13 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
           </div>
         </div>
 
+        <LuckModeSelector
+          mode={luckMode}
+          onModeChange={setLuckMode}
+          input={luckInput}
+          onInputChange={setLuckInput}
+        />
+
         <Button
           onClick={generate}
           size="lg"
