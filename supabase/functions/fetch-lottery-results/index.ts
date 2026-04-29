@@ -218,37 +218,94 @@
       return fetchLotecaResult(config, concurso);
     }
 
-   // Using loterias-api - open source API for Brazilian lotteries
-   // GitHub: https://github.com/guto-alves/loterias-api
-   const baseUrl = "https://loteriascaixa-api.herokuapp.com/api";
-   const url = concurso 
-     ? `${baseUrl}/${config.apiName}/${concurso}`
-     : `${baseUrl}/${config.apiName}`;
- 
-   console.log(`Fetching ${config.name} from: ${url}`);
- 
+   // PRIMARY: official Caixa API (always up-to-date, but may 403 sometimes).
+   // FALLBACK: loteriascaixa-api.herokuapp.com (third-party, can lag ~1 day).
+   let data: any = null;
+   let source = "caixa";
+
    try {
-     const response = await fetch(url, {
+     const caixaUrl = concurso
+       ? `https://servicebus2.caixa.gov.br/portaldeloterias/api/${config.apiName}/${concurso}`
+       : `https://servicebus2.caixa.gov.br/portaldeloterias/api/${config.apiName}`;
+     console.log(`[caixa] Fetching ${config.name}: ${caixaUrl}`);
+     const r = await fetch(caixaUrl, {
        headers: {
          "Accept": "application/json",
+         "User-Agent":
+           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+         "Referer": "https://loterias.caixa.gov.br/",
+         "Origin": "https://loterias.caixa.gov.br",
        },
      });
- 
-     if (!response.ok) {
-       console.error(`Error fetching ${config.name}: ${response.status}`);
+     if (r.ok) {
+       const raw = await r.json();
+       // Normalize official Caixa payload → shape expected by the parser below.
+       data = {
+         concurso: raw.numero,
+         data: raw.dataApuracao,
+         dezenas: raw.listaDezenas,
+         dezenasOrdemSorteio: raw.dezenasSorteadasOrdemSorteio,
+         trevos: raw.trevosSorteados,
+         premiacoes: (raw.listaRateioPremio || []).map((p: any) => ({
+           descricao: p.descricaoFaixa,
+           faixa: p.faixa,
+           ganhadores: p.numeroDeGanhadores,
+           valorPremio: p.valorPremio,
+         })),
+         localGanhadores: (raw.listaMunicipioUFGanhadores || []).map((l: any) => ({
+           posicao: l.posicao,
+           municipio: l.municipio,
+           uf: l.uf,
+           nomeFatansiaUL: l.nomeFatansiaUL,
+           ganhadores: l.ganhadores,
+         })),
+         valorAcumuladoProximoConcurso:
+           raw.valorAcumuladoProximoConcurso ?? raw.valorAcumulado,
+         valorEstimadoProximoConcurso: raw.valorEstimadoProximoConcurso,
+         dataProximoConcurso: raw.dataProximoConcurso,
+         acumulado: raw.acumulado,
+         timeCoracao: raw.nomeTimeCoracaoMesSorte,
+         mesSorte: raw.nomeTimeCoracaoMesSorte,
+         _raw: raw,
+       };
+     } else {
+       console.warn(`[caixa] ${config.name} returned ${r.status}, falling back to herokuapp`);
+       await r.text().catch(() => undefined);
+     }
+   } catch (err) {
+     console.warn(`[caixa] ${config.name} failed (${(err as Error).message}), falling back`);
+   }
+
+   // Fallback to herokuapp if official API didn't work.
+   if (!data) {
+     source = "heroku";
+     const baseUrl = "https://loteriascaixa-api.herokuapp.com/api";
+     const url = concurso
+       ? `${baseUrl}/${config.apiName}/${concurso}`
+       : `${baseUrl}/${config.apiName}`;
+     console.log(`[heroku] Fetching ${config.name}: ${url}`);
+     try {
+       const response = await fetch(url, { headers: { "Accept": "application/json" } });
+       if (!response.ok) {
+         console.error(`[heroku] ${config.name} ${response.status}`);
+         return null;
+       }
+       const rawData = await response.json();
+       data = Array.isArray(rawData) ? rawData[0] : rawData;
+     } catch (err) {
+       console.error(`[heroku] ${config.name} failed:`, err);
        return null;
      }
- 
-     const rawData = await response.json();
-     // Handle both array response (latest) and object response (specific concurso)
-     const data = Array.isArray(rawData) ? rawData[0] : rawData;
+   }
+
+   if (!data) {
+     console.error(`No data returned for ${config.name}`);
+     return null;
+   }
+
+   try {
      
-     if (!data) {
-       console.error(`No data returned for ${config.name}`);
-       return null;
-     }
-     
-     console.log(`Received data for ${config.name}:`, JSON.stringify(data).substring(0, 200));
+     console.log(`[${source}] Received data for ${config.name} concurso=${data.concurso || data.numero}`);
  
      // Handle different API response formats
      let numbers: number[] = [];
