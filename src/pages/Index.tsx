@@ -18,6 +18,7 @@ import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
 import { MegaSena30Modal } from "@/components/MegaSena30Modal";
+import { MegaSena30Banner } from "@/components/MegaSena30Banner";
 import { isMegaSena30AnosActive, getMegaSena30Status, MegaSena30Status } from "@/utils/megaSena30Date";
 import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
@@ -177,56 +178,7 @@ const Index = () => {
 
         {showMegaSena30 &&
         <section className="mb-8 animate-fade-in">
-          <button
-            onClick={() => setMegaSena30Open(true)}
-            className="w-full group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-600/10 via-amber-500/10 to-emerald-700/10 hover:from-emerald-600/20 hover:via-amber-500/15 hover:to-emerald-700/20 transition-all duration-300 p-4 sm:p-5">
-
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-amber-500/5 group-hover:opacity-100 opacity-0 transition-opacity" />
-            <div className="relative flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                  <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-400" />
-                </div>
-                <div className="text-left">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Concurso Especial</span>
-                    <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300 animate-pulse">30 ANOS</span>
-                    {megaSena30Status === "one-day" && (
-                      <span className="px-1.5 py-0.5 rounded-full bg-amber-500/30 border border-amber-400/40 text-[10px] font-bold text-amber-200 animate-pulse">
-                        FALTA 1 DIA
-                      </span>
-                    )}
-                    {megaSena30Status === "live" && (
-                      <span className="px-1.5 py-0.5 rounded-full bg-rose-500/30 border border-rose-400/40 text-[10px] font-bold text-rose-200 animate-pulse">
-                        AO VIVO
-                      </span>
-                    )}
-                    {megaSena30Status === "finished" && (
-                      <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400/40 text-[10px] font-bold text-emerald-200">
-                        REALIZADO
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-foreground">Mega-Sena 30 Anos</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">
-                    {megaSena30Status === "live"
-                      ? "Sorteio acontecendo agora — acompanhe os números!"
-                      : megaSena30Status === "finished"
-                      ? "Sorteio realizado · Confira o resultado"
-                      : megaSena30Status === "one-day"
-                      ? "Última chance — sorteio amanhã às 11h"
-                      : "Sorteio especial · Domingo, 24/05/2026 às 11h"}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <span className="text-xs text-muted-foreground">Prêmio estimado</span>
-                <div className="text-lg sm:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400">
-                  R$ 150 Milhões
-                </div>
-              </div>
-            </div>
-          </button>
+          <MegaSena30Banner status={megaSena30Status} onClick={() => setMegaSena30Open(true)} />
         </section>
         }
 
