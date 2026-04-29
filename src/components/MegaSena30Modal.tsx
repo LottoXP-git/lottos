@@ -4,6 +4,7 @@ import { Trophy, Gift, Calendar, Clock, TrendingUp, Sparkles, Star, PartyPopper 
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MEGA_SENA_30_DATE, getMegaSena30Status } from "@/utils/megaSena30Date";
+import { MegaSena30ModalSkeleton } from "./MegaSena30ModalSkeleton";
 
 interface MegaSena30ModalProps {
   open: boolean;
@@ -73,15 +74,27 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
 export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSena30ModalProps) {
   const [countdown, setCountdown] = useState<CountdownValues>(getCountdown(SPECIAL.date));
   const [status, setStatus] = useState(() => getMegaSena30Status());
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulated load — when wired to a real API, replace with useQuery state.
+  useEffect(() => {
+    if (!open) {
+      setIsLoading(true);
+      return;
+    }
+    setIsLoading(true);
+    const t = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(t);
+  }, [open]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || isLoading) return;
     const interval = setInterval(() => {
       setCountdown(getCountdown(SPECIAL.date));
       setStatus(getMegaSena30Status());
     }, 1000);
     return () => clearInterval(interval);
-  }, [open]);
+  }, [open, isLoading]);
 
   const isExpired = useMemo(() => {
     return countdown.days === 0 && countdown.hours === 0 && countdown.minutes === 0 && countdown.seconds === 0;
@@ -90,6 +103,15 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[calc(100vw-1rem)] sm:w-full max-w-lg max-h-[92vh] overflow-y-auto bg-card border-border p-0 gap-0">
+        {isLoading ? (
+          <>
+            <DialogHeader className="sr-only">
+              <DialogTitle>Carregando concurso especial</DialogTitle>
+              <DialogDescription>Aguarde enquanto os dados são carregados.</DialogDescription>
+            </DialogHeader>
+            <MegaSena30ModalSkeleton />
+          </>
+        ) : (<>
         {/* Hero Poster — inspirado no cartaz oficial */}
         <div
           className="relative overflow-hidden rounded-t-lg"
@@ -284,6 +306,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
             Gerar Palpites para a Mega-Sena 30 Anos
           </Button>
         </div>
+        </>)}
       </DialogContent>
     </Dialog>
   );
