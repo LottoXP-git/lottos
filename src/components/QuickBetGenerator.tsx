@@ -453,6 +453,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
             {selected && (
               <ShareablePickButton
                 lotteryName={selected.name}
+                lotteryColor={selected.color}
                 numbers={numbers}
                 trevos={trevos.length ? trevos : undefined}
                 timeCoracao={timeCoracao || undefined}
