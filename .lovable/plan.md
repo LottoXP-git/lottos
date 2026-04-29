@@ -1,62 +1,90 @@
-## Objetivo
 
-Adicionar um destaque para o concurso especial **Mega-Sena 30 Anos** (sorteio em **24/05/2026, domingo, 11h**, prêmio estimado de **R$ 150 milhões**), seguindo o mesmo padrão visual da Dupla de Páscoa: banner clicável na home + modal com contagem regressiva e detalhes.
+# Tornar o Gerador de Palpites mais atrativo e viciante
 
-## O que será criado/alterado
+Hoje o `QuickBetGenerator` (home) e o `SmartPickGenerator` (modal de detalhes) já funcionam bem, mas cada palpite é "descartável": o usuário gera, copia e sai. Para incentivar uso repetido, vamos adicionar **gamificação leve, recompensas visuais, personalização e memória entre sessões** — tudo client-side (localStorage), sem novos custos de backend.
 
-### 1. Novo utilitário `src/utils/megaSena30Date.ts`
-- Exporta `MEGA_SENA_30_DATE = new Date("2026-05-24T11:00:00-03:00")`.
-- Função `isMegaSena3030AnosActive()`: retorna `true` de **30 dias antes do sorteio até 1 dia depois** (mesma janela que a Dupla de Páscoa, para manter consistência).
+## O que muda para o usuário
 
-### 2. Novo componente `src/components/MegaSena30Modal.tsx`
-- Estrutura espelhada em `SpecialDrawModal.tsx`, mas com identidade da Mega-Sena (verde `lottery-megasena`).
-- Hero banner com gradiente verde/dourado, ícone `Trophy` + `Sparkles`.
-- Badge "30 ANOS" em destaque, título "Mega-Sena 30 Anos", subtítulo "Mega-Sena • Concurso Especial".
-- Prêmio estimado: **R$ 150.000.000,00**.
-- Contagem regressiva (dias/horas/min/seg) usando o mesmo `CountdownUnit` (componente local, não exportado, então será replicado).
-- Bloco de data: "Sorteio: Domingo, 24 de Maio de 2026 às 11h".
-- Highlights:
-  - "Prêmio histórico de R$ 150 milhões"
-  - "Comemoração dos 30 anos da Mega-Sena"
-  - "Não acumula — vai para a faixa da Quina se ninguém acertar"
-  - "Aposta mínima a partir de R$ 5,00"
-- CTA: "Gerar Palpites para a Mega-Sena 30 Anos" — chama callback que pré-seleciona `megasena` no `QuickBetGenerator` e faz scroll, igual ao fluxo atual.
+1. **Streak diário + XP de "Sortudo"**
+   - Barra de XP no topo do gerador. Cada palpite gerado dá XP; ao completar a barra, sobe de "nível da sorte" (Iniciante → Apostador → Estrategista → Mestre da Sorte → Lenda).
+   - Streak de dias consecutivos com pelo menos 1 palpite gerado (ícone de chama com contador). Quebrar o streak mostra um aviso amigável de "volte amanhã para manter sua sequência".
+   - Ao subir de nível: confete dourado + toast comemorativo + desbloqueio de um "modo" novo (ver item 3).
 
-### 3. Alterações em `src/pages/Index.tsx`
-- Importar `MegaSena30Modal` e `isMegaSena3030AnosActive`.
-- Novo estado `megaSena30Open`.
-- Novo banner clicável (logo abaixo do banner da Dupla de Páscoa, ou substituindo-o quando a Páscoa não estiver ativa) com:
-  - Gradiente verde/esmeralda + dourado.
-  - Badge "30 ANOS" pulsante.
-  - Título "Mega-Sena 30 Anos", subtítulo "Sorteio especial • 24/05/2026".
-  - Prêmio "R$ 150 Milhões" no canto direito.
-- Onclick abre o modal.
-- Onclick do CTA do modal: fecha modal, faz `setQuickBetPreselect("megasena")` e scroll para `#quick-bet-generator`.
+2. **Histórico "Meus Palpites" (últimos 10)**
+   - Bloco recolhível abaixo do botão de copiar, mostrando os últimos palpites gerados (com loteria, data/hora, números, estratégia).
+   - Cada item tem ações rápidas: **Copiar**, **Compartilhar**, **Refazer estes números** (regenera com mesma estratégia), **Favoritar** (estrela).
+   - Persistido em `localStorage` (`lottos_pick_history_v1`).
 
-### Layout do banner (texto)
+3. **Modos especiais da sorte (desbloqueáveis)**
+   Substituem/complementam o seletor atual de estratégia (Quente/Fria/Equilibrado). Cada modo tem identidade visual e copy próprios:
+   - **Numerologia** (data de nascimento como semente) — campo opcional de data que vira semente para o gerador.
+   - **Signo** (12 opções) — cada signo enviesa para uma faixa de dezenas.
+   - **Sonho** (escolhe um símbolo: peixe, dinheiro, casa, viagem...) — mapeia para um conjunto de dezenas tradicionais do "jogo do bicho-style", apenas como diversão.
+   - **Espelhado / Sequência / Aniversário** — variações lúdicas.
+   - Modos avançados começam bloqueados com cadeado e desbloqueiam por nível ou assistindo anúncio (reusa `VideoAdModal`).
+
+4. **Reações e micro-recompensas a cada geração**
+   - Variação visual da animação de bolas (já tem `framer-motion`): adicionar 4–5 estilos rotativos (cascata, explosão, espiral, flip 3D) para evitar repetição.
+   - "Raridade" do palpite: cálculo simples baseado em quantos números quentes/frios saíram. Mostra badge: Comum / Raro / Épico / Lendário, com brilho proporcional.
+   - Som curtinho opcional (toggle 🔔/🔕) ao revelar números — usa Web Audio API simples.
+   - 1 em cada N gerações dispara um "**Palpite Dourado**" (bola dourada extra animada) com copy "Hoje a sorte está com você!".
+
+5. **Compartilhamento que puxa para o app**
+   - Botão "Compartilhar" gera uma imagem PNG do palpite (estilo cartelinha, reusa estética do `ShareCardImageButton`) com marca Lottos + link, incentivando viralidade.
+   - Mensagem inclui o nível atual do usuário ("Gerado por Mestre da Sorte 🍀").
+
+6. **CTA de retorno**
+   - Após gerar, banner discreto: "Próximo sorteio da Mega-Sena em 1d 4h — gere mais palpites antes do encerramento" (reusa lógica de countdown já existente).
+   - Notificação local opt-in: "Quer um palpite novo todo dia às 12h?" (toggle salvo em localStorage; dispara via `Notification API` quando o app está aberto, sem service worker novo).
+
+7. **Refinamento do ciclo de anúncio**
+   - Em vez de bloquear no 3º clique seco, mostrar progress: "2 de 2 palpites grátis usados — assista 10s para liberar +3" (sobe de 2 para 3 como pequena recompensa).
+   - Combos: gerar 5 palpites seguidos sem sair libera 1 "geração premium" (modo especial sem ad).
+
+## Arquitetura técnica
 
 ```text
-┌──────────────────────────────────────────────────────────┐
-│ [🏆]  CONCURSO ESPECIAL · 30 ANOS                        │
-│       Mega-Sena 30 Anos              Prêmio estimado     │
-│       Sorteio especial · 24/05/2026  R$ 150 Milhões      │
-└──────────────────────────────────────────────────────────┘
+src/
+  hooks/
+    usePickHistory.ts        # CRUD localStorage, últimos 10
+    useLuckProgress.ts       # XP, nível, streak diário
+    usePickSounds.ts         # Web Audio API + toggle persistido
+  lib/
+    luckModes.ts             # definição dos modos (numerologia, signo, sonho...)
+    pickRarity.ts            # cálculo de raridade + thresholds
+    pickGenerators.ts        # geradores por modo (extrai lógica de QuickBetGenerator)
+  components/
+    generator/
+      LuckProgressBar.tsx    # XP + streak + nível
+      LuckModeSelector.tsx   # substitui seletor atual de estratégia
+      PickHistoryList.tsx    # lista colapsável dos últimos palpites
+      PickRarityBadge.tsx    # badge Comum/Raro/Épico/Lendário
+      GoldenPickEffect.tsx   # overlay quando dispara palpite dourado
+      ShareablePickCard.tsx  # canvas PNG para compartilhar
 ```
 
-### 4. Memória
-- Atualizar `mem://features/seasonal-events` (ou criar `mem://features/mega-sena-30-anos`) registrando: data 24/05/2026 11h, prêmio 150M, janela de exibição 30 dias antes até 1 dia depois.
-- Atualizar `mem://index.md` se criar arquivo novo.
+`QuickBetGenerator.tsx` e `SmartPickGenerator.tsx` consomem esses hooks/componentes, mantendo toda a lógica de loterias específicas (trevos, time do coração, mês da sorte) intacta.
 
-## Detalhes técnicos
+### Persistência (localStorage)
+- `lottos_pick_history_v1`: array de `{ id, lotteryId, numbers, extras, strategy, mode, rarity, createdAt }`
+- `lottos_luck_progress_v1`: `{ xp, level, streakDays, lastGenDate, unlockedModes[] }`
+- `lottos_pick_sounds_enabled`: boolean
+- `lottos_daily_reminder_enabled`: boolean
 
-- **Sem mudanças no backend** — é um destaque estático baseado em data fixa. Quando a API da Caixa retornar o concurso real, o card normal da Mega-Sena na grade continuará funcionando normalmente em paralelo.
-- **Janela de visibilidade**: 30 dias antes (24/04/2026) até 25/05/2026. Hoje (29/04/2026) o banner já apareceria — perfeito para validação imediata.
-- **Reuso**: o `CountdownUnit` de `SpecialDrawModal.tsx` é local; será replicado dentro de `MegaSena30Modal.tsx` para evitar refatoração desnecessária. Caso prefira, posso extrair para `src/components/CountdownUnit.tsx` compartilhado — sinalize na revisão.
-- **Coexistência com Dupla de Páscoa**: ambos os banners podem aparecer simultaneamente (Páscoa 2026 = 05/04, então a janela termina em 06/04 e não conflita com a Mega-Sena 30 Anos a partir de 24/04). Sem ajustes condicionais necessários.
-- **Mobile-first**: banner usa grid responsivo (`flex-col sm:flex-row`), prêmio destacado em `text-lg sm:text-xl`.
+### Regras de XP/nível (proposta inicial, ajustável)
+- +10 XP por palpite normal, +25 por modo especial, +50 por palpite "Lendário".
+- Níveis a cada 100/300/700/1500/3000 XP.
+- Streak: +1 por dia com geração; reseta após 36h sem gerar.
+
+### Performance
+- Animações em `framer-motion` já presentes; novos efeitos usam `transform/opacity` (GPU).
+- Som lazy-loaded sob primeiro toggle on.
+- História limitada a 10 itens para evitar inflar localStorage.
+
+## Fora de escopo nesta etapa
+- Sincronização de progresso entre dispositivos (exigiria conta logada).
+- Ranking entre usuários (precisaria backend e moderação).
+- Premiação real / cashback (compliance — manter o disclaimer existente).
 
 ## Resultado esperado
-
-- Banner verde/dourado "Mega-Sena 30 Anos" visível na home a partir de 24/04/2026.
-- Modal completo com countdown ao vivo, descrição, highlights e CTA que leva ao gerador de palpites pré-selecionado em Mega-Sena.
-- Nenhuma quebra nas funcionalidades existentes (Dupla de Páscoa, grid de resultados, gerador, etc.).
+Um gerador que vira "ritual diário": o usuário volta para manter o streak, desbloquear modos novos, ver a raridade do palpite e compartilhar — tudo sem mudar a proposta legal do app (continua sem vínculo com a Caixa, +18, e os disclaimers permanecem).

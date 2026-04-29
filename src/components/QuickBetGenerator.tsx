@@ -17,6 +17,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { VideoAdModal } from "./VideoAdModal";
+import { useLuckProgress } from "@/hooks/useLuckProgress";
+import { usePickHistory } from "@/hooks/usePickHistory";
+import { computeRarity, type RarityInfo } from "@/lib/pickRarity";
+import { LuckProgressBar } from "./generator/LuckProgressBar";
+import { PickRarityBadge } from "./generator/PickRarityBadge";
+import { PickHistoryList } from "./generator/PickHistoryList";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
@@ -95,6 +101,10 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
   const [strategy, setStrategy] = useState<Strategy>("balanced");
   const [analysis, setAnalysis] = useState<BetAnalysis | null>(null);
   const [frequencyData, setFrequencyData] = useState<NumberFrequency[]>([]);
+  const [rarity, setRarity] = useState<RarityInfo | null>(null);
+
+  const luck = useLuckProgress();
+  const history = usePickHistory();
 
   const selected = lotteries.find((l) => l.id === selectedId);
 
@@ -105,6 +115,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
     setTrevos([]);
     setTimeCoracao("");
     setMesSorte("");
+    setRarity(null);
   }, [selectedId]);
 
   const generate = () => {
@@ -130,6 +141,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
     setTimeCoracao("");
     setMesSorte("");
     setAnalysis(null);
+    setRarity(null);
     setTimeout(() => {
       if (selected.id === "federal" || selected.id === "loteca") {
         toast.info(`Geração aleatória não disponível para ${selected.name}`);
@@ -141,29 +153,88 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
       const nums = generateSmartPicks(freqData, selected.selectCount, strategy);
       setFrequencyData(freqData);
       setNumbers(nums);
-      setAnalysis(
-        analyzeBet(nums, freqData, selected.maxNumber, selected.selectCount, strategy)
-      );
+      const a = analyzeBet(nums, freqData, selected.maxNumber, selected.selectCount, strategy);
+      setAnalysis(a);
+      const r = computeRarity(a);
+      setRarity(r);
 
       // Special fields
+      let trevosOut: number[] = [];
+      let timeOut = "";
+      let mesOut = "";
       if (selected.id === "maismilionaria") {
-        setTrevos(generateRandomNumbers(6, 2));
+        trevosOut = generateRandomNumbers(6, 2);
+        setTrevos(trevosOut);
       }
       if (selected.id === "timemania") {
-        setTimeCoracao(pickRandom(TIMES_TIMEMANIA));
+        timeOut = pickRandom(TIMES_TIMEMANIA);
+        setTimeCoracao(timeOut);
       }
       if (selected.id === "diadesorte") {
-        setMesSorte(pickRandom(MESES));
+        mesOut = pickRandom(MESES);
+        setMesSorte(mesOut);
       }
 
       setIsSpinning(false);
-      
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'],
+
+      // Add to history
+      history.add({
+        lotteryId: selected.id,
+        lotteryName: selected.name,
+        numbers: nums,
+        trevos: trevosOut.length ? trevosOut : undefined,
+        timeCoracao: timeOut || undefined,
+        mesSorte: mesOut || undefined,
+        strategy,
+        rarity: r.level,
       });
+
+      // Award XP based on rarity
+      const xpAmount =
+        r.level === "legendary" ? 50 : r.level === "epic" ? 30 : r.level === "rare" ? 18 : 10;
+      const result = luck.addXp(xpAmount);
+
+      // Confetti — bigger and golden for rarer picks
+      const colorsByRarity: Record<typeof r.level, string[]> = {
+        common: ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#a855f7"],
+        rare: ["#38bdf8", "#22d3ee", "#a78bfa", "#f472b6"],
+        epic: ["#a855f7", "#d946ef", "#f59e0b", "#fde047"],
+        legendary: ["#fbbf24", "#f59e0b", "#fde047", "#fff7ae"],
+      };
+      confetti({
+        particleCount: r.level === "legendary" ? 220 : r.level === "epic" ? 160 : 110,
+        spread: r.level === "legendary" ? 110 : 80,
+        startVelocity: r.level === "legendary" ? 55 : 45,
+        origin: { y: 0.6 },
+        colors: colorsByRarity[r.level],
+      });
+
+      // Toasts for milestones
+      if (r.level === "legendary") {
+        toast.success("👑 Palpite Lendário! +50 XP", {
+          description: "Combinação muito rara — guarde com carinho.",
+        });
+      } else if (r.level === "epic") {
+        toast.success("💜 Palpite Épico! +30 XP");
+      }
+      if (result.leveledUp && result.newLevel) {
+        setTimeout(() => {
+          toast.success(`${result.newLevel!.emoji} Subiu de nível: ${result.newLevel!.name}!`, {
+            description: "Continue gerando palpites para evoluir ainda mais.",
+          });
+          confetti({
+            particleCount: 180,
+            spread: 120,
+            startVelocity: 50,
+            origin: { y: 0.4 },
+            colors: ["#fbbf24", "#f59e0b", "#fde047", "#fff7ae", "#22c55e"],
+          });
+        }, 600);
+      } else if (result.streakIncreased && result.streakDays > 1) {
+        toast(`🔥 Sequência de ${result.streakDays} dias!`, {
+          description: "Volte amanhã para manter sua chama acesa.",
+        });
+      }
     }, 400);
   };
 
@@ -200,6 +271,15 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
         </p>
       </CardHeader>
       <CardContent className="space-y-5 relative">
+        <LuckProgressBar
+          level={luck.level}
+          nextLevel={luck.nextLevel}
+          xp={luck.xp}
+          progress={luck.progress}
+          streakDays={luck.streakDays}
+          totalPicks={luck.totalPicks}
+        />
+
         <Select value={selectedId} onValueChange={setSelectedId}>
           <SelectTrigger className="w-full h-12 text-base">
             <SelectValue placeholder="Escolha a loteria" />
@@ -264,7 +344,17 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
 
         {numbers.length > 0 &&
         <div className="space-y-4 animate-fade-in">
-            <div className="flex flex-wrap gap-2 justify-center py-4 px-2 rounded-xl bg-background/50 border border-border/50">
+            {rarity && (
+              <div className="flex justify-center">
+                <PickRarityBadge info={rarity} />
+              </div>
+            )}
+            <div
+              className={cn(
+                "flex flex-wrap gap-2 justify-center py-4 px-2 rounded-xl bg-background/50 border border-border/50 transition-shadow",
+                rarity?.glowClass
+              )}
+            >
               {numbers.map((num, idx) => {
                 const meta = tempMap?.get(num);
                 const tempLabel = meta?.temperature === "hot" ? "Quente" : meta?.temperature === "cold" ? "Fria" : "Morna";
@@ -345,6 +435,14 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
             )}
           </div>
         }
+
+        {/* Pick history */}
+        <PickHistoryList
+          items={history.items}
+          onToggleFavorite={history.toggleFavorite}
+          onRemove={history.remove}
+          onClear={history.clear}
+        />
 
         <VideoAdModal open={showVideoAd} onComplete={handleAdComplete} />
       </CardContent>
