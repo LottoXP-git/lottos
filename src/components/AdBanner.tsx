@@ -6,6 +6,8 @@ type AdFormat = "leaderboard" | "inline" | "sidebar" | "interstitial";
 interface AdBannerProps {
   format?: AdFormat;
   className?: string;
+  /** AdSense ad slot ID. Defaults to "auto" for responsive units. */
+  slot?: string;
 }
 
 declare global {
@@ -37,7 +39,7 @@ const adSlotConfig: Record<AdFormat, { slot: string; format: string; style: Reac
   },
 };
 
-export function AdBanner({ format = "leaderboard", className }: AdBannerProps) {
+export function AdBanner({ format = "leaderboard", className, slot }: AdBannerProps) {
   const adRef = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
 
@@ -52,6 +54,7 @@ export function AdBanner({ format = "leaderboard", className }: AdBannerProps) {
   }, []);
 
   const config = adSlotConfig[format];
+  const adSlot = slot ?? config.slot;
 
   return (
     <div className={cn("w-full overflow-hidden animate-fade-in", className)}>
@@ -60,6 +63,7 @@ export function AdBanner({ format = "leaderboard", className }: AdBannerProps) {
         ref={adRef}
         style={config.style}
         data-ad-client="ca-pub-2147498950861352"
+        data-ad-slot={adSlot}
         data-ad-format={config.format}
         data-full-width-responsive="true"
       />
