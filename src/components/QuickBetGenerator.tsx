@@ -23,6 +23,10 @@ import { computeRarity, type RarityInfo } from "@/lib/pickRarity";
 import { LuckProgressBar } from "./generator/LuckProgressBar";
 import { PickRarityBadge } from "./generator/PickRarityBadge";
 import { PickHistoryList } from "./generator/PickHistoryList";
+import { LuckModeSelector } from "./generator/LuckModeSelector";
+import { NextDrawCTA } from "./generator/NextDrawCTA";
+import { ShareablePickButton } from "./generator/ShareablePickButton";
+import { generateModePicks, type LuckModeId } from "@/lib/luckModes";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
@@ -102,6 +106,11 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
   const [analysis, setAnalysis] = useState<BetAnalysis | null>(null);
   const [frequencyData, setFrequencyData] = useState<NumberFrequency[]>([]);
   const [rarity, setRarity] = useState<RarityInfo | null>(null);
+  const [luckMode, setLuckMode] = useState<LuckModeId>("random");
+  const [luckInput, setLuckInput] = useState<string>("");
+  const ENTRANCES = ["bounce", "cascade", "flip", "pop", "spin"] as const;
+  const [entranceIdx, setEntranceIdx] = useState(0);
+  const entrance = ENTRANCES[entranceIdx];
 
   const luck = useLuckProgress();
   const history = usePickHistory();
@@ -142,6 +151,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
     setMesSorte("");
     setAnalysis(null);
     setRarity(null);
+    setEntranceIdx((i) => (i + 1) % ENTRANCES.length);
     setTimeout(() => {
       if (selected.id === "federal" || selected.id === "loteca") {
         toast.info(`Geração aleatória não disponível para ${selected.name}`);
@@ -150,7 +160,10 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
       }
       // Generate frequency data and use strategy-aware smart picks
       const freqData = generateFrequencyData(selected.maxNumber);
-      const nums = generateSmartPicks(freqData, selected.selectCount, strategy);
+      const nums =
+        luckMode === "random"
+          ? generateSmartPicks(freqData, selected.selectCount, strategy)
+          : generateModePicks(luckMode, luckInput, selected.maxNumber, selected.selectCount);
       setFrequencyData(freqData);
       setNumbers(nums);
       const a = analyzeBet(nums, freqData, selected.maxNumber, selected.selectCount, strategy);
@@ -366,6 +379,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
                     variant={ballVariant}
                     delay={idx * 80}
                     temperature={meta?.temperature}
+                    entrance={entrance}
                     title={meta ? `Dezena ${num} — ${tempLabel} (saiu ${meta.frequency}x nos últimos 100 sorteios)` : undefined}
                   />
                 );
@@ -429,12 +443,30 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
             }
             </Button>
 
+            {selected && (
+              <ShareablePickButton
+                lotteryName={selected.name}
+                numbers={numbers}
+                trevos={trevos.length ? trevos : undefined}
+                timeCoracao={timeCoracao || undefined}
+                mesSorte={mesSorte || undefined}
+                rarityLabel={rarity?.label}
+                rarityEmoji={rarity?.emoji}
+                levelName={luck.level.name}
+                levelEmoji={luck.level.emoji}
+              />
+            )}
+
             {/* Analysis card */}
             {analysis && selected && (
               <BetAnalysisCard analysis={analysis} lotteryName={selected.name} />
             )}
           </div>
         }
+
+        {selected && selected.id !== "federal" && selected.id !== "loteca" && (
+          <NextDrawCTA nextDate={selected.nextDate} lotteryName={selected.name} />
+        )}
 
         {/* Pick history */}
         <PickHistoryList
