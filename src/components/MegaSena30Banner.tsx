@@ -21,29 +21,24 @@ function CloverIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function Balloon({ className = "", delay = 0 }: { className?: string; delay?: number }) {
+function Balloon({ className = "", variant = 1, gradientId }: { className?: string; variant?: 1 | 2 | 3 | 4; gradientId: string }) {
+  const variantCls = variant === 2 ? "mega30-balloon-2" : variant === 3 ? "mega30-balloon-3" : variant === 4 ? "mega30-balloon-4" : "";
   return (
-    <motion.div
-      className={`absolute pointer-events-none ${className}`}
-      initial={{ y: 0 }}
-      animate={{ y: [-4, 4, -4] }}
-      transition={{ duration: 4 + delay, repeat: Infinity, ease: "easeInOut", delay }}
-      aria-hidden
-    >
+    <div className={`absolute pointer-events-none mega30-balloon ${variantCls} ${className}`} aria-hidden>
       <svg viewBox="0 0 40 56" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]">
         <defs>
-          <radialGradient id={`bg${delay}`} cx="35%" cy="30%" r="65%">
+          <radialGradient id={gradientId} cx="35%" cy="30%" r="65%">
             <stop offset="0%" stopColor="#FFE7A0" />
             <stop offset="40%" stopColor="#E2B14A" />
             <stop offset="100%" stopColor="#7A5210" />
           </radialGradient>
         </defs>
-        <ellipse cx="20" cy="20" rx="16" ry="19" fill={`url(#bg${delay})`} />
+        <ellipse cx="20" cy="20" rx="16" ry="19" fill={`url(#${gradientId})`} />
         <ellipse cx="14" cy="13" rx="4" ry="6" fill="#FFF6D5" opacity="0.6" />
         <path d="M20 39 L18 44 L22 44 Z" fill="#8B6314" />
         <path d="M20 44 Q18 50 20 56 Q22 50 20 44" stroke="#C9A24E" strokeWidth="0.6" fill="none" />
       </svg>
-    </motion.div>
+    </div>
   );
 }
 
@@ -77,13 +72,13 @@ export function MegaSena30Banner({ status, onClick }: Props) {
         }}
       />
       {/* Diagonal light streak */}
-      <div className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] opacity-20 pointer-events-none rotate-[-18deg] bg-gradient-to-r from-transparent via-amber-200/40 to-transparent" />
+      <div className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] pointer-events-none mega30-glint bg-gradient-to-r from-transparent via-amber-200/40 to-transparent" />
 
       {/* Decorative balloons */}
-      <Balloon className="w-6 h-9 sm:w-8 sm:h-12 top-3 left-[12%]" delay={0} />
-      <Balloon className="w-5 h-7 sm:w-7 sm:h-10 top-1 left-[28%] opacity-80" delay={0.6} />
-      <Balloon className="w-7 h-10 sm:w-9 sm:h-13 top-4 right-[18%]" delay={0.3} />
-      <Balloon className="w-5 h-7 sm:w-6 sm:h-9 bottom-2 right-[8%] opacity-70" delay={0.9} />
+      <Balloon className="w-6 h-9 sm:w-8 sm:h-12 top-3 left-[12%]" variant={1} gradientId="mega30-b1" />
+      <Balloon className="w-5 h-7 sm:w-7 sm:h-10 top-1 left-[28%] opacity-80" variant={2} gradientId="mega30-b2" />
+      <Balloon className="w-7 h-10 sm:w-9 sm:h-13 top-4 right-[18%]" variant={3} gradientId="mega30-b3" />
+      <Balloon className="w-5 h-7 sm:w-6 sm:h-9 bottom-2 right-[8%] opacity-70" variant={4} gradientId="mega30-b4" />
 
       <div className="relative px-4 py-5 sm:px-7 sm:py-6 flex items-center gap-4 sm:gap-6">
         {/* LEFT: Brand block */}
@@ -108,7 +103,7 @@ export function MegaSena30Banner({ status, onClick }: Props) {
               <span className="font-black text-white text-5xl sm:text-7xl leading-none drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
                 30
               </span>
-              <CloverIcon className="absolute -top-1 -right-3 sm:-right-4 w-5 h-5 sm:w-7 sm:h-7 text-lime-300" />
+              <CloverIcon className="mega30-clover absolute -top-1 -right-3 sm:-right-4 w-5 h-5 sm:w-7 sm:h-7 text-lime-300" />
               <span className="ml-1 sm:ml-2 mb-1 sm:mb-2 italic font-light text-lime-300 text-xs sm:text-base">
                 anos
               </span>
@@ -132,10 +127,10 @@ export function MegaSena30Banner({ status, onClick }: Props) {
             Prêmio estimado
           </div>
           <div
-            className="font-black text-3xl sm:text-5xl leading-none mt-1 bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+            className="mega30-shimmer font-black text-3xl sm:text-5xl leading-none mt-1 bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
             style={{
               backgroundImage:
-                "linear-gradient(180deg, #FFF1B8 0%, #F0C24C 35%, #B07A1C 70%, #FFE395 100%)",
+                "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
             }}
           >
             R$ 150
