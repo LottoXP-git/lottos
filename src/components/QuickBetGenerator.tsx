@@ -481,6 +481,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
           onToggleFavorite={history.toggleFavorite}
           onRemove={history.remove}
           onClear={history.clear}
+          onImport={history.importItems}
         />
 
         <VideoAdModal open={showVideoAd} onComplete={handleAdComplete} />
