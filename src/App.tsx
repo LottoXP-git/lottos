@@ -8,7 +8,6 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { AgeGate, isAgeVerified } from "@/components/AgeGate";
 import Index from "./pages/Index";
 import History from "./pages/History";
-import SpecialDraws from "./pages/SpecialDraws";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
@@ -33,7 +32,6 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/historico" element={<History />} />
-                <Route path="/regras-especiais" element={<SpecialDraws />} />
                 <Route path="/relatorio-mensal" element={<MonthlyReport />} />
                 <Route path="/privacidade" element={<PrivacyPolicy />} />
                 <Route path="/termos" element={<TermsOfUse />} />
