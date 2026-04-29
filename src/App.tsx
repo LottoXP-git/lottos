@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
 import Admin from "./pages/Admin";
+import MonthlyReport from "./pages/MonthlyReport";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/historico" element={<History />} />
                 <Route path="/regras-especiais" element={<SpecialDraws />} />
+                <Route path="/relatorio-mensal" element={<MonthlyReport />} />
                 <Route path="/privacidade" element={<PrivacyPolicy />} />
                 <Route path="/termos" element={<TermsOfUse />} />
                 <Route path="/admin" element={<Admin />} />
