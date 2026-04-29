@@ -41,7 +41,7 @@ const SPECIAL = {
     "Prêmio histórico de R$ 150 milhões",
     "Comemoração dos 30 anos da Mega-Sena",
     "Não acumula — desce para a Quina se ninguém acertar",
-    "Aposta mínima a partir de R$ 5,00",
+    "Aposta mínima a partir de R$ 6,00",
   ],
 };
 
