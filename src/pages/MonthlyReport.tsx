@@ -6,13 +6,23 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LotteryBall } from "@/components/LotteryBall";
 import { useLotteryResults } from "@/hooks/useLotteryResults";
-import { buildReportEntriesFromHistory, generateMonthlyReportPdf } from "@/lib/monthlyReportPdf";
+import {
+  buildReportEntriesFromHistory,
+  buildReportEntriesFromRange,
+  generateMonthlyReportPdf,
+} from "@/lib/monthlyReportPdf";
 import { generateSmartPicks } from "@/data/lotteryData";
 import type { LotteryResult } from "@/data/lotteryData";
-import { Download, FileText, Loader2, TrendingUp, TrendingDown, Sparkles } from "lucide-react";
+import { Download, FileText, Loader2, TrendingUp, TrendingDown, Sparkles, CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
+import { format, differenceInCalendarDays } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import type { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
 
 const MONTHS_PT = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -28,6 +38,7 @@ const PERIOD_OPTIONS = [
   { value: "7", label: "7 dias", count: 30 },
   { value: "30", label: "30 dias", count: 60 },
   { value: "90", label: "90 dias", count: 120 },
+  { value: "custom", label: "Personalizado", count: 200 },
 ] as const;
 
 const VARIANT_MAP: Record<string, Parameters<typeof LotteryBall>[0]["variant"]> = {
@@ -59,9 +70,10 @@ async function fetchHistory(lotteryId: string, count: number): Promise<LotteryRe
 export default function MonthlyReport() {
   const { data: results, isLoading } = useLotteryResults();
   const [generating, setGenerating] = useState(false);
-  const [periodDays, setPeriodDays] = useState<7 | 30 | 90>(30);
+  const [periodMode, setPeriodMode] = useState<"7" | "30" | "90" | "custom">("30");
+  const [customRange, setCustomRange] = useState<DateRange | undefined>();
 
-  const fetchCount = PERIOD_OPTIONS.find((p) => Number(p.value) === periodDays)?.count ?? 60;
+  const fetchCount = PERIOD_OPTIONS.find((p) => p.value === periodMode)?.count ?? 60;
 
   const historyQueries = useQueries({
     queries: NUMERIC_IDS.map((id) => ({
@@ -82,18 +94,40 @@ export default function MonthlyReport() {
 
   const historyLoading = historyQueries.some((q) => q.isLoading);
 
-  const entries = useMemo(
-    () => (results ? buildReportEntriesFromHistory(results, historyByLottery, periodDays) : []),
-    [results, historyByLottery, periodDays],
-  );
+  const isCustom = periodMode === "custom";
+  const customValid = isCustom && !!customRange?.from && !!customRange?.to;
+  const periodDays = isCustom
+    ? (customValid ? differenceInCalendarDays(customRange!.to!, customRange!.from!) + 1 : 0)
+    : Number(periodMode);
+
+  const entries = useMemo(() => {
+    if (!results) return [];
+    if (isCustom) {
+      if (!customValid) return [];
+      return buildReportEntriesFromRange(results, historyByLottery, customRange!.from!, customRange!.to!);
+    }
+    return buildReportEntriesFromHistory(results, historyByLottery, Number(periodMode));
+  }, [results, historyByLottery, periodMode, isCustom, customValid, customRange]);
 
   const now = new Date();
   const monthLabel = `${MONTHS_PT[now.getMonth()]} de ${now.getFullYear()}`;
-  const periodLabel = `Últimos ${periodDays} dias`;
+  const periodLabel = isCustom
+    ? (customValid
+        ? `${format(customRange!.from!, "dd/MM/yyyy", { locale: ptBR })} a ${format(customRange!.to!, "dd/MM/yyyy", { locale: ptBR })}`
+        : "Período personalizado")
+    : `Últimos ${periodMode} dias`;
+
+  const customTriggerLabel = customValid
+    ? `${format(customRange!.from!, "dd/MM/yy", { locale: ptBR })} → ${format(customRange!.to!, "dd/MM/yy", { locale: ptBR })}`
+    : "Selecionar datas";
 
   const handleDownload = async () => {
+    if (isCustom && !customValid) {
+      toast.error("Selecione as datas de início e fim.");
+      return;
+    }
     if (!entries.length) {
-      toast.error("Aguarde os resultados carregarem antes de gerar o relatório.");
+      toast.error("Nenhum concurso encontrado nesse período.");
       return;
     }
     try {
@@ -139,15 +173,15 @@ export default function MonthlyReport() {
                 </div>
                 <ToggleGroup
                   type="single"
-                  value={String(periodDays)}
-                  onValueChange={(v) => v && setPeriodDays(Number(v) as 7 | 30 | 90)}
-                  className="justify-center"
+                  value={periodMode}
+                  onValueChange={(v) => v && setPeriodMode(v as typeof periodMode)}
+                  className="justify-center flex-wrap"
                 >
                   {PERIOD_OPTIONS.map((opt) => (
                     <ToggleGroupItem
                       key={opt.value}
                       value={opt.value}
-                      aria-label={`Últimos ${opt.label}`}
+                      aria-label={opt.label}
                       className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                     >
                       {opt.label}
@@ -155,6 +189,44 @@ export default function MonthlyReport() {
                   ))}
                 </ToggleGroup>
               </div>
+              {isCustom && (
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
+                  <span className="text-xs text-muted-foreground sm:min-w-[140px]">
+                    Intervalo personalizado:
+                  </span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "justify-start text-left font-normal w-full sm:w-[280px]",
+                          !customValid && "text-muted-foreground",
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {customTriggerLabel}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="range"
+                        selected={customRange}
+                        onSelect={setCustomRange}
+                        numberOfMonths={2}
+                        locale={ptBR}
+                        disabled={(d) => d > new Date()}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {customValid && (
+                    <span className="text-xs text-muted-foreground">
+                      {periodDays} dia{periodDays > 1 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-border/40">
                 <p className="text-xs text-muted-foreground text-center sm:text-left">
                   10 modalidades numéricas · Top 10 quentes/frias · 3 estratégias por modalidade
@@ -163,7 +235,7 @@ export default function MonthlyReport() {
                 <Button
                   size="lg"
                   onClick={handleDownload}
-                  disabled={generating || isLoading || historyLoading || !entries.length}
+                  disabled={generating || isLoading || historyLoading || !entries.length || (isCustom && !customValid)}
                   className="gap-2 min-w-[220px]"
                 >
                   {generating ? (
@@ -174,7 +246,7 @@ export default function MonthlyReport() {
                   ) : (
                     <>
                       <Download className="w-4 h-4" />
-                      Baixar PDF ({periodLabel.toLowerCase()})
+                      Baixar PDF
                     </>
                   )}
                 </Button>
