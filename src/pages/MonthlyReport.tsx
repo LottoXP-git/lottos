@@ -1,12 +1,16 @@
 import { useMemo, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { LotteryBall } from "@/components/LotteryBall";
 import { useLotteryResults } from "@/hooks/useLotteryResults";
-import { buildReportEntries, generateMonthlyReportPdf } from "@/lib/monthlyReportPdf";
+import { buildReportEntriesFromHistory, generateMonthlyReportPdf } from "@/lib/monthlyReportPdf";
 import { generateSmartPicks } from "@/data/lotteryData";
+import type { LotteryResult } from "@/data/lotteryData";
 import { Download, FileText, Loader2, TrendingUp, TrendingDown, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,6 +18,17 @@ const MONTHS_PT = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
+
+const NUMERIC_IDS = [
+  "megasena", "lotofacil", "quina", "lotomania", "duplasena",
+  "diadesorte", "supersete", "maismilionaria", "timemania", "federal",
+] as const;
+
+const PERIOD_OPTIONS = [
+  { value: "7", label: "7 dias", count: 30 },
+  { value: "30", label: "30 dias", count: 60 },
+  { value: "90", label: "90 dias", count: 120 },
+] as const;
 
 const VARIANT_MAP: Record<string, Parameters<typeof LotteryBall>[0]["variant"]> = {
   megasena: "megasena",
@@ -28,14 +43,53 @@ const VARIANT_MAP: Record<string, Parameters<typeof LotteryBall>[0]["variant"]> 
   federal: "federal",
 };
 
+async function fetchHistory(lotteryId: string, count: number): Promise<LotteryResult[]> {
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-lottery-results?lottery=${lotteryId}&mode=history&count=${count}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data?.results || [];
+}
+
 export default function MonthlyReport() {
   const { data: results, isLoading } = useLotteryResults();
   const [generating, setGenerating] = useState(false);
+  const [periodDays, setPeriodDays] = useState<7 | 30 | 90>(30);
 
-  const entries = useMemo(() => (results ? buildReportEntries(results) : []), [results]);
+  const fetchCount = PERIOD_OPTIONS.find((p) => Number(p.value) === periodDays)?.count ?? 60;
+
+  const historyQueries = useQueries({
+    queries: NUMERIC_IDS.map((id) => ({
+      queryKey: ["lottery-history", id, fetchCount],
+      queryFn: () => fetchHistory(id, fetchCount),
+      staleTime: 1000 * 60 * 30,
+      enabled: !!results,
+    })),
+  });
+
+  const historyByLottery = useMemo(() => {
+    const map: Record<string, LotteryResult[]> = {};
+    NUMERIC_IDS.forEach((id, idx) => {
+      map[id] = historyQueries[idx].data || [];
+    });
+    return map;
+  }, [historyQueries]);
+
+  const historyLoading = historyQueries.some((q) => q.isLoading);
+
+  const entries = useMemo(
+    () => (results ? buildReportEntriesFromHistory(results, historyByLottery, periodDays) : []),
+    [results, historyByLottery, periodDays],
+  );
 
   const now = new Date();
   const monthLabel = `${MONTHS_PT[now.getMonth()]} de ${now.getFullYear()}`;
+  const periodLabel = `Últimos ${periodDays} dias`;
 
   const handleDownload = async () => {
     if (!entries.length) {
@@ -46,7 +100,7 @@ export default function MonthlyReport() {
       setGenerating(true);
       // Allow the loader paint
       await new Promise((r) => setTimeout(r, 50));
-      generateMonthlyReportPdf(entries);
+      generateMonthlyReportPdf(entries, { periodLabel, periodDays });
       toast.success("Relatório gerado!", { description: "O download deve iniciar automaticamente." });
     } catch (e) {
       console.error(e);
@@ -70,36 +124,61 @@ export default function MonthlyReport() {
               Frequências e Palpites do Mês
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
-              Baixe o PDF atualizado com as dezenas mais quentes, mais frias e palpites sugeridos para cada modalidade — referente a <strong>{monthLabel}</strong>.
+              Escolha o período e baixe o PDF com as dezenas mais quentes, mais frias e palpites sugeridos para cada modalidade. Hoje é <strong>{monthLabel}</strong>.
             </p>
           </div>
 
           <Card className="card-glass border-primary/30">
-            <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <p className="font-semibold text-base">Relatório de {monthLabel}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  10 modalidades numéricas · Top 10 quentes/frias · 3 estratégias de palpite por modalidade
-                </p>
+            <CardContent className="p-6 flex flex-col gap-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="text-center sm:text-left">
+                  <p className="font-semibold text-base">Período do relatório</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Frequências calculadas a partir dos concursos realizados na janela selecionada.
+                  </p>
+                </div>
+                <ToggleGroup
+                  type="single"
+                  value={String(periodDays)}
+                  onValueChange={(v) => v && setPeriodDays(Number(v) as 7 | 30 | 90)}
+                  className="justify-center"
+                >
+                  {PERIOD_OPTIONS.map((opt) => (
+                    <ToggleGroupItem
+                      key={opt.value}
+                      value={opt.value}
+                      aria-label={`Últimos ${opt.label}`}
+                      className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    >
+                      {opt.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
               </div>
-              <Button
-                size="lg"
-                onClick={handleDownload}
-                disabled={generating || isLoading || !entries.length}
-                className="gap-2 min-w-[200px]"
-              >
-                {generating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Gerando PDF...
-                  </>
-                ) : (
-                  <>
-                    <Download className="w-4 h-4" />
-                    Baixar PDF do mês
-                  </>
-                )}
-              </Button>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-border/40">
+                <p className="text-xs text-muted-foreground text-center sm:text-left">
+                  10 modalidades numéricas · Top 10 quentes/frias · 3 estratégias por modalidade
+                  {historyLoading && " · carregando histórico..."}
+                </p>
+                <Button
+                  size="lg"
+                  onClick={handleDownload}
+                  disabled={generating || isLoading || historyLoading || !entries.length}
+                  className="gap-2 min-w-[220px]"
+                >
+                  {generating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Gerando PDF...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      Baixar PDF ({periodLabel.toLowerCase()})
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -112,7 +191,7 @@ export default function MonthlyReport() {
 
           {!isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {entries.map(({ result, frequency }) => {
+              {entries.map(({ result, frequency, drawsCount }) => {
                 const variant = VARIANT_MAP[result.id] || "megasena";
                 const hot = frequency.slice(0, 5);
                 const cold = [...frequency].slice(-5).reverse();
@@ -123,7 +202,9 @@ export default function MonthlyReport() {
                       <CardTitle className="flex items-center justify-between text-base">
                         <span>{result.name}</span>
                         <span className="text-xs font-normal text-muted-foreground">
-                          Concurso {result.concurso}
+                          {drawsCount && drawsCount > 1
+                            ? `${drawsCount} concursos · ${periodLabel.toLowerCase()}`
+                            : `Concurso ${result.concurso}`}
                         </span>
                       </CardTitle>
                     </CardHeader>
