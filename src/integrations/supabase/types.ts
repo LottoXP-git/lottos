@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          format: string | null
+          id: string
+          page: string | null
+          slot: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          format?: string | null
+          id?: string
+          page?: string | null
+          slot: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          format?: string | null
+          id?: string
+          page?: string | null
+          slot?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       user_registrations: {
         Row: {
           accept_email_marketing: boolean
