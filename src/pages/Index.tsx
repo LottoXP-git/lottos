@@ -17,6 +17,8 @@ import { PrizeChecker } from "@/components/PrizeChecker";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
+import { MegaSena30Modal } from "@/components/MegaSena30Modal";
+import { isMegaSena30AnosActive } from "@/utils/megaSena30Date";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 
 const Index = () => {
@@ -24,8 +26,10 @@ const Index = () => {
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
+  const [megaSena30Open, setMegaSena30Open] = useState(false);
   const [quickBetPreselect, setQuickBetPreselect] = useState<string | undefined>();
   const showDuplaDePascoa = isDuplaDePascoaActive();
+  const showMegaSena30 = isMegaSena30AnosActive();
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
@@ -157,6 +161,38 @@ const Index = () => {
         </section>
         }
 
+        {showMegaSena30 &&
+        <section className="mb-8 animate-fade-in">
+          <button
+            onClick={() => setMegaSena30Open(true)}
+            className="w-full group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-600/10 via-amber-500/10 to-emerald-700/10 hover:from-emerald-600/20 hover:via-amber-500/15 hover:to-emerald-700/20 transition-all duration-300 p-4 sm:p-5">
+
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-amber-500/5 group-hover:opacity-100 opacity-0 transition-opacity" />
+            <div className="relative flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                  <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-400" />
+                </div>
+                <div className="text-left">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Concurso Especial</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300 animate-pulse">30 ANOS</span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">Mega-Sena 30 Anos</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">Sorteio especial · Domingo, 24/05/2026 às 11h</p>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-xs text-muted-foreground">Prêmio estimado</span>
+                <div className="text-lg sm:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400">
+                  R$ 150 Milhões
+                </div>
+              </div>
+            </div>
+          </button>
+        </section>
+        }
+
         {/* Lottery Results Grid */}
         <section className="mb-8 sm:mb-12">
            <div className="mb-4 sm:mb-6">
@@ -276,6 +312,19 @@ const Index = () => {
           }, 100);
         }} />
 
+      }
+
+      {showMegaSena30 &&
+      <MegaSena30Modal
+        open={megaSena30Open}
+        onOpenChange={setMegaSena30Open}
+        onGeneratePicks={() => {
+          setMegaSena30Open(false);
+          setQuickBetPreselect("megasena");
+          setTimeout(() => {
+            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }} />
       }
 
     </div>);
