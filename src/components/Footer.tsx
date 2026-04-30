@@ -1,6 +1,30 @@
 import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
-import { Heart, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
+import { Heart, Mail, Phone, MapPin, ExternalLink, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+
+async function handleShareApp() {
+  const shareData = {
+    title: "Lottos - Resultados das Loterias",
+    text: "Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa!",
+    url: "https://lottos.lovable.app",
+  };
+  if (navigator.share && navigator.canShare?.(shareData)) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+    toast({ title: "Link copiado!", description: "Compartilhe o Lottos com seus amigos." });
+  } catch {
+    toast({ title: "Erro", description: "Não foi possível compartilhar.", variant: "destructive" });
+  }
+}
 
 const usefulLinks = [
 { label: "Loterias Caixa", href: "https://loterias.caixa.gov.br", external: true },
@@ -32,6 +56,15 @@ export function Footer() {
               <Heart className="w-3 h-3 text-primary fill-primary" />
               <span>no Brasil</span>
             </div>
+            <Button
+              onClick={handleShareApp}
+              variant="outline"
+              size="sm"
+              className="gap-2 w-full sm:w-auto"
+            >
+              <Share2 className="w-4 h-4" />
+              Compartilhar o app
+            </Button>
           </div>
 
           {/* Links Úteis */}
