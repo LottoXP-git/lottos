@@ -13,15 +13,44 @@ interface ShareButtonProps {
   title: string;
   text: string;
   url?: string;
+  /** When provided, the matching OG image at /og/{lotteryId}.jpg is attached to the share. */
+  lotteryId?: string;
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "icon";
   className?: string;
+}
+
+const SUPPORTED_LOTTERIES = new Set([
+  "megasena",
+  "lotofacil",
+  "quina",
+  "lotomania",
+  "duplasena",
+  "diadesorte",
+  "supersete",
+  "maismilionaria",
+  "timemania",
+  "federal",
+  "loteca",
+]);
+
+async function buildLotteryImageFile(lotteryId: string): Promise<File | null> {
+  if (!SUPPORTED_LOTTERIES.has(lotteryId)) return null;
+  try {
+    const res = await fetch(`/og/${lotteryId}.jpg`);
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return new File([blob], `lottos-${lotteryId}.jpg`, { type: "image/jpeg" });
+  } catch {
+    return null;
+  }
 }
 
 export function ShareButton({
   title,
   text,
   url = window.location.href,
+  lotteryId,
   variant = "ghost",
   size = "icon",
   className,
@@ -31,13 +60,28 @@ export function ShareButton({
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
 
-    const shareData = {
-      title,
-      text,
-      url,
-    };
+    // Try to attach the lottery-specific OG image so WhatsApp/IG show a real preview.
+    if (lotteryId && navigator.share) {
+      const file = await buildLotteryImageFile(lotteryId);
+      if (file) {
+        const dataWithFile = { title, text, url, files: [file] };
+        if (navigator.canShare?.(dataWithFile)) {
+          try {
+            await navigator.share(dataWithFile);
+            toast({
+              title: "Compartilhado!",
+              description: "Resultado e imagem enviados com sucesso.",
+            });
+            return;
+          } catch (err) {
+            if ((err as Error).name === "AbortError") return;
+            // fall through to text-only share
+          }
+        }
+      }
+    }
 
-    // Try native share API first (mobile)
+    const shareData = { title, text, url };
     if (navigator.share && navigator.canShare?.(shareData)) {
       try {
         await navigator.share(shareData);
@@ -47,7 +91,6 @@ export function ShareButton({
         });
         return;
       } catch (err) {
-        // User cancelled or error - fall through to clipboard
         if ((err as Error).name === "AbortError") return;
       }
     }
