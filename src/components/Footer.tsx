@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Heart, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
+import { ShareButton } from "./ShareButton";
 
 const usefulLinks = [
 { label: "Loterias Caixa", href: "https://loterias.caixa.gov.br", external: true },
@@ -31,6 +32,17 @@ export function Footer() {
               <span>Feito com</span>
               <Heart className="w-3 h-3 text-primary fill-primary" />
               <span>no Brasil</span>
+            </div>
+            <div className="flex items-center gap-2 pt-2">
+              <ShareButton
+                title="Lottos - Resultados das Loterias"
+                text="Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa!"
+                url="https://lottos.lovable.app"
+                variant="outline"
+                size="sm"
+                className="w-auto px-3 gap-2"
+              />
+              <span className="text-xs text-muted-foreground">Compartilhe o app</span>
             </div>
           </div>
 
