@@ -873,11 +873,54 @@ export function PrizeChecker() {
               </div>
             )}
 
+            {/* Federal result */}
+            {result.federal && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <Trophy className="w-4 h-4 text-primary" />
+                  Loteria Federal — Bilhete {result.federal.betBilhete}
+                </p>
+                <div className="rounded-lg border border-border overflow-hidden">
+                  {result.federal.tiers.map((t) => (
+                    <div
+                      key={t.posicao}
+                      className={`flex items-center justify-between gap-2 px-3 py-2 text-xs sm:text-sm border-b border-border last:border-b-0 ${
+                        t.matched ? "bg-emerald-500/10" : "bg-secondary/30"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Badge variant="outline" className="text-[10px] sm:text-xs">
+                          {t.posicao}º Prêmio
+                        </Badge>
+                        <span className="font-mono font-semibold text-foreground">{t.bilhete}</span>
+                        {t.matched && (
+                          <Badge className="bg-emerald-500/20 text-emerald-500 border-emerald-500/40 text-[10px] sm:text-xs">
+                            ✓ Você ganhou!
+                          </Badge>
+                        )}
+                      </div>
+                      <span className={`font-semibold ${t.matched ? "text-emerald-500" : "text-muted-foreground"}`}>
+                        {t.valorPremio.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {result.federal.totalWon === 0 && (
+                  <p className="text-xs sm:text-sm text-muted-foreground italic flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    Seu bilhete não foi premiado neste concurso.
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Prize Summary */}
             {(() => {
               const allPrizes = result.draws.flatMap(d => d.allPrizes);
-              const totalWon = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
-              const hasAnyPrize = allPrizes.length > 0;
+              const drawsTotal = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
+              const federalTotal = result.federal?.totalWon || 0;
+              const totalWon = drawsTotal + federalTotal;
+              const hasAnyPrize = allPrizes.length > 0 || federalTotal > 0;
               if (!hasAnyPrize) return null;
               const numCotas = Math.max(1, parseInt(cotas) || 1);
               const totalPerCota = totalWon / numCotas;
@@ -904,6 +947,14 @@ export function PrizeChecker() {
                         </div>
                       ))
                     )}
+                    {result.federal?.tiers.filter(t => t.matched).map(t => (
+                      <div key={t.posicao} className="flex items-center justify-between text-xs sm:text-sm">
+                        <span className="text-muted-foreground">{t.posicao}º Prêmio (bilhete {t.bilhete})</span>
+                        <span className="font-semibold text-emerald-400">
+                          {t.valorPremio.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                        </span>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="border-t border-primary/20 pt-2 space-y-1.5">
