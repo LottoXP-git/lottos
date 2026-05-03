@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "@/components/LotteryBall";
-import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays, Users, ScanSearch, Target, Award, ShieldCheck } from "lucide-react";
+import { Search, Check, X, Loader2, Trophy, AlertCircle, Heart, CalendarDays, Users, ScanSearch, Target, Award, ShieldCheck, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -113,6 +113,7 @@ interface CheckResult {
   federal?: {
     betBilhete: string;
     tiers: { posicao: number; bilhete: string; valorPremio: number; matched: boolean }[];
+    derivedTiers: { key: string; label: string; description: string; matchedWith: string[]; valorPremio: number }[];
     totalWon: number;
   };
 }
@@ -423,8 +424,104 @@ export function PrizeChecker() {
           };
         });
 
+        // ===== Faixas derivadas (Milhar, Centena, Dezena, Aproximações,
+        // Dezenas Finais, Unidade) — não vêm na API mas são oficiais da Caixa.
+        // Calculadas apenas para conferência do bilhete; valores não são
+        // exibidos como prêmio porque variam conforme a extração e a Caixa
+        // não publica esses rateios na API pública.
+        const derivedTiers: { key: string; label: string; description: string; matchedWith: string[]; valorPremio: number }[] = [];
+        const bet = betNormalized;
+        if (bet.length >= 4 && rawBilhetes.length > 0) {
+          const all = rawBilhetes.map((b) => normalize(b));
+          const principal = all[0]; // 1º prêmio (base de aproximações/finais/unidade)
+
+          // Milhar: últimos 4 dígitos coincidentes com algum dos 5 prêmios
+          const milharBet = bet.slice(-4);
+          const milharMatch = all.filter((b) => b.slice(-4) === milharBet);
+          if (milharMatch.length > 0) {
+            derivedTiers.push({
+              key: "milhar",
+              label: "Milhar",
+              description: "Últimos 4 dígitos iguais a um dos prêmios principais",
+              matchedWith: milharMatch,
+              valorPremio: 0,
+            });
+          }
+
+          // Centena: últimos 3 dígitos coincidentes com algum dos 5 prêmios
+          const centenaBet = bet.slice(-3);
+          const centenaMatch = all.filter((b) => b.slice(-3) === centenaBet);
+          if (centenaMatch.length > 0) {
+            derivedTiers.push({
+              key: "centena",
+              label: "Centena",
+              description: "Últimos 3 dígitos iguais a um dos prêmios principais",
+              matchedWith: centenaMatch,
+              valorPremio: 0,
+            });
+          }
+
+          // Dezena: últimos 2 dígitos coincidentes com algum dos 5 prêmios
+          const dezenaBet = bet.slice(-2);
+          const dezenaMatch = all.filter((b) => b.slice(-2) === dezenaBet);
+          if (dezenaMatch.length > 0) {
+            derivedTiers.push({
+              key: "dezena",
+              label: "Dezena",
+              description: "Últimos 2 dígitos iguais a um dos prêmios principais",
+              matchedWith: dezenaMatch,
+              valorPremio: 0,
+            });
+          }
+
+          if (principal) {
+            const principalNum = parseInt(principal, 10);
+
+            // Aproximações: imediatamente anterior/posterior ao 1º prêmio
+            const aproxMatches: string[] = [];
+            if (parseInt(bet, 10) === principalNum - 1) aproxMatches.push(principal);
+            if (parseInt(bet, 10) === principalNum + 1) aproxMatches.push(principal);
+            if (aproxMatches.length > 0) {
+              derivedTiers.push({
+                key: "aproximacoes",
+                label: "Aproximações",
+                description: "Bilhete imediatamente anterior ou posterior ao 1º prêmio",
+                matchedWith: aproxMatches,
+                valorPremio: 0,
+              });
+            }
+
+            // Dezenas Finais: 3 dezenas anteriores ou 3 posteriores à dezena
+            // do 1º prêmio (exceto as já cobertas por aproximação anterior/posterior)
+            const dezPrincipal = principalNum % 100;
+            const dezBet = parseInt(bet, 10) % 100;
+            const isAprox = parseInt(bet, 10) === principalNum - 1 || parseInt(bet, 10) === principalNum + 1;
+            const diff = dezBet - dezPrincipal;
+            if (!isAprox && diff !== 0 && diff >= -3 && diff <= 3) {
+              derivedTiers.push({
+                key: "dezenas-finais",
+                label: "Dezenas Finais",
+                description: "Dezena final entre as 3 anteriores ou 3 posteriores à do 1º prêmio",
+                matchedWith: [principal],
+                valorPremio: 0,
+              });
+            }
+
+            // Unidade do 1º prêmio
+            if (bet.slice(-1) === principal.slice(-1)) {
+              derivedTiers.push({
+                key: "unidade",
+                label: "Unidade do 1º Prêmio",
+                description: "Último dígito igual ao do 1º prêmio",
+                matchedWith: [principal],
+                valorPremio: 0,
+              });
+            }
+          }
+        }
+
         const totalWon = tiers.filter((t) => t.matched).reduce((s, t) => s + t.valorPremio, 0);
-        federalResult = { betBilhete: betNormalized, tiers, totalWon };
+        federalResult = { betBilhete: betNormalized, tiers, derivedTiers, totalWon };
       } else if (selectedLottery === "duplasena") {
         // Dupla Sena: two independent draws
         const draw1Numbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
@@ -927,11 +1024,38 @@ export function PrizeChecker() {
                     </div>
                   ))}
                 </div>
-                {result.federal.totalWon === 0 && (
+                {result.federal.totalWon === 0 && result.federal.derivedTiers.length === 0 && (
                   <p className="text-xs sm:text-sm text-muted-foreground italic flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5" />
                     Seu bilhete não foi premiado neste concurso.
                   </p>
+                )}
+
+                {/* Faixas derivadas: Milhar, Centena, Dezena, Aproximações, Dezenas Finais, Unidade */}
+                {result.federal.derivedTiers.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <p className="text-[11px] sm:text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      Premiações secundárias
+                    </p>
+                    <div className="space-y-1">
+                      {result.federal.derivedTiers.map((dt) => (
+                        <div key={dt.key} className="flex items-start justify-between gap-2 px-2.5 py-1.5 rounded-md bg-amber-500/10 border border-amber-500/30">
+                          <div className="min-w-0">
+                            <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-600 dark:text-amber-400">{dt.label}</Badge>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">{dt.description}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-[10px] text-muted-foreground">Vínculo</p>
+                            <p className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">{dt.matchedWith.join(", ")}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground italic">
+                      ℹ️ Os valores das faixas secundárias variam por extração e não são divulgados pela API. Consulte o site da Caixa para o rateio oficial.
+                    </p>
+                  </div>
                 )}
               </div>
             )}
