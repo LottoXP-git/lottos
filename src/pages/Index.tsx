@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
+import { FederalPickGenerator } from "@/components/FederalPickGenerator";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
@@ -271,6 +272,13 @@ const Index = () => {
           className="mb-8 sm:mb-12 animate-fade-in">
           <div className="max-w-lg mx-auto px-1">
             <PrizeChecker />
+          </div>
+        </section>
+
+        {/* Federal Pick Generator */}
+        <section className="mb-8 sm:mb-12 animate-fade-in">
+          <div className="max-w-lg mx-auto px-1">
+            <FederalPickGenerator />
           </div>
         </section>
 
