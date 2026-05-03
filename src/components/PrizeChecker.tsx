@@ -113,6 +113,7 @@ interface CheckResult {
   federal?: {
     betBilhete: string;
     tiers: { posicao: number; bilhete: string; valorPremio: number; matched: boolean }[];
+    derivedTiers: { key: string; label: string; description: string; matchedWith: string[]; valorPremio: number }[];
     totalWon: number;
   };
 }
