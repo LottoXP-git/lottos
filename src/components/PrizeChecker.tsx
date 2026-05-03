@@ -344,11 +344,11 @@ export function PrizeChecker() {
     let federalBilhete = "";
     if (selectedLottery === "federal") {
       const digits = numbersInput.replace(/\D/g, "");
-      if (!digits || digits.length === 0 || digits.length > 5) {
-        toast.error("Informe um bilhete válido de até 5 dígitos.");
+      if (!digits || digits.length === 0 || digits.length > 6) {
+        toast.error("Informe um bilhete válido de até 6 dígitos.");
         return;
       }
-      federalBilhete = digits.padStart(5, "0");
+      federalBilhete = digits.padStart(6, "0");
     } else {
       parsed = numbersInput
         .split(/[\s,;]+/)
@@ -387,22 +387,44 @@ export function PrizeChecker() {
       let federalResult: CheckResult["federal"] | undefined;
 
       if (selectedLottery === "federal") {
-        const premiacoes = apiData.premiacoes || [];
-        const tiers = premiacoes
-          .map((p: any) => {
-            const posicao = p.faixa ?? p.posicao ?? 0;
-            const rawBilhete = String(p.bilhete ?? p.numeroBilhete ?? p.descricao ?? "").replace(/\D/g, "");
-            const bilhete = rawBilhete.padStart(5, "0").slice(-5);
-            return {
-              posicao,
-              bilhete,
-              valorPremio: Number(p.valorPremio) || 0,
-              matched: bilhete === federalBilhete,
-            };
-          })
-          .sort((a: any, b: any) => a.posicao - b.posicao);
-        const totalWon = tiers.filter(t => t.matched).reduce((s, t) => s + t.valorPremio, 0);
-        federalResult = { betBilhete: federalBilhete, tiers, totalWon };
+        // Federal: bilhetes vêm em `dezenas` (ou `listaDezenas`), alinhados por
+        // índice com `premiacoes` (faixa 1..5). Não há campo `bilhete` dentro
+        // de cada premiação na API, então reconstruímos o vínculo posicional.
+        const rawBilhetes: string[] = (apiData.dezenas || apiData.listaDezenas || [])
+          .map((d: any) => String(d).replace(/\D/g, ""));
+        const premiacoes: any[] = Array.isArray(apiData.premiacoes) ? apiData.premiacoes : [];
+
+        // Determina o tamanho de comparação: a API atual usa 6 dígitos, mas
+        // bilhetes antigos podiam ter 5. Usamos o maior comprimento encontrado.
+        const ticketLen = Math.max(
+          5,
+          ...rawBilhetes.map((b) => b.length),
+          federalBilhete.replace(/^0+/, "").length
+        );
+        const normalize = (s: string) => s.padStart(ticketLen, "0").slice(-ticketLen);
+        const betNormalized = normalize(federalBilhete);
+
+        // Ordena premiações por faixa e pareia com bilhetes pelo índice da faixa.
+        const sortedPrem = [...premiacoes].sort(
+          (a, b) => (Number(a.faixa) || 0) - (Number(b.faixa) || 0)
+        );
+
+        const tiers = sortedPrem.map((p: any, idx: number) => {
+          const posicao = Number(p.faixa ?? p.posicao ?? idx + 1);
+          // Se a API algum dia incluir `bilhete` na premiação, respeitamos.
+          const explicit = String(p.bilhete ?? p.numeroBilhete ?? "").replace(/\D/g, "");
+          const fromList = rawBilhetes[posicao - 1] ?? rawBilhetes[idx] ?? "";
+          const bilhete = normalize(explicit || fromList);
+          return {
+            posicao,
+            bilhete,
+            valorPremio: Number(p.valorPremio) || 0,
+            matched: bilhete.length > 0 && bilhete === betNormalized,
+          };
+        });
+
+        const totalWon = tiers.filter((t) => t.matched).reduce((s, t) => s + t.valorPremio, 0);
+        federalResult = { betBilhete: betNormalized, tiers, totalWon };
       } else if (selectedLottery === "duplasena") {
         // Dupla Sena: two independent draws
         const draw1Numbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
