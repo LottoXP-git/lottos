@@ -471,7 +471,9 @@ export function PrizeChecker() {
         };
       }
 
-      const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
+      const bestDraw = draws.length > 0
+        ? draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0])
+        : undefined;
 
       setResult({
         concurso: apiData.concurso || apiData.numero || 0,
@@ -485,7 +487,10 @@ export function PrizeChecker() {
 
       const federalWon = !!federalResult && federalResult.totalWon > 0;
       if ((bestDraw && bestDraw.prizeTier) || federalWon) {
-        toast.success(`Parabéns! Você acertou ${bestDraw.totalMatches} números${draws.length > 1 ? ` no melhor sorteio` : ""}!`);
+        const msg = federalWon
+          ? `Parabéns! Seu bilhete foi premiado!`
+          : `Parabéns! Você acertou ${bestDraw!.totalMatches} números${draws.length > 1 ? ` no melhor sorteio` : ""}!`;
+        toast.success(msg);
         confetti({
           particleCount: 150,
           spread: 100,
