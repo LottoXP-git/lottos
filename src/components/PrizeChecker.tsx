@@ -580,23 +580,33 @@ export function PrizeChecker() {
         {/* Numbers Input */}
         <div className="space-y-1.5">
           <Label className="text-xs sm:text-sm">
-            Números apostados
-            {lottery && (
+            {selectedLottery === "federal" ? "Número do bilhete" : "Números apostados"}
+            {lottery && selectedLottery !== "federal" && (
               <span className="text-muted-foreground ml-1">
                 (1 a {lottery.maxNumber})
               </span>
             )}
+            {selectedLottery === "federal" && (
+              <span className="text-muted-foreground ml-1">(5 dígitos)</span>
+            )}
           </Label>
           <Input
-            placeholder="Ex: 5, 12, 23, 34, 45, 60"
+            placeholder={selectedLottery === "federal" ? "Ex: 12345" : "Ex: 5, 12, 23, 34, 45, 60"}
             value={numbersInput}
             onChange={e => setNumbersInput(e.target.value)}
             className="h-9 sm:h-10 text-xs sm:text-sm"
+            inputMode={selectedLottery === "federal" ? "numeric" : undefined}
+            maxLength={selectedLottery === "federal" ? 5 : undefined}
           />
-          {lottery && (
+          {lottery && selectedLottery !== "federal" && (
             <p className="text-[10px] sm:text-xs text-muted-foreground">
               Aposta padrão: {lottery.selectCount} números • Separe por vírgula ou espaço
               {selectedLottery === "duplasena" && " • Mesmos números valem para ambos os sorteios"}
+            </p>
+          )}
+          {selectedLottery === "federal" && (
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Informe o número do seu bilhete (será comparado com os 5 prêmios sorteados)
             </p>
           )}
         </div>
