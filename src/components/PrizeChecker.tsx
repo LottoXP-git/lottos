@@ -339,21 +339,33 @@ export function PrizeChecker() {
       return;
     }
 
-    const parsed = numbersInput
-      .split(/[\s,;]+/)
-      .map(n => parseInt(n.trim(), 10))
-      .filter(n => !isNaN(n));
-
-    if (parsed.length === 0) {
-      toast.error("Informe números válidos separados por vírgula ou espaço.");
-      return;
-    }
-
-    if (lottery) {
-      const invalid = parsed.filter(n => n < (selectedLottery === "lotomania" ? 0 : 1) || n > lottery.maxNumber);
-      if (invalid.length > 0) {
-        toast.error(`Números fora do intervalo (1 a ${lottery.maxNumber}): ${invalid.join(", ")}`);
+    // Federal: a single 5-digit ticket number
+    let parsed: number[] = [];
+    let federalBilhete = "";
+    if (selectedLottery === "federal") {
+      const digits = numbersInput.replace(/\D/g, "");
+      if (!digits || digits.length === 0 || digits.length > 5) {
+        toast.error("Informe um bilhete válido de até 5 dígitos.");
         return;
+      }
+      federalBilhete = digits.padStart(5, "0");
+    } else {
+      parsed = numbersInput
+        .split(/[\s,;]+/)
+        .map(n => parseInt(n.trim(), 10))
+        .filter(n => !isNaN(n));
+
+      if (parsed.length === 0) {
+        toast.error("Informe números válidos separados por vírgula ou espaço.");
+        return;
+      }
+
+      if (lottery) {
+        const invalid = parsed.filter(n => n < (selectedLottery === "lotomania" ? 0 : 1) || n > lottery.maxNumber);
+        if (invalid.length > 0) {
+          toast.error(`Números fora do intervalo (1 a ${lottery.maxNumber}): ${invalid.join(", ")}`);
+          return;
+        }
       }
     }
 
@@ -372,8 +384,26 @@ export function PrizeChecker() {
       if (!apiData) throw new Error("Dados não encontrados");
 
       const draws: DrawResult[] = [];
+      let federalResult: CheckResult["federal"] | undefined;
 
-      if (selectedLottery === "duplasena") {
+      if (selectedLottery === "federal") {
+        const premiacoes = apiData.premiacoes || [];
+        const tiers = premiacoes
+          .map((p: any) => {
+            const posicao = p.faixa ?? p.posicao ?? 0;
+            const rawBilhete = String(p.bilhete ?? p.numeroBilhete ?? p.descricao ?? "").replace(/\D/g, "");
+            const bilhete = rawBilhete.padStart(5, "0").slice(-5);
+            return {
+              posicao,
+              bilhete,
+              valorPremio: Number(p.valorPremio) || 0,
+              matched: bilhete === federalBilhete,
+            };
+          })
+          .sort((a: any, b: any) => a.posicao - b.posicao);
+        const totalWon = tiers.filter(t => t.matched).reduce((s, t) => s + t.valorPremio, 0);
+        federalResult = { betBilhete: federalBilhete, tiers, totalWon };
+      } else if (selectedLottery === "duplasena") {
         // Dupla Sena: two independent draws
         const draw1Numbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
           .map((d: string) => parseInt(d, 10));
@@ -450,9 +480,11 @@ export function PrizeChecker() {
         trevos: trevosResult,
         timeCoracao: timeCoracaoResult,
         mesSorte: mesSorteResult,
+        federal: federalResult,
       });
 
-      if (bestDraw.prizeTier) {
+      const federalWon = !!federalResult && federalResult.totalWon > 0;
+      if ((bestDraw && bestDraw.prizeTier) || federalWon) {
         toast.success(`Parabéns! Você acertou ${bestDraw.totalMatches} números${draws.length > 1 ? ` no melhor sorteio` : ""}!`);
         confetti({
           particleCount: 150,
