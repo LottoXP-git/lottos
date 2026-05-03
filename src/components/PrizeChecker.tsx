@@ -60,6 +60,7 @@ const LOTTERIES: LotteryOption[] = [
   { id: "supersete", name: "Super Sete", maxNumber: 10, selectCount: 7 },
   { id: "maismilionaria", name: "+Milionária", maxNumber: 50, selectCount: 6 },
   { id: "timemania", name: "Timemania", maxNumber: 80, selectCount: 7 },
+  { id: "federal", name: "Federal", maxNumber: 99999, selectCount: 1 },
 ];
 
 type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania";
@@ -109,6 +110,11 @@ interface CheckResult {
   trevos?: TrevoResult;
   timeCoracao?: { drawn: string; selected: string; matched: boolean };
   mesSorte?: { drawn: string; selected: string; matched: boolean };
+  federal?: {
+    betBilhete: string;
+    tiers: { posicao: number; bilhete: string; valorPremio: number; matched: boolean }[];
+    totalWon: number;
+  };
 }
 
 function comb(n: number, k: number): number {
