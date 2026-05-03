@@ -609,16 +609,16 @@ export function PrizeChecker() {
               </span>
             )}
             {selectedLottery === "federal" && (
-              <span className="text-muted-foreground ml-1">(5 dígitos)</span>
+              <span className="text-muted-foreground ml-1">(até 6 dígitos)</span>
             )}
           </Label>
           <Input
-            placeholder={selectedLottery === "federal" ? "Ex: 12345" : "Ex: 5, 12, 23, 34, 45, 60"}
+            placeholder={selectedLottery === "federal" ? "Ex: 065393" : "Ex: 5, 12, 23, 34, 45, 60"}
             value={numbersInput}
             onChange={e => setNumbersInput(e.target.value)}
             className="h-9 sm:h-10 text-xs sm:text-sm"
             inputMode={selectedLottery === "federal" ? "numeric" : undefined}
-            maxLength={selectedLottery === "federal" ? 5 : undefined}
+            maxLength={selectedLottery === "federal" ? 6 : undefined}
           />
           {lottery && selectedLottery !== "federal" && (
             <p className="text-[10px] sm:text-xs text-muted-foreground">
