@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, generateFrequencyData, generateSmartPicks, NumberFrequency } from "@/data/lotteryData";
 import { analyzeBet, buildTemperatureMap, BetAnalysis } from "@/lib/lotteryStats";
 import { BetAnalysisCard } from "./BetAnalysisCard";
-import { Dices, RefreshCw, Copy, Check, Clover, Heart, CalendarDays, Flame, Snowflake, Scale } from "lucide-react";
+import { Dices, RefreshCw, Copy, Check, Clover, Heart, CalendarDays, Flame, Snowflake, Scale, Ticket, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
@@ -27,6 +30,14 @@ import { LuckModeSelector } from "./generator/LuckModeSelector";
 import { NextDrawCTA } from "./generator/NextDrawCTA";
 import { ShareablePickButton } from "./generator/ShareablePickButton";
 import { generateModePicks, type LuckModeId } from "@/lib/luckModes";
+import {
+  buildFrequency,
+  emptyFreq,
+  fetchFederalHistory,
+  pickByStrategy,
+  HISTORY_SIZE,
+  type FederalStrategy,
+} from "@/lib/federalPicks";
 
 interface QuickBetGeneratorProps {
   lotteries: LotteryResult[];
@@ -39,6 +50,13 @@ const strategyOptions: { id: Strategy; label: string; icon: React.ReactNode; col
   { id: "hot", label: "Quentes", icon: <Flame className="w-3.5 h-3.5" />, color: "text-orange-400" },
   { id: "cold", label: "Frias", icon: <Snowflake className="w-3.5 h-3.5" />, color: "text-sky-400" },
   { id: "balanced", label: "Equilibrada", icon: <Scale className="w-3.5 h-3.5" />, color: "text-emerald-400" },
+];
+
+const federalStrategyOptions: { id: FederalStrategy; label: string; icon: React.ReactNode; color: string }[] = [
+  { id: "hot", label: "Quentes", icon: <Flame className="w-3.5 h-3.5" />, color: "text-orange-400" },
+  { id: "cold", label: "Frias", icon: <Snowflake className="w-3.5 h-3.5" />, color: "text-sky-400" },
+  { id: "balanced", label: "Equilibrada", icon: <Scale className="w-3.5 h-3.5" />, color: "text-emerald-400" },
+  { id: "random", label: "Aleatória", icon: <Dices className="w-3.5 h-3.5" />, color: "text-purple-400" },
 ];
 
 const variantMap: Record<string, string> = {
