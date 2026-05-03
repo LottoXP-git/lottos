@@ -60,6 +60,7 @@ const LOTTERIES: LotteryOption[] = [
   { id: "supersete", name: "Super Sete", maxNumber: 10, selectCount: 7 },
   { id: "maismilionaria", name: "+Milionária", maxNumber: 50, selectCount: 6 },
   { id: "timemania", name: "Timemania", maxNumber: 80, selectCount: 7 },
+  { id: "federal", name: "Federal", maxNumber: 99999, selectCount: 1 },
 ];
 
 type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania";
@@ -109,6 +110,11 @@ interface CheckResult {
   trevos?: TrevoResult;
   timeCoracao?: { drawn: string; selected: string; matched: boolean };
   mesSorte?: { drawn: string; selected: string; matched: boolean };
+  federal?: {
+    betBilhete: string;
+    tiers: { posicao: number; bilhete: string; valorPremio: number; matched: boolean }[];
+    totalWon: number;
+  };
 }
 
 function comb(n: number, k: number): number {
@@ -333,21 +339,33 @@ export function PrizeChecker() {
       return;
     }
 
-    const parsed = numbersInput
-      .split(/[\s,;]+/)
-      .map(n => parseInt(n.trim(), 10))
-      .filter(n => !isNaN(n));
-
-    if (parsed.length === 0) {
-      toast.error("Informe números válidos separados por vírgula ou espaço.");
-      return;
-    }
-
-    if (lottery) {
-      const invalid = parsed.filter(n => n < (selectedLottery === "lotomania" ? 0 : 1) || n > lottery.maxNumber);
-      if (invalid.length > 0) {
-        toast.error(`Números fora do intervalo (1 a ${lottery.maxNumber}): ${invalid.join(", ")}`);
+    // Federal: a single 5-digit ticket number
+    let parsed: number[] = [];
+    let federalBilhete = "";
+    if (selectedLottery === "federal") {
+      const digits = numbersInput.replace(/\D/g, "");
+      if (!digits || digits.length === 0 || digits.length > 5) {
+        toast.error("Informe um bilhete válido de até 5 dígitos.");
         return;
+      }
+      federalBilhete = digits.padStart(5, "0");
+    } else {
+      parsed = numbersInput
+        .split(/[\s,;]+/)
+        .map(n => parseInt(n.trim(), 10))
+        .filter(n => !isNaN(n));
+
+      if (parsed.length === 0) {
+        toast.error("Informe números válidos separados por vírgula ou espaço.");
+        return;
+      }
+
+      if (lottery) {
+        const invalid = parsed.filter(n => n < (selectedLottery === "lotomania" ? 0 : 1) || n > lottery.maxNumber);
+        if (invalid.length > 0) {
+          toast.error(`Números fora do intervalo (1 a ${lottery.maxNumber}): ${invalid.join(", ")}`);
+          return;
+        }
       }
     }
 
@@ -366,8 +384,26 @@ export function PrizeChecker() {
       if (!apiData) throw new Error("Dados não encontrados");
 
       const draws: DrawResult[] = [];
+      let federalResult: CheckResult["federal"] | undefined;
 
-      if (selectedLottery === "duplasena") {
+      if (selectedLottery === "federal") {
+        const premiacoes = apiData.premiacoes || [];
+        const tiers = premiacoes
+          .map((p: any) => {
+            const posicao = p.faixa ?? p.posicao ?? 0;
+            const rawBilhete = String(p.bilhete ?? p.numeroBilhete ?? p.descricao ?? "").replace(/\D/g, "");
+            const bilhete = rawBilhete.padStart(5, "0").slice(-5);
+            return {
+              posicao,
+              bilhete,
+              valorPremio: Number(p.valorPremio) || 0,
+              matched: bilhete === federalBilhete,
+            };
+          })
+          .sort((a: any, b: any) => a.posicao - b.posicao);
+        const totalWon = tiers.filter(t => t.matched).reduce((s, t) => s + t.valorPremio, 0);
+        federalResult = { betBilhete: federalBilhete, tiers, totalWon };
+      } else if (selectedLottery === "duplasena") {
         // Dupla Sena: two independent draws
         const draw1Numbers: number[] = (apiData.dezenas || apiData.listaDezenas || [])
           .map((d: string) => parseInt(d, 10));
@@ -435,7 +471,9 @@ export function PrizeChecker() {
         };
       }
 
-      const bestDraw = draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0]);
+      const bestDraw = draws.length > 0
+        ? draws.reduce((best, d) => d.totalMatches > best.totalMatches ? d : best, draws[0])
+        : undefined;
 
       setResult({
         concurso: apiData.concurso || apiData.numero || 0,
@@ -444,10 +482,15 @@ export function PrizeChecker() {
         trevos: trevosResult,
         timeCoracao: timeCoracaoResult,
         mesSorte: mesSorteResult,
+        federal: federalResult,
       });
 
-      if (bestDraw.prizeTier) {
-        toast.success(`Parabéns! Você acertou ${bestDraw.totalMatches} números${draws.length > 1 ? ` no melhor sorteio` : ""}!`);
+      const federalWon = !!federalResult && federalResult.totalWon > 0;
+      if ((bestDraw && bestDraw.prizeTier) || federalWon) {
+        const msg = federalWon
+          ? `Parabéns! Seu bilhete foi premiado!`
+          : `Parabéns! Você acertou ${bestDraw!.totalMatches} números${draws.length > 1 ? ` no melhor sorteio` : ""}!`;
+        toast.success(msg);
         confetti({
           particleCount: 150,
           spread: 100,
@@ -537,23 +580,33 @@ export function PrizeChecker() {
         {/* Numbers Input */}
         <div className="space-y-1.5">
           <Label className="text-xs sm:text-sm">
-            Números apostados
-            {lottery && (
+            {selectedLottery === "federal" ? "Número do bilhete" : "Números apostados"}
+            {lottery && selectedLottery !== "federal" && (
               <span className="text-muted-foreground ml-1">
                 (1 a {lottery.maxNumber})
               </span>
             )}
+            {selectedLottery === "federal" && (
+              <span className="text-muted-foreground ml-1">(5 dígitos)</span>
+            )}
           </Label>
           <Input
-            placeholder="Ex: 5, 12, 23, 34, 45, 60"
+            placeholder={selectedLottery === "federal" ? "Ex: 12345" : "Ex: 5, 12, 23, 34, 45, 60"}
             value={numbersInput}
             onChange={e => setNumbersInput(e.target.value)}
             className="h-9 sm:h-10 text-xs sm:text-sm"
+            inputMode={selectedLottery === "federal" ? "numeric" : undefined}
+            maxLength={selectedLottery === "federal" ? 5 : undefined}
           />
-          {lottery && (
+          {lottery && selectedLottery !== "federal" && (
             <p className="text-[10px] sm:text-xs text-muted-foreground">
               Aposta padrão: {lottery.selectCount} números • Separe por vírgula ou espaço
               {selectedLottery === "duplasena" && " • Mesmos números valem para ambos os sorteios"}
+            </p>
+          )}
+          {selectedLottery === "federal" && (
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              Informe o número do seu bilhete (será comparado com os 5 prêmios sorteados)
             </p>
           )}
         </div>
@@ -820,11 +873,54 @@ export function PrizeChecker() {
               </div>
             )}
 
+            {/* Federal result */}
+            {result.federal && (
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <Trophy className="w-4 h-4 text-primary" />
+                  Loteria Federal — Bilhete {result.federal.betBilhete}
+                </p>
+                <div className="rounded-lg border border-border overflow-hidden">
+                  {result.federal.tiers.map((t) => (
+                    <div
+                      key={t.posicao}
+                      className={`flex items-center justify-between gap-2 px-3 py-2 text-xs sm:text-sm border-b border-border last:border-b-0 ${
+                        t.matched ? "bg-emerald-500/10" : "bg-secondary/30"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Badge variant="outline" className="text-[10px] sm:text-xs">
+                          {t.posicao}º Prêmio
+                        </Badge>
+                        <span className="font-mono font-semibold text-foreground">{t.bilhete}</span>
+                        {t.matched && (
+                          <Badge className="bg-emerald-500/20 text-emerald-500 border-emerald-500/40 text-[10px] sm:text-xs">
+                            ✓ Você ganhou!
+                          </Badge>
+                        )}
+                      </div>
+                      <span className={`font-semibold ${t.matched ? "text-emerald-500" : "text-muted-foreground"}`}>
+                        {t.valorPremio.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {result.federal.totalWon === 0 && (
+                  <p className="text-xs sm:text-sm text-muted-foreground italic flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    Seu bilhete não foi premiado neste concurso.
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Prize Summary */}
             {(() => {
               const allPrizes = result.draws.flatMap(d => d.allPrizes);
-              const totalWon = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
-              const hasAnyPrize = allPrizes.length > 0;
+              const drawsTotal = allPrizes.reduce((sum, p) => sum + p.totalPrize, 0);
+              const federalTotal = result.federal?.totalWon || 0;
+              const totalWon = drawsTotal + federalTotal;
+              const hasAnyPrize = allPrizes.length > 0 || federalTotal > 0;
               if (!hasAnyPrize) return null;
               const numCotas = Math.max(1, parseInt(cotas) || 1);
               const totalPerCota = totalWon / numCotas;
@@ -851,6 +947,14 @@ export function PrizeChecker() {
                         </div>
                       ))
                     )}
+                    {result.federal?.tiers.filter(t => t.matched).map(t => (
+                      <div key={t.posicao} className="flex items-center justify-between text-xs sm:text-sm">
+                        <span className="text-muted-foreground">{t.posicao}º Prêmio (bilhete {t.bilhete})</span>
+                        <span className="font-semibold text-emerald-400">
+                          {t.valorPremio.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                        </span>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="border-t border-primary/20 pt-2 space-y-1.5">
