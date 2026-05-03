@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
-import { FederalPickGenerator } from "@/components/FederalPickGenerator";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
