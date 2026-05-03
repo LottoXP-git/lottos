@@ -681,7 +681,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
           </div>
         }
 
-        {selected && selected.id !== "federal" && selected.id !== "loteca" && (
+        {selected && selected.id !== "loteca" && (
           <NextDrawCTA nextDate={selected.nextDate} lotteryName={selected.name} />
         )}
 
