@@ -274,13 +274,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Federal Pick Generator */}
-        <section className="mb-8 sm:mb-12 animate-fade-in">
-          <div className="max-w-lg mx-auto px-1">
-            <FederalPickGenerator />
-          </div>
-        </section>
-
         {/* Instructions */}
         <section className="text-center py-8 border-t border-border">
           <p className="text-muted-foreground text-sm">
