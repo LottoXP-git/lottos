@@ -1084,7 +1084,7 @@ export function PrizeChecker() {
                             <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight">{dt.description}</p>
                           </div>
                           <ul className="space-y-1 pl-1">
-                            {dt.matches.map((m, idx) => (
+                            {(dt.matches ?? []).map((m, idx) => (
                               <li key={idx} className="flex items-start gap-2 text-[10px] sm:text-xs">
                                 <Badge variant="outline" className="text-[9px] sm:text-[10px] shrink-0 border-amber-500/30">
                                   {m.posicao}º Prêmio
