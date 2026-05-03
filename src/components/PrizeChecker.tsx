@@ -1024,11 +1024,38 @@ export function PrizeChecker() {
                     </div>
                   ))}
                 </div>
-                {result.federal.totalWon === 0 && (
+                {result.federal.totalWon === 0 && result.federal.derivedTiers.length === 0 && (
                   <p className="text-xs sm:text-sm text-muted-foreground italic flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5" />
                     Seu bilhete não foi premiado neste concurso.
                   </p>
+                )}
+
+                {/* Faixas derivadas: Milhar, Centena, Dezena, Aproximações, Dezenas Finais, Unidade */}
+                {result.federal.derivedTiers.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <p className="text-[11px] sm:text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      Premiações secundárias
+                    </p>
+                    <div className="space-y-1">
+                      {result.federal.derivedTiers.map((dt) => (
+                        <div key={dt.key} className="flex items-start justify-between gap-2 px-2.5 py-1.5 rounded-md bg-amber-500/10 border border-amber-500/30">
+                          <div className="min-w-0">
+                            <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-600 dark:text-amber-400">{dt.label}</Badge>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">{dt.description}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-[10px] text-muted-foreground">Vínculo</p>
+                            <p className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">{dt.matchedWith.join(", ")}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground italic">
+                      ℹ️ Os valores das faixas secundárias variam por extração e não são divulgados pela API. Consulte o site da Caixa para o rateio oficial.
+                    </p>
+                  </div>
                 )}
               </div>
             )}
