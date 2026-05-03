@@ -130,10 +130,58 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
   const [entranceIdx, setEntranceIdx] = useState(0);
   const entrance = ENTRANCES[entranceIdx];
 
+  // Federal state
+  const [fedStrategy, setFedStrategy] = useState<FederalStrategy>("balanced");
+  const [fedCount, setFedCount] = useState("3");
+  const [federalPicks, setFederalPicks] = useState<string[]>([]);
+  const [copiedFedIdx, setCopiedFedIdx] = useState<number | null>(null);
+  const [fedHistory, setFedHistory] = useState<string[] | null>(null);
+  const [loadingFedHistory, setLoadingFedHistory] = useState(false);
+  const [fedHistoryError, setFedHistoryError] = useState<string | null>(null);
+
   const luck = useLuckProgress();
   const history = usePickHistory();
 
   const selected = lotteries.find((l) => l.id === selectedId);
+  const isFederal = selected?.id === "federal";
+
+  const fedFreq = useMemo(
+    () => (fedHistory ? buildFrequency(fedHistory) : emptyFreq()),
+    [fedHistory]
+  );
+  const fedConcursos = useMemo(
+    () => (fedHistory ? Math.ceil(fedHistory.length / 5) : 0),
+    [fedHistory]
+  );
+  const fedHottest = useMemo(
+    () =>
+      fedFreq.map((counts) => {
+        const top = counts.map((c, d) => ({ c, d })).sort((a, b) => b.c - a.c)[0];
+        return top?.d ?? 0;
+      }),
+    [fedFreq]
+  );
+
+  const loadFedHistory = async () => {
+    setLoadingFedHistory(true);
+    setFedHistoryError(null);
+    try {
+      const t = await fetchFederalHistory(HISTORY_SIZE);
+      if (t.length === 0) throw new Error("Histórico vazio");
+      setFedHistory(t);
+    } catch (e: any) {
+      setFedHistoryError(e?.message || "Erro ao carregar histórico");
+    } finally {
+      setLoadingFedHistory(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isFederal && fedHistory === null && !loadingFedHistory) {
+      loadFedHistory();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFederal]);
 
   // Reset analysis when lottery changes
   useEffect(() => {
@@ -143,6 +191,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
     setTimeCoracao("");
     setMesSorte("");
     setRarity(null);
+    setFederalPicks([]);
   }, [selectedId]);
 
   const generate = () => {
@@ -171,8 +220,37 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
     setRarity(null);
     setEntranceIdx((i) => (i + 1) % ENTRANCES.length);
     setTimeout(() => {
-      if (selected.id === "federal" || selected.id === "loteca") {
+      if (selected.id === "loteca") {
         toast.info(`Geração aleatória não disponível para ${selected.name}`);
+        setIsSpinning(false);
+        return;
+      }
+      if (selected.id === "federal") {
+        if (!fedHistory || fedHistory.length === 0) {
+          toast.error("Histórico da Federal ainda não carregado.");
+          setIsSpinning(false);
+          return;
+        }
+        const n = Math.min(10, Math.max(1, parseInt(fedCount) || 1));
+        const result: string[] = [];
+        const seen = new Set<string>();
+        let attempts = 0;
+        while (result.length < n && attempts < n * 30) {
+          const b = pickByStrategy(fedFreq, fedStrategy);
+          if (!seen.has(b)) {
+            seen.add(b);
+            result.push(b);
+          }
+          attempts++;
+        }
+        setFederalPicks(result);
+        confetti({
+          particleCount: 80,
+          spread: 80,
+          origin: { y: 0.65 },
+          colors: ["#22c55e", "#eab308", "#3b82f6"],
+        });
+        toast.success(`${result.length} bilhete${result.length > 1 ? "s" : ""} gerado${result.length > 1 ? "s" : ""}!`);
         setIsSpinning(false);
         return;
       }
