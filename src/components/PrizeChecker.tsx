@@ -434,81 +434,109 @@ export function PrizeChecker() {
         // Calculadas apenas para conferência do bilhete; valores não são
         // exibidos como prêmio porque variam conforme a extração e a Caixa
         // não publica esses rateios na API pública.
-        const derivedTiers: { key: string; label: string; description: string; matchedWith: string[]; valorPremio: number }[] = [];
+        const derivedTiers: {
+          key: string;
+          label: string;
+          description: string;
+          matches: { bilhete: string; posicao: number; detail: string }[];
+        }[] = [];
         const bet = betNormalized;
         if (bet.length >= 4 && rawBilhetes.length > 0) {
           const all = rawBilhetes.map((b) => normalize(b));
           const principal = all[0]; // 1º prêmio (base de aproximações/finais/unidade)
 
-          // Milhar: últimos 4 dígitos coincidentes com algum dos 5 prêmios
-          const milharBet = bet.slice(-4);
-          const milharMatch = all.filter((b) => b.slice(-4) === milharBet);
-          if (milharMatch.length > 0) {
+          const collectSuffixMatches = (len: number) => {
+            const suf = bet.slice(-len);
+            const matches: { bilhete: string; posicao: number; detail: string }[] = [];
+            all.forEach((b, idx) => {
+              if (b && b.slice(-len) === suf) {
+                matches.push({
+                  bilhete: b,
+                  posicao: idx + 1,
+                  detail: `Sufixo "${suf}" igual aos últimos ${len} dígitos do ${idx + 1}º Prêmio (${b})`,
+                });
+              }
+            });
+            return matches;
+          };
+
+          // Milhar / Centena / Dezena
+          const milharMatches = collectSuffixMatches(4);
+          if (milharMatches.length > 0) {
             derivedTiers.push({
               key: "milhar",
               label: "Milhar",
               description: "Últimos 4 dígitos iguais a um dos prêmios principais",
-              matchedWith: milharMatch,
-              valorPremio: 0,
+              matches: milharMatches,
             });
           }
-
-          // Centena: últimos 3 dígitos coincidentes com algum dos 5 prêmios
-          const centenaBet = bet.slice(-3);
-          const centenaMatch = all.filter((b) => b.slice(-3) === centenaBet);
-          if (centenaMatch.length > 0) {
+          const centenaMatches = collectSuffixMatches(3);
+          if (centenaMatches.length > 0) {
             derivedTiers.push({
               key: "centena",
               label: "Centena",
               description: "Últimos 3 dígitos iguais a um dos prêmios principais",
-              matchedWith: centenaMatch,
-              valorPremio: 0,
+              matches: centenaMatches,
             });
           }
-
-          // Dezena: últimos 2 dígitos coincidentes com algum dos 5 prêmios
-          const dezenaBet = bet.slice(-2);
-          const dezenaMatch = all.filter((b) => b.slice(-2) === dezenaBet);
-          if (dezenaMatch.length > 0) {
+          const dezenaMatches = collectSuffixMatches(2);
+          if (dezenaMatches.length > 0) {
             derivedTiers.push({
               key: "dezena",
               label: "Dezena",
               description: "Últimos 2 dígitos iguais a um dos prêmios principais",
-              matchedWith: dezenaMatch,
-              valorPremio: 0,
+              matches: dezenaMatches,
             });
           }
 
           if (principal) {
             const principalNum = parseInt(principal, 10);
+            const betNum = parseInt(bet, 10);
 
             // Aproximações: imediatamente anterior/posterior ao 1º prêmio
-            const aproxMatches: string[] = [];
-            if (parseInt(bet, 10) === principalNum - 1) aproxMatches.push(principal);
-            if (parseInt(bet, 10) === principalNum + 1) aproxMatches.push(principal);
+            const aproxMatches: { bilhete: string; posicao: number; detail: string }[] = [];
+            if (betNum === principalNum - 1) {
+              aproxMatches.push({
+                bilhete: principal,
+                posicao: 1,
+                detail: `Seu bilhete (${bet}) é o número imediatamente anterior ao 1º Prêmio (${principal})`,
+              });
+            }
+            if (betNum === principalNum + 1) {
+              aproxMatches.push({
+                bilhete: principal,
+                posicao: 1,
+                detail: `Seu bilhete (${bet}) é o número imediatamente posterior ao 1º Prêmio (${principal})`,
+              });
+            }
             if (aproxMatches.length > 0) {
               derivedTiers.push({
                 key: "aproximacoes",
                 label: "Aproximações",
                 description: "Bilhete imediatamente anterior ou posterior ao 1º prêmio",
-                matchedWith: aproxMatches,
-                valorPremio: 0,
+                matches: aproxMatches,
               });
             }
 
             // Dezenas Finais: 3 dezenas anteriores ou 3 posteriores à dezena
             // do 1º prêmio (exceto as já cobertas por aproximação anterior/posterior)
             const dezPrincipal = principalNum % 100;
-            const dezBet = parseInt(bet, 10) % 100;
-            const isAprox = parseInt(bet, 10) === principalNum - 1 || parseInt(bet, 10) === principalNum + 1;
+            const dezBet = betNum % 100;
+            const isAprox = betNum === principalNum - 1 || betNum === principalNum + 1;
             const diff = dezBet - dezPrincipal;
             if (!isAprox && diff !== 0 && diff >= -3 && diff <= 3) {
+              const dir = diff > 0 ? "à frente" : "atrás";
               derivedTiers.push({
                 key: "dezenas-finais",
                 label: "Dezenas Finais",
                 description: "Dezena final entre as 3 anteriores ou 3 posteriores à do 1º prêmio",
-                matchedWith: [principal],
-                valorPremio: 0,
+                matches: [
+                  {
+                    bilhete: principal,
+                    posicao: 1,
+                    detail: `Sua dezena final ${String(dezBet).padStart(2, "0")} está ${Math.abs(diff)} ${dir} da dezena ${String(dezPrincipal).padStart(2, "0")} do 1º Prêmio (${principal})`,
+                  },
+                ],
               });
             }
 
@@ -518,8 +546,13 @@ export function PrizeChecker() {
                 key: "unidade",
                 label: "Unidade do 1º Prêmio",
                 description: "Último dígito igual ao do 1º prêmio",
-                matchedWith: [principal],
-                valorPremio: 0,
+                matches: [
+                  {
+                    bilhete: principal,
+                    posicao: 1,
+                    detail: `Último dígito ${bet.slice(-1)} igual ao do 1º Prêmio (${principal})`,
+                  },
+                ],
               });
             }
           }
