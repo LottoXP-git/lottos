@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
 import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
+import { BetPricesCard } from "@/components/BetPricesCard";
 import { AdBanner } from "@/components/AdBanner";
 import { SpecialDrawModal } from "@/components/SpecialDrawModal";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
@@ -271,6 +272,13 @@ const Index = () => {
           className="mb-8 sm:mb-12 animate-fade-in">
           <div className="max-w-lg mx-auto px-1">
             <PrizeChecker />
+          </div>
+        </section>
+
+        {/* Bet Prices Table */}
+        <section className="mb-8 sm:mb-12 animate-fade-in">
+          <div className="max-w-lg mx-auto px-1">
+            <BetPricesCard />
           </div>
         </section>
 
