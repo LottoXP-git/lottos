@@ -145,6 +145,12 @@ const History = () => {
           <p className="text-sm sm:text-base text-muted-foreground">
             Consulte todos os resultados anteriores com filtros avançados
           </p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-3 leading-relaxed max-w-3xl">
+            Nesta página você encontra os últimos 100 sorteios oficiais das principais loterias da Caixa
+            (Mega-Sena, Lotofácil, Quina, Lotomania e Dupla Sena), com números sorteados, prêmios pagos e número
+            de ganhadores. Use os filtros por modalidade, intervalo de datas ou número do concurso para localizar
+            rapidamente um resultado específico e clique em qualquer linha para ver as estatísticas detalhadas.
+          </p>
         </section>
 
         {/* Filters */}
