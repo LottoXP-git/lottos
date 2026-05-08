@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { AdBanner } from "@/components/AdBanner";
 
 const NotFound = () => {
   const location = useLocation();
@@ -22,7 +21,6 @@ const NotFound = () => {
             Voltar ao início
           </a>
         </div>
-        <AdBanner format="leaderboard" slot="8331815579" className="rounded-xl" />
       </main>
       <Footer />
     </div>

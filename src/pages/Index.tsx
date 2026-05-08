@@ -255,9 +255,6 @@ const Index = () => {
           <PrizeRanking lotteries={results} />
         </section>
 
-        {/* Ad - Interstitial */}
-        <AdBanner format="interstitial" className="mb-8" />
-
         {/* Registration Section */}
         <section
           className="mb-12 animate-fade-in">
@@ -279,6 +276,40 @@ const Index = () => {
         <section className="mb-8 sm:mb-12 animate-fade-in">
           <div className="max-w-lg mx-auto px-1">
             <BetPricesCard />
+          </div>
+        </section>
+
+        {/* Editorial: Sobre as Loterias da Caixa */}
+        <section className="mb-8 sm:mb-12 animate-fade-in">
+          <div className="max-w-3xl mx-auto px-1">
+            <article className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">Sobre as Loterias da Caixa</h2>
+              <p>
+                As Loterias Caixa são administradas pela Caixa Econômica Federal e fazem parte da história do Brasil há
+                décadas. Modalidades como Mega-Sena, Quina, Lotofácil, Lotomania, Dupla Sena, Timemania, Dia de Sorte,
+                Super Sete, +Milionária, Loteca e Federal sorteiam prêmios milionários semanalmente, e parte significativa
+                da arrecadação é destinada à seguridade social, esporte, cultura, segurança pública e financiamento
+                estudantil — convertendo cada aposta em recursos para programas sociais.
+              </p>
+              <p>
+                O Lottos é uma plataforma independente de informação e estatística. Reunimos resultados oficiais
+                atualizados em tempo real, histórico de concursos, frequência de números (quentes e frios), atrasos,
+                rankings de prêmios acumulados e ferramentas educativas como gerador de palpites e conferidor de apostas.
+                Nosso objetivo é ajudar o apostador a tomar decisões mais informadas, entender padrões estatísticos e
+                acompanhar de perto o que acontece em cada modalidade.
+              </p>
+              <p>
+                <strong className="text-foreground">Importante:</strong> nenhum método garante prêmios em jogos de azar.
+                Loterias são produtos de sorte e os sorteios são independentes entre si. As análises do Lottos têm caráter
+                estritamente informativo e não substituem o site oficial da Caixa Econômica Federal, com quem não
+                possuímos vínculo institucional.
+              </p>
+              <p>
+                O acesso ao Lottos é restrito a maiores de 18 anos. Jogue com responsabilidade: defina um orçamento, nunca
+                aposte mais do que pode perder e procure ajuda especializada se sentir que o jogo está prejudicando sua
+                vida financeira ou pessoal.
+              </p>
+            </article>
           </div>
         </section>
 
