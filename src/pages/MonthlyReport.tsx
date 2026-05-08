@@ -23,6 +23,8 @@ import { format, differenceInCalendarDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
+import { JsonLd } from "@/components/JsonLd";
+import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
 
 const MONTHS_PT = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -146,6 +148,12 @@ export default function MonthlyReport() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <JsonLd
+        data={buildBreadcrumb([
+          { name: "Início", url: `${SITE_URL}/` },
+          { name: "Estatísticas", url: `${SITE_URL}/estatisticas` },
+        ])}
+      />
       <Header />
       <main className="container mx-auto px-4 py-8 flex-1">
         <section className="max-w-4xl mx-auto space-y-6 animate-fade-in">
