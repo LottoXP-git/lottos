@@ -34,7 +34,6 @@ export default function TermsOfUse() {
           },
         ]}
       />
-      />
       <Header />
       <main className="container mx-auto px-4 py-10 max-w-3xl">
         <div className="flex items-center gap-3 mb-8">
