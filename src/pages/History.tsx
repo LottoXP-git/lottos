@@ -37,6 +37,7 @@ import { Search, CalendarIcon, Filter, X, History as HistoryIcon, Trophy } from 
 import { cn } from "@/lib/utils";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { AdBanner } from "@/components/AdBanner";
+import { JsonLd } from "@/components/JsonLd";
 
 const ITEMS_PER_PAGE = 15;
 
