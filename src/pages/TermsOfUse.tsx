@@ -1,10 +1,32 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FileText } from "lucide-react";
+import { JsonLd } from "@/components/JsonLd";
 
 export default function TermsOfUse() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: "Termos de Uso — Lottos",
+          description:
+            "Termos de uso do Lottos: regras, direitos e responsabilidades para uso da plataforma.",
+          inLanguage: "pt-BR",
+          mainEntityOfPage: "https://lottos.lovable.app/termos",
+          author: { "@type": "Organization", name: "Lottos" },
+          publisher: {
+            "@type": "Organization",
+            name: "Lottos",
+            logo: {
+              "@type": "ImageObject",
+              url: "https://lottos.lovable.app/apple-touch-icon.png",
+            },
+          },
+          dateModified: new Date().toISOString().slice(0, 10),
+        }}
+      />
       <Header />
       <main className="container mx-auto px-4 py-10 max-w-3xl">
         <div className="flex items-center gap-3 mb-8">
