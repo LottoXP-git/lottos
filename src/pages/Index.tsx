@@ -23,6 +23,7 @@ import { MegaSena30Banner } from "@/components/MegaSena30Banner";
 import { isMegaSena30AnosActive, getMegaSena30Status, MegaSena30Status } from "@/utils/megaSena30Date";
 import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
+import { JsonLd } from "@/components/JsonLd";
 
 const Index = () => {
   useAdSenseScript();
@@ -72,6 +73,96 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Lottos",
+            url: "https://lottos.lovable.app/",
+            description:
+              "Resultados, estatísticas e gerador de palpites para todas as loterias da Caixa Econômica Federal.",
+            inLanguage: "pt-BR",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://lottos.lovable.app/historico?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: "Sobre as Loterias da Caixa",
+            description:
+              "Guia informativo sobre as loterias da Caixa Econômica Federal, suas modalidades e como o Lottos analisa resultados.",
+            inLanguage: "pt-BR",
+            mainEntityOfPage: "https://lottos.lovable.app/",
+            author: { "@type": "Organization", name: "Lottos" },
+            publisher: {
+              "@type": "Organization",
+              name: "Lottos",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://lottos.lovable.app/apple-touch-icon.png",
+              },
+            },
+            image: "https://lottos.lovable.app/og-image.jpg",
+            datePublished: "2025-01-01",
+            dateModified: new Date().toISOString().slice(0, 10),
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "O Lottos tem vínculo com a Caixa Econômica Federal?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text:
+                    "Não. O Lottos é uma plataforma independente de informação e estatística sobre loterias e não possui vínculo institucional com a Caixa Econômica Federal.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Quais loterias o Lottos acompanha?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text:
+                    "Acompanhamos Mega-Sena, Quina, Lotofácil, Lotomania, Dupla Sena, Timemania, Dia de Sorte, Super Sete, +Milionária, Loteca e Federal.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "O gerador de palpites garante prêmios?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text:
+                    "Não. Loterias são jogos de azar e os sorteios são independentes. O gerador é uma ferramenta estatística e educativa; nenhum método garante prêmios.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Quem pode usar o Lottos?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text:
+                    "Apenas maiores de 18 anos. O acesso é bloqueado por verificação de idade conforme a legislação brasileira sobre jogos de azar.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Os resultados são oficiais?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text:
+                    "Sim. Os resultados são obtidos diretamente da API pública das Loterias Caixa e atualizados em tempo real.",
+                },
+              },
+            ],
+          },
+        ]}
+      />
       <Header />
       
         <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
