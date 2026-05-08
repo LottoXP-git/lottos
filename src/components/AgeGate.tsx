@@ -5,7 +5,7 @@ import { Logo } from "./Logo";
 
 const AGE_VERIFIED_KEY = "lottos_age_verified";
 
-const BOT_UA_PATTERN = /Googlebot|AdsBot-Google|Mediapartners-Google|bingbot|DuckDuckBot|Slurp|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Applebot/i;
+const BOT_UA_PATTERN = /Googlebot|AdsBot-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile-Apps|Mediapartners-Google|Google-InspectionTool|Google-Read-Aloud|GoogleOther|Chrome-Lighthouse|bingbot|DuckDuckBot|Slurp|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Applebot/i;
 
 function isSearchBot(): boolean {
   if (typeof navigator === "undefined") return false;
