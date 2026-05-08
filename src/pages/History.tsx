@@ -130,6 +130,17 @@ const History = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Histórico de Resultados das Loterias Caixa",
+          description:
+            "Consulte os últimos sorteios oficiais das loterias da Caixa: Mega-Sena, Lotofácil, Quina, Lotomania e Dupla Sena.",
+          inLanguage: "pt-BR",
+          url: "https://lottos.lovable.app/historico",
+        }}
+      />
 
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Page Title */}
