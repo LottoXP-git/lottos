@@ -24,6 +24,7 @@ import { isMegaSena30AnosActive, getMegaSena30Status, MegaSena30Status } from "@
 import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { JsonLd } from "@/components/JsonLd";
+import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
 
 const Index = () => {
   useAdSenseScript();
@@ -75,6 +76,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <JsonLd
         data={[
+          buildBreadcrumb([{ name: "Início", url: `${SITE_URL}/` }]),
           {
             "@context": "https://schema.org",
             "@type": "WebSite",

@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { AdBanner } from "@/components/AdBanner";
 import { JsonLd } from "@/components/JsonLd";
+import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -131,15 +132,21 @@ const History = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          name: "Histórico de Resultados das Loterias Caixa",
-          description:
-            "Consulte os últimos sorteios oficiais das loterias da Caixa: Mega-Sena, Lotofácil, Quina, Lotomania e Dupla Sena.",
-          inLanguage: "pt-BR",
-          url: "https://lottos.lovable.app/historico",
-        }}
+        data={[
+          buildBreadcrumb([
+            { name: "Início", url: `${SITE_URL}/` },
+            { name: "Histórico", url: `${SITE_URL}/historico` },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "Histórico de Resultados das Loterias Caixa",
+            description:
+              "Consulte os últimos sorteios oficiais das loterias da Caixa: Mega-Sena, Lotofácil, Quina, Lotomania e Dupla Sena.",
+            inLanguage: "pt-BR",
+            url: `${SITE_URL}/historico`,
+          },
+        ]}
       />
 
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
