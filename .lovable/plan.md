@@ -1,62 +1,43 @@
+# Preview de imagem no compartilhamento do modal de detalhes
 
-# Correção das violações do Google AdSense
+## Objetivo
+No `LotteryDetailModal`, ao clicar em compartilhar, abrir um diálogo de pré-visualização exibindo um card PNG do resultado (com a identidade visual da loteria) antes de baixar/compartilhar — mesmo padrão já usado no `ShareablePickButton` (palpites) e `ShareCardImageButton` (export).
 
-O AdSense sinalizou duas políticas:
+## Escopo
+Apenas o botão de compartilhamento dentro de `src/components/LotteryDetailModal.tsx` (linhas 298–306). Demais usos do `ShareButton` permanecem inalterados.
 
-1. **"Anúncios em telas sem conteúdo do editor"** — anúncios aparecem em páginas que não têm conteúdo original suficiente do editor (ou que mostram só placeholders/erros).
-2. **"Conteúdo de baixo valor"** — páginas com pouco texto/utilidade e muitos anúncios.
+## Implementação
 
-Mapeei no código os pontos exatos que provavelmente dispararam essas políticas e proponho correções.
+### 1. Novo componente `src/components/ShareResultImageButton.tsx`
+- Baseado no `ShareablePickButton` (Canvas 1080×1350, gradiente por modalidade via tabela `THEMES`, bolinhas com mesmo estilo do `LotteryBall`, faixa de marca "LOTTOS" no topo, rodapé com `lottos.lovable.app`).
+- Props:
+  - `lotteryName`, `lotteryId`, `lotteryColor`
+  - `concurso`, `date`, `nextDate`
+  - `numbers`, `trevos?`, `timeCoracao?`, `mesSorte?`
+  - `nextPrize`, `accumulated?`
+- Conteúdo do card:
+  - Header: nome da loteria + "Concurso N • dd/mm/aaaa"
+  - Bloco central: bolinhas (com tamanho responsivo conforme quantidade, mesma lógica do `ShareablePickButton`)
+  - Chips de extras (Trevos / Time / Mês) quando existirem
+  - Rodapé: "Próximo prêmio: R$ ..." + selo "Acumulado!" quando aplicável + URL
+- Fluxo:
+  1. Botão (mesmo visual atual: ghost, ícone Share2, tamanho `h-9 w-9 sm:h-10 sm:w-10`).
+  2. Ao clicar → gera canvas → abre `<Dialog>` com `<img>` da imagem em alta qualidade.
+  3. Diálogo com botões: **Baixar PNG** (download direto) e **Compartilhar** (Web Share API com `files`; fallback para download).
+  4. Toasts de sucesso/erro como nos componentes existentes.
+- Limpeza do `URL.createObjectURL` no unmount (igual `ShareCardImageButton`).
 
-## Diagnóstico — onde estão os problemas
+### 2. Atualizar `src/components/LotteryDetailModal.tsx`
+- Substituir `<ShareButton ... />` (linhas 300–305) por `<ShareResultImageButton ... />` passando os campos de `lottery`.
+- Remover o import do `ShareButton` se não for mais usado no arquivo.
+- Manter o wrapper `<div className="flex justify-center">` para preservar o layout (memória: share button centralizado acima dos ads).
 
-| Página | Problema |
-|---|---|
-| `src/pages/NotFound.tsx` (404) | Mostra apenas "Página não encontrada" + 1 link, mas exibe `AdBanner`. Clássico caso de "ad em tela sem conteúdo". |
-| `src/pages/PrivacyPolicy.tsx` | `AdBanner leaderboard` no topo, antes de qualquer conteúdo. Páginas legais/utilitárias com anúncio acima da dobra são comumente reprovadas. |
-| `src/pages/TermsOfUse.tsx` | Mesmo problema do Privacy. |
-| `src/components/AgeGate.tsx` | Bloqueia toda a aplicação até o usuário confirmar idade. Quando o crawler do AdSense (sem o User-Agent listado em `BOT_UA_PATTERN`) cai no site, ele só vê o gate — "tela sem conteúdo". A whitelist atual cobre Googlebot/Mediapartners/AdsBot, mas é frágil. |
-| `src/pages/Index.tsx` | 4 unidades de anúncio (`leaderboard`, `inline`, `interstitial`, mais o do Footer) em uma página com cards de loteria que dependem de fetch — se a API falhar ou enquanto carrega, a página fica "leve" demais para a quantidade de ads. |
-| `src/pages/History.tsx` | Tem `useAdSenseScript` e `AdBanner`, mas a tabela depende de filtros — em estados vazios, o conteúdo fica escasso ao lado dos anúncios. |
+## Detalhes técnicos
+- Reaproveitar a tabela `THEMES` e helpers (`drawRoundedRect`, `todayBR`) do `ShareablePickButton` — extrair para `src/lib/shareCardCanvas.ts` para evitar duplicação, exportando `drawRoundedRect`, `THEMES`, `DEFAULT_THEME`. Refatorar `ShareablePickButton` para importar daí.
+- Tipagem: usar `RefObject` não é necessário (renderização vem dos dados, não de um nó DOM).
+- Sem mudanças em rotas, dados ou backend.
 
-## Plano de correção
-
-### 1. Remover anúncios de páginas utilitárias
-- `src/pages/NotFound.tsx`: remover o `<AdBanner>` e o import. 404 nunca deve servir anúncios.
-- `src/pages/PrivacyPolicy.tsx`: remover o `<AdBanner>` do topo (e o import). Páginas legais ficam sem ads.
-- `src/pages/TermsOfUse.tsx`: idem.
-
-### 2. Garantir que o AgeGate não atrapalhe a indexação dos crawlers do AdSense
-- Em `src/components/AgeGate.tsx`, ampliar a regex `BOT_UA_PATTERN` para incluir variantes recentes: `AdsBot-Google-Mobile`, `AdsBot-Google-Mobile-Apps`, `Google-InspectionTool`, `Google-Read-Aloud`, `Chrome-Lighthouse`, `GoogleOther`. Isso garante que o robô do AdSense passe direto para a Home e veja conteúdo real.
-
-### 3. Reduzir densidade de anúncios na Home
-Em `src/pages/Index.tsx`:
-- Remover o `AdBanner format="interstitial"` (entre Prize Ranking e Registration) — é o terceiro anúncio na mesma rolagem e em zona com pouco texto.
-- Manter apenas: 1 leaderboard após o gerador + 1 inline depois dos resultados. Isso reduz densidade e melhora "ratio conteúdo/anúncio".
-
-### 4. Enriquecer conteúdo editorial da Home
-Ainda em `src/pages/Index.tsx`, adicionar uma nova seção textual antes do Footer chamada **"Sobre as Loterias da Caixa"** com 3–4 parágrafos originais (200–300 palavras) cobrindo:
-- O que são as loterias Caixa, como funcionam os sorteios e a destinação social.
-- Como o Lottos analisa os resultados (frequência, atrasados, padrões) — sem prometer ganhos.
-- Aviso responsável sobre +18 e jogo consciente.
-
-Esse bloco resolve a crítica de "baixo valor" porque adiciona conteúdo único, indexável e relevante ao tema do site.
-
-### 5. Garantir conteúdo mínimo no `History.tsx`
-- Adicionar um parágrafo introdutório (1–2 frases) explicando o que é a página histórica antes da primeira renderização da tabela, para que mesmo o estado vazio tenha contexto editorial junto do anúncio.
-
-### 6. Boas práticas adicionais (sem código novo)
-- Verificar em **AdSense → Sites** se `lottos.lovable.app` e `grupolottoxp.com` estão ambos aprovados; um domínio reprovado contamina o status.
-- Após publicar as mudanças, no painel do AdSense clicar em **"Solicitar revisão"** na violação. A revisão leva alguns dias.
-- Manter `ads.txt` (já presente em `public/ads.txt`).
-
-## Arquivos afetados
-
-- `src/pages/NotFound.tsx` — remover AdBanner
-- `src/pages/PrivacyPolicy.tsx` — remover AdBanner
-- `src/pages/TermsOfUse.tsx` — remover AdBanner
-- `src/components/AgeGate.tsx` — ampliar whitelist de bots
-- `src/pages/Index.tsx` — remover 1 AdBanner + adicionar seção "Sobre as Loterias"
-- `src/pages/History.tsx` — adicionar parágrafo introdutório
-
-Sem alterações em backend, dependências ou componentes compartilhados.
+## Fora de escopo
+- Outros usos do `ShareButton` (cards na home, histórico, etc.).
+- Alterações de cópia/texto do compartilhamento existente.
+- Reintroduzir gráfico de "Evolução dos Prêmios" (proibido por memória).
