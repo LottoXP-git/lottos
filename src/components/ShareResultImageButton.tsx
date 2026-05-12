@@ -2,6 +2,7 @@ import { RefObject, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Share2, Loader2, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import lottosLogo from "@/assets/lottos-logo.png";
 import {
   Tooltip,
   TooltipContent,
@@ -54,7 +55,7 @@ export function ShareResultImageButton({
 
   const buildOffscreen = (): { container: HTMLDivElement; cleanup: () => void } => {
     const node = targetRef.current;
-    if (!node) throw new Error("Conteúdo não encontrado");
+    if (!node) throw new Error("EMPTY_REF");
 
     const container = document.createElement("div");
     const bg = getComputedStyle(document.body).backgroundColor || "#ffffff";
@@ -79,7 +80,7 @@ export function ShareResultImageButton({
       border-bottom:1px solid rgba(127,127,127,0.25);
     `;
     header.innerHTML = `
-      <div style="font-weight:800;font-size:22px;letter-spacing:0.5px;">LOTTOS</div>
+      <img src="${lottosLogo}" alt="Lottos" style="height:36px;width:auto;display:block;" crossorigin="anonymous" />
       <div style="font-weight:600;font-size:14px;opacity:0.75;">${lotteryName} · Concurso ${concurso}</div>
     `;
     container.appendChild(header);
@@ -112,15 +113,42 @@ export function ShareResultImageButton({
     };
   };
 
+  const waitForImages = (root: HTMLElement) =>
+    Promise.all(
+      Array.from(root.querySelectorAll("img")).map((img) =>
+        img.complete && img.naturalWidth > 0
+          ? Promise.resolve()
+          : new Promise<void>((res) => {
+              img.onload = () => res();
+              img.onerror = () => res();
+            }),
+      ),
+    );
+
   const handleGenerate = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (busy) return;
+    if (!targetRef.current) {
+      toast({
+        title: "Conteúdo indisponível",
+        description: "Aguarde o carregamento do resultado e tente novamente.",
+        variant: "destructive",
+      });
+      return;
+    }
     setBusy(true);
+    const slowToast = window.setTimeout(() => {
+      toast({
+        title: "Gerando imagem…",
+        description: "Isso pode levar alguns segundos.",
+      });
+    }, 1500);
     let cleanup: (() => void) | null = null;
     try {
       const { default: html2canvas } = await import("html2canvas-pro");
       const off = buildOffscreen();
       cleanup = off.cleanup;
+      await waitForImages(off.container);
       const bg = getComputedStyle(document.body).backgroundColor || "#ffffff";
       const canvas = await html2canvas(off.container, {
         scale: 2,
@@ -131,7 +159,7 @@ export function ShareResultImageButton({
       const blob: Blob | null = await new Promise((resolve) =>
         canvas.toBlob((b) => resolve(b), "image/png", 0.95),
       );
-      if (!blob) throw new Error("Falha ao gerar imagem");
+      if (!blob) throw new Error("BLOB_FAILED");
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       const url = URL.createObjectURL(blob);
       setPreviewBlob(blob);
@@ -139,12 +167,17 @@ export function ShareResultImageButton({
       setPreviewOpen(true);
     } catch (err) {
       console.error(err);
+      const msg = (err as Error)?.message;
       toast({
-        title: "Erro",
-        description: "Não foi possível gerar a imagem.",
+        title: "Erro ao gerar imagem",
+        description:
+          msg === "EMPTY_REF"
+            ? "O conteúdo do modal não está disponível. Reabra o resultado e tente de novo."
+            : "Não foi possível gerar a imagem. Verifique sua conexão e tente novamente.",
         variant: "destructive",
       });
     } finally {
+      window.clearTimeout(slowToast);
       cleanup?.();
       setBusy(false);
     }
@@ -169,10 +202,11 @@ export function ShareResultImageButton({
     setSharing(true);
     try {
       const file = new File([previewBlob], `${safeName}.png`, { type: "image/png" });
-      if (
-        navigator.canShare?.({ files: [file] }) &&
-        typeof navigator.share === "function"
-      ) {
+      const canShareFiles =
+        typeof navigator.share === "function" &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: [file] });
+      if (canShareFiles) {
         try {
           await navigator.share({
             files: [file],
@@ -184,7 +218,17 @@ export function ShareResultImageButton({
           return;
         } catch (err) {
           if ((err as Error).name === "AbortError") return;
+          toast({
+            title: "Compartilhamento falhou",
+            description: "Baixando a imagem como alternativa.",
+          });
         }
+      } else {
+        toast({
+          title: "Compartilhamento indisponível",
+          description:
+            "Seu navegador não suporta compartilhar imagens. A imagem será baixada.",
+        });
       }
       handleConfirmDownload();
     } finally {
