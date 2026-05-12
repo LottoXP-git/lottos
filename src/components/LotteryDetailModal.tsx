@@ -11,7 +11,7 @@ import { LotteryBall } from "./LotteryBall";
 import { ShareResultImageButton } from "./ShareResultImageButton";
 import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 
 interface LotteryDetailModalProps {
   lottery: LotteryResult | null;
@@ -40,6 +40,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
     if (!lottery) return [];
     return generateFrequencyData(lottery.maxNumber);
   }, [lottery]);
+  const captureRef = useRef<HTMLDivElement>(null);
 
   if (!lottery) return null;
 
@@ -59,6 +60,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
         </DialogHeader>
 
         <div className="space-y-3 sm:space-y-6 overflow-x-hidden">
+          <div ref={captureRef} className="space-y-3 sm:space-y-6">
           {/* Current Result */}
           <div className="p-2 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
             <div className="flex items-center gap-1.5 mb-2 text-[10px] sm:text-sm text-muted-foreground">
@@ -294,22 +296,17 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <span className="text-sm sm:text-base font-bold text-foreground">{lottery.nextDate || "A definir"}</span>
             </div>
           </div>
+          </div>
 
           {/* Share Button - Centralizado */}
           <div className="flex justify-center">
             <ShareResultImageButton
+              targetRef={captureRef}
               lotteryName={lottery.name}
               lotteryId={lottery.id}
-              lotteryColor={lottery.color}
               concurso={lottery.concurso}
               date={lottery.date}
-              nextDate={lottery.nextDate}
-              numbers={lottery.numbers}
-              trevos={lottery.trevos}
-              timeCoracao={lottery.timeCoracao}
-              mesSorte={lottery.mesSorte}
               nextPrize={lottery.nextPrize}
-              accumulated={lottery.accumulated}
               className="h-9 w-9 sm:h-10 sm:w-10 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
           </div>
