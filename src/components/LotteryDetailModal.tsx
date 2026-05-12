@@ -8,7 +8,7 @@ import { SmartPickGenerator } from "./SmartPickGenerator";
 import { DrawHistory } from "./DrawHistory";
 import { LotteryBall } from "./LotteryBall";
 
-import { ShareButton } from "./ShareButton";
+import { ShareResultImageButton } from "./ShareResultImageButton";
 import { SpecialStats } from "./SpecialStats";
 import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble } from "lucide-react";
 import { useMemo } from "react";
@@ -297,10 +297,19 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
           {/* Share Button - Centralizado */}
           <div className="flex justify-center">
-            <ShareButton
-              title={`${lottery.name} - Concurso ${lottery.concurso}`}
-              text={`🎰 ${lottery.name} - Concurso ${lottery.concurso}\n📅 ${lottery.date}\n🔢 Números: ${lottery.numbers.join(", ")}${lottery.trevos?.length ? `\n🍀 Trevos: ${lottery.trevos.join(", ")}` : ""}${lottery.timeCoracao ? `\n❤️ Time: ${lottery.timeCoracao}` : ""}${lottery.mesSorte ? `\n📆 Mês: ${lottery.mesSorte}` : ""}\n💰 Próximo: ${lottery.nextPrize}`}
+            <ShareResultImageButton
+              lotteryName={lottery.name}
               lotteryId={lottery.id}
+              lotteryColor={lottery.color}
+              concurso={lottery.concurso}
+              date={lottery.date}
+              nextDate={lottery.nextDate}
+              numbers={lottery.numbers}
+              trevos={lottery.trevos}
+              timeCoracao={lottery.timeCoracao}
+              mesSorte={lottery.mesSorte}
+              nextPrize={lottery.nextPrize}
+              accumulated={lottery.accumulated}
               className="h-9 w-9 sm:h-10 sm:w-10 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
           </div>
