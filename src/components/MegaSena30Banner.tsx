@@ -133,7 +133,7 @@ export function MegaSena30Banner({ status, onClick }: Props) {
                 "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
             }}
           >
-            R$ 150
+            R$ 200
           </div>
           <div
             className="font-black text-base sm:text-2xl leading-none mt-0.5 bg-clip-text text-transparent italic"
