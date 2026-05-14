@@ -25,6 +25,7 @@ import type { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
+import { Helmet } from "react-helmet-async";
 
 const MONTHS_PT = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -148,6 +149,14 @@ export default function MonthlyReport() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Helmet>
+        <title>Estatísticas e Relatório Mensal - Lottos</title>
+        <meta name="description" content="Frequências mensais das loterias da Caixa: dezenas mais quentes e mais frias, com palpites sugeridos disponíveis em PDF para download." />
+        <link rel="canonical" href="https://grupolottoxp.com/estatisticas" />
+        <meta property="og:title" content="Estatísticas e Relatório Mensal - Lottos" />
+        <meta property="og:description" content="Dezenas quentes e frias e palpites sugeridos para todas as loterias da Caixa, com PDF mensal." />
+        <meta property="og:url" content="https://grupolottoxp.com/estatisticas" />
+      </Helmet>
       <JsonLd
         data={buildBreadcrumb([
           { name: "Início", url: `${SITE_URL}/` },
