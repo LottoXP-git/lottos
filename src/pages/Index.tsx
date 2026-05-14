@@ -25,6 +25,7 @@ import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   useAdSenseScript();
@@ -74,6 +75,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Lottos - Resultados &amp; Estatísticas das Loterias</title>
+        <meta name="description" content="Acompanhe resultados ao vivo, estatísticas e gere palpites inteligentes para todas as loterias da Caixa Econômica Federal." />
+        <link rel="canonical" href="https://grupolottoxp.com/" />
+        <meta property="og:title" content="Lottos - Resultados &amp; Estatísticas das Loterias" />
+        <meta property="og:description" content="Acompanhe resultados ao vivo, estatísticas e gere palpites inteligentes para todas as loterias da Caixa." />
+        <meta property="og:url" content="https://grupolottoxp.com/" />
+      </Helmet>
       <JsonLd
         data={[
           buildBreadcrumb([{ name: "Início", url: `${SITE_URL}/` }]),
