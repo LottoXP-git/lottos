@@ -51,6 +51,13 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { loc: `${BASE_URL}/termos`, changefreq: "yearly", priority: "0.3" },
 ];
 
+// SEO guide pages: "como ganhar na <modalidade>"
+const GUIDE_ENTRIES: SitemapEntry[] = MODALITIES.map((m) => ({
+  loc: `${BASE_URL}/como-ganhar/${m.id}`,
+  changefreq: "weekly",
+  priority: "0.9",
+}));
+
 async function fetchLatestConcurso(m: Modality): Promise<number> {
   try {
     const res = await fetch(
@@ -105,7 +112,7 @@ async function main() {
     }
   }
 
-  const all = [...STATIC_ENTRIES, ...drawEntries];
+  const all = [...STATIC_ENTRIES, ...GUIDE_ENTRIES, ...drawEntries];
   const xml = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
@@ -115,7 +122,7 @@ async function main() {
 
   writeFileSync(resolve("public/sitemap.xml"), xml);
   console.log(
-    `[sitemap] wrote ${all.length} entries (${STATIC_ENTRIES.length} static + ${drawEntries.length} draws)`,
+    `[sitemap] wrote ${all.length} entries (${STATIC_ENTRIES.length} static + ${GUIDE_ENTRIES.length} guides + ${drawEntries.length} draws)`,
   );
 }
 
