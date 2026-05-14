@@ -295,3 +295,34 @@ async function fetchLotteryResults(): Promise<LotteryResult[]> {
      enabled: !!lotteryId,
    });
  }
+
+async function fetchLotteryDraw(
+  lotteryId: string,
+  concurso: number,
+): Promise<LotteryResult | null> {
+  const response = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-lottery-results?lottery=${lotteryId}&concurso=${concurso}`,
+    {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`Failed to fetch draw: ${response.statusText}`);
+  }
+  const data = (await response.json()) as LotteryApiResponse;
+  if (data?.error) throw new Error(data.error);
+  return data?.result ?? null;
+}
+
+export function useLotteryDraw(lotteryId: string, concurso: number) {
+  return useQuery({
+    queryKey: ["lottery-draw", lotteryId, concurso],
+    queryFn: () => fetchLotteryDraw(lotteryId, concurso),
+    staleTime: 1000 * 60 * 60 * 24, // 24h — past draws are immutable
+    enabled: !!lotteryId && Number.isFinite(concurso) && concurso > 0,
+    retry: 1,
+  });
+}

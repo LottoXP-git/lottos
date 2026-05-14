@@ -13,6 +13,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
 import Admin from "./pages/Admin";
 import MonthlyReport from "./pages/MonthlyReport";
+import LotteryDraw from "./pages/LotteryDraw";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,8 @@ const App = () => {
                 <Route path="/privacidade" element={<PrivacyPolicy />} />
                 <Route path="/termos" element={<TermsOfUse />} />
                 <Route path="/admin" element={<Admin />} />
+                {/* SEO: page per individual draw — /lotofacil/3669 etc. */}
+                <Route path="/:lotteryId/:concurso" element={<LotteryDraw />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
