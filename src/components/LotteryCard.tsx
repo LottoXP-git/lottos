@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
 import { ShareCardImageButton } from "./ShareCardImageButton";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 interface LotteryCardProps {
   result: LotteryResult;
   onClick?: () => void;
@@ -119,9 +120,15 @@ export function LotteryCard({
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-base sm:text-xl font-bold text-white drop-shadow flex items-baseline gap-2 flex-nowrap min-w-0 flex-1 overflow-hidden">
             <span className="truncate min-w-0">{result.name}</span>
-            <span className="font-mono font-bold text-base sm:text-2xl text-white/95 drop-shadow shrink-0 whitespace-nowrap">
+            <Link
+              to={`/${result.id}/${result.concurso}`}
+              onClick={(e) => e.stopPropagation()}
+              className="font-mono font-bold text-base sm:text-2xl text-white/95 drop-shadow shrink-0 whitespace-nowrap hover:underline"
+              title={`Ver página do concurso ${result.concurso}`}
+              aria-label={`Abrir página do concurso ${result.concurso} da ${result.name}`}
+            >
               #{result.concurso}
-            </span>
+            </Link>
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
