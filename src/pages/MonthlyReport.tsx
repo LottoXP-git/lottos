@@ -183,7 +183,7 @@ export default function MonthlyReport() {
             <CardContent className="p-6 flex flex-col gap-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="text-center sm:text-left">
-                  <p className="font-semibold text-base">Período do relatório</p>
+                  <h2 className="font-semibold text-base">Período do relatório</h2>
                   <p className="text-xs text-muted-foreground mt-1">
                     Frequências calculadas a partir dos concursos realizados na janela selecionada.
                   </p>
