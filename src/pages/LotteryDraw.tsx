@@ -60,10 +60,19 @@ export default function LotteryDraw() {
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={pageUrl} />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Lottos" />
+        <meta property="og:locale" content="pt_BR" />
+        {datePublishedIso && (
+          <meta property="article:published_time" content={datePublishedIso} />
+        )}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
       </Helmet>
 
       {draw && (
@@ -71,7 +80,7 @@ export default function LotteryDraw() {
           data={[
             buildBreadcrumb([
               { name: "Início", url: `${SITE_URL}/` },
-              { name: meta.name, url: `${SITE_URL}/${lotteryId}/${concursoNum}` },
+              { name: meta.name, url: `${SITE_URL}/?loteria=${lotteryId}` },
               { name: `Concurso ${concursoNum}`, url: pageUrl },
             ]),
             {
@@ -80,7 +89,7 @@ export default function LotteryDraw() {
               headline: title,
               description,
               inLanguage: "pt-BR",
-              mainEntityOfPage: pageUrl,
+              mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
               url: pageUrl,
               datePublished: datePublishedIso,
               dateModified: datePublishedIso,
@@ -88,6 +97,7 @@ export default function LotteryDraw() {
               publisher: {
                 "@type": "Organization",
                 name: "Lottos",
+                url: SITE_URL,
                 logo: {
                   "@type": "ImageObject",
                   url: `${SITE_URL}/apple-touch-icon.png`,
