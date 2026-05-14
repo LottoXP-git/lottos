@@ -35,11 +35,11 @@ const SPECIAL = {
   name: "Mega-Sena 30 Anos",
   lottery: "Mega-Sena • Concurso Especial",
   date: MEGA_SENA_30_DATE,
-  prize: "R$ 150.000.000,00",
+  prize: "R$ 200.000.000,00",
   description:
     "A Mega-Sena celebra 30 anos com um sorteio histórico! Prêmio que não acumula — se ninguém acertar a Sena, o valor desce para a faixa da Quina.",
   highlights: [
-    "Prêmio histórico de R$ 150 milhões",
+    "Prêmio histórico de R$ 200 milhões",
     "Comemoração dos 30 anos da Mega-Sena",
     "Não acumula — desce para a Quina se ninguém acertar",
     "Aposta mínima a partir de R$ 6,00",
@@ -198,7 +198,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                 </div>
               </DialogTitle>
               <DialogDescription className="sr-only">
-                Mega-Sena 30 Anos — sorteio especial em 24 de Maio de 2026 com prêmio estimado de R$ 150 milhões.
+                Mega-Sena 30 Anos — sorteio especial em 24 de Maio de 2026 com prêmio estimado de R$ 200 milhões.
               </DialogDescription>
             </DialogHeader>
 
@@ -218,7 +218,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                     "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
                 }}
               >
-                R$ 150
+                R$ 200
               </div>
               <div
                 className="font-black text-xl sm:text-2xl md:text-3xl leading-none mt-0.5 sm:mt-1 italic bg-clip-text text-transparent"
