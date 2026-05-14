@@ -14,6 +14,7 @@ import TermsOfUse from "./pages/TermsOfUse";
 import Admin from "./pages/Admin";
 import MonthlyReport from "./pages/MonthlyReport";
 import LotteryDraw from "./pages/LotteryDraw";
+import HowToWin from "./pages/HowToWin";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,8 @@ const App = () => {
                 <Route path="/privacidade" element={<PrivacyPolicy />} />
                 <Route path="/termos" element={<TermsOfUse />} />
                 <Route path="/admin" element={<Admin />} />
+                {/* SEO: guide pages targeting "como ganhar na X" keywords */}
+                <Route path="/como-ganhar/:lotteryId" element={<HowToWin />} />
                 {/* SEO: page per individual draw — /lotofacil/3669 etc. */}
                 <Route path="/:lotteryId/:concurso" element={<LotteryDraw />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

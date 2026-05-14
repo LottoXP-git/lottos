@@ -40,6 +40,13 @@ const lotteryLinks = [
 { label: "+Milionária", href: "https://loterias.caixa.gov.br/Paginas/Mais-Milionaria.aspx", external: true }];
 
 
+const guideLinks = [
+  { label: "Como ganhar na Lotofácil", to: "/como-ganhar/lotofacil" },
+  { label: "Como ganhar na Mega-Sena", to: "/como-ganhar/megasena" },
+  { label: "Como ganhar na Quina", to: "/como-ganhar/quina" },
+  { label: "Como ganhar na Lotomania", to: "/como-ganhar/lotomania" },
+];
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-card/80 backdrop-blur-sm mt-12">
@@ -104,6 +111,19 @@ export function Footer() {
                   </a>
                 </li>
               )}
+            </ul>
+            <h3 className="text-sm font-semibold text-foreground pt-2">Guias</h3>
+            <ul className="space-y-2.5">
+              {guideLinks.map((g) => (
+                <li key={g.to}>
+                  <Link
+                    to={g.to}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {g.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
