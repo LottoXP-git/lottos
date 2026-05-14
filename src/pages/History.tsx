@@ -39,6 +39,7 @@ import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { AdBanner } from "@/components/AdBanner";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
+import { Helmet } from "react-helmet-async";
 
 const ITEMS_PER_PAGE = 15;
 
@@ -130,6 +131,14 @@ const History = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Histórico de Resultados - Lottos</title>
+        <meta name="description" content="Consulte o histórico dos últimos sorteios oficiais das loterias da Caixa: Mega-Sena, Lotofácil, Quina, Lotomania e Dupla Sena, com filtros por data e concurso." />
+        <link rel="canonical" href="https://grupolottoxp.com/historico" />
+        <meta property="og:title" content="Histórico de Resultados - Lottos" />
+        <meta property="og:description" content="Consulte o histórico dos últimos sorteios oficiais das loterias da Caixa com filtros por data e concurso." />
+        <meta property="og:url" content="https://grupolottoxp.com/historico" />
+      </Helmet>
       <Header />
       <JsonLd
         data={[
@@ -193,9 +202,9 @@ const History = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Lottery Select */}
             <div>
-              <label className="text-sm text-muted-foreground mb-1.5 block">Loteria</label>
+              <label htmlFor="history-lottery-select" className="text-sm text-muted-foreground mb-1.5 block">Loteria</label>
               <Select value={selectedLottery} onValueChange={(v) => { setSelectedLottery(v); setCurrentPage(1); }}>
-                <SelectTrigger>
+                <SelectTrigger id="history-lottery-select" aria-label="Filtrar por loteria">
                   <SelectValue placeholder="Selecione a loteria" />
                 </SelectTrigger>
                 <SelectContent>
@@ -210,10 +219,11 @@ const History = () => {
 
             {/* Search Input */}
             <div>
-              <label className="text-sm text-muted-foreground mb-1.5 block">Buscar</label>
+              <label htmlFor="history-search" className="text-sm text-muted-foreground mb-1.5 block">Buscar</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  id="history-search"
                   placeholder="Nº do concurso ou nome"
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
@@ -305,6 +315,10 @@ const History = () => {
                   key={`${result.id}-${result.concurso}`}
                   className="p-3 rounded-xl bg-card border border-border cursor-pointer active:scale-[0.98] transition-transform"
                   onClick={() => handleRowClick(result)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Abrir detalhes ${result.name} concurso ${result.concurso} de ${result.date}`}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleRowClick(result); } }}
                   style={{ animationDelay: `${idx * 30}ms` }}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -380,6 +394,10 @@ const History = () => {
                       key={`${result.id}-${result.concurso}`}
                       className="cursor-pointer transition-colors hover:bg-secondary/30"
                       onClick={() => handleRowClick(result)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Abrir detalhes ${result.name} concurso ${result.concurso} de ${result.date}`}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleRowClick(result); } }}
                       style={{ animationDelay: `${idx * 30}ms` }}
                     >
                       <TableCell>
