@@ -1,0 +1,11 @@
+# Lottos
+
+> Resultados, estatísticas e ferramentas de palpites para as loterias da Caixa Econômica Federal (Mega-Sena, Lotofácil, Quina, Lotomania, Dupla Sena, Dia de Sorte, Super Sete, +Milionária, Timemania, Federal e Loteca). Sem vínculo oficial com a Caixa.
+
+## Pages
+
+- [Início](/): Resultados ao vivo das loterias, gerador de palpites e conferidor de apostas.
+- [Histórico](/historico): Últimos 100 sorteios oficiais com filtros por modalidade, data e número do concurso.
+- [Estatísticas](/estatisticas): Frequências mensais (dezenas quentes/frias) e relatório PDF com palpites sugeridos.
+- [Política de Privacidade](/privacidade): Como coletamos, usamos e protegemos seus dados pessoais (LGPD).
+- [Termos de Uso](/termos): Regras, direitos e responsabilidades para uso da plataforma.
