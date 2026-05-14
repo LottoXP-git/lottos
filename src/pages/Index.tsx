@@ -22,6 +22,7 @@ import { MegaSena30Modal } from "@/components/MegaSena30Modal";
 import { MegaSena30Banner } from "@/components/MegaSena30Banner";
 import { isMegaSena30AnosActive, getMegaSena30Status, MegaSena30Status } from "@/utils/megaSena30Date";
 import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
+import { useMegaSena30Prize } from "@/hooks/useMegaSena30Prize";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
@@ -49,6 +50,9 @@ const Index = () => {
 
   // Schedule local notifications (1 day before + live).
   useMegaSena30Notifications(showMegaSena30);
+
+  // Track official estimated prize and toast on changes.
+  const { prizeCompact: mega30PrizeCompact, prizeFull: mega30PrizeFull } = useMegaSena30Prize(showMegaSena30);
 
   const { data: lotteryResults, isLoading, error, refetch, isFetching } = useLotteryResults();
 
@@ -282,7 +286,11 @@ const Index = () => {
 
         {showMegaSena30 &&
         <section className="mb-8 animate-fade-in">
-          <MegaSena30Banner status={megaSena30Status} onClick={() => setMegaSena30Open(true)} />
+          <MegaSena30Banner
+            status={megaSena30Status}
+            onClick={() => setMegaSena30Open(true)}
+            prizeCompact={mega30PrizeCompact}
+          />
         </section>
         }
 
@@ -449,6 +457,8 @@ const Index = () => {
       <MegaSena30Modal
         open={megaSena30Open}
         onOpenChange={setMegaSena30Open}
+        prizeCompact={mega30PrizeCompact}
+        prizeFull={mega30PrizeFull}
         onGeneratePicks={() => {
           setMegaSena30Open(false);
           setQuickBetPreselect("megasena");
