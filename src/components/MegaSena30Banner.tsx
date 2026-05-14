@@ -5,6 +5,7 @@ import type { MegaSena30Status } from "@/utils/megaSena30Date";
 interface Props {
   status: MegaSena30Status;
   onClick: () => void;
+  prizeCompact?: string;
 }
 
 function CloverIcon({ className = "" }: { className?: string }) {
@@ -42,7 +43,7 @@ function Balloon({ className = "", variant = 1, gradientId }: { className?: stri
   );
 }
 
-export function MegaSena30Banner({ status, onClick }: Props) {
+export function MegaSena30Banner({ status, onClick, prizeCompact = "R$ 200" }: Props) {
   const statusBadge =
     status === "live"
       ? { label: "AO VIVO", cls: "bg-rose-500 text-white animate-pulse" }
@@ -133,7 +134,7 @@ export function MegaSena30Banner({ status, onClick }: Props) {
                 "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
             }}
           >
-            R$ 200
+            {prizeCompact}
           </div>
           <div
             className="font-black text-base sm:text-2xl leading-none mt-0.5 bg-clip-text text-transparent italic"

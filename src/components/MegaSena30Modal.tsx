@@ -10,6 +10,8 @@ interface MegaSena30ModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onGeneratePicks?: () => void;
+  prizeCompact?: string;
+  prizeFull?: string;
 }
 
 interface CountdownValues {
@@ -71,7 +73,13 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
   );
 }
 
-export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSena30ModalProps) {
+export function MegaSena30Modal({
+  open,
+  onOpenChange,
+  onGeneratePicks,
+  prizeCompact = "R$ 200",
+  prizeFull = "R$ 200.000.000,00",
+}: MegaSena30ModalProps) {
   const [countdown, setCountdown] = useState<CountdownValues>(getCountdown(SPECIAL.date));
   const [status, setStatus] = useState(() => getMegaSena30Status());
   const [isLoading, setIsLoading] = useState(true);
@@ -198,7 +206,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                 </div>
               </DialogTitle>
               <DialogDescription className="sr-only">
-                Mega-Sena 30 Anos — sorteio especial em 24 de Maio de 2026 com prêmio estimado de R$ 200 milhões.
+                Mega-Sena 30 Anos — sorteio especial em 24 de Maio de 2026 com prêmio estimado de {prizeFull}.
               </DialogDescription>
             </DialogHeader>
 
@@ -218,7 +226,7 @@ export function MegaSena30Modal({ open, onOpenChange, onGeneratePicks }: MegaSen
                     "linear-gradient(110deg, #B07A1C 0%, #F0C24C 30%, #FFF6D5 50%, #F0C24C 70%, #B07A1C 100%)",
                 }}
               >
-                R$ 200
+                {prizeCompact}
               </div>
               <div
                 className="font-black text-xl sm:text-2xl md:text-3xl leading-none mt-0.5 sm:mt-1 italic bg-clip-text text-transparent"
