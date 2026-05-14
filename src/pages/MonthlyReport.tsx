@@ -25,6 +25,7 @@ import type { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
+import { Helmet } from "react-helmet-async";
 
 const MONTHS_PT = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -148,6 +149,14 @@ export default function MonthlyReport() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Helmet>
+        <title>Estatísticas e Relatório Mensal - Lottos</title>
+        <meta name="description" content="Frequências mensais das loterias da Caixa: dezenas mais quentes e mais frias, com palpites sugeridos disponíveis em PDF para download." />
+        <link rel="canonical" href="https://grupolottoxp.com/estatisticas" />
+        <meta property="og:title" content="Estatísticas e Relatório Mensal - Lottos" />
+        <meta property="og:description" content="Dezenas quentes e frias e palpites sugeridos para todas as loterias da Caixa, com PDF mensal." />
+        <meta property="og:url" content="https://grupolottoxp.com/estatisticas" />
+      </Helmet>
       <JsonLd
         data={buildBreadcrumb([
           { name: "Início", url: `${SITE_URL}/` },
@@ -174,7 +183,7 @@ export default function MonthlyReport() {
             <CardContent className="p-6 flex flex-col gap-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="text-center sm:text-left">
-                  <p className="font-semibold text-base">Período do relatório</p>
+                  <h2 className="font-semibold text-base">Período do relatório</h2>
                   <p className="text-xs text-muted-foreground mt-1">
                     Frequências calculadas a partir dos concursos realizados na janela selecionada.
                   </p>

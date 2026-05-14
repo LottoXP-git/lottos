@@ -25,6 +25,7 @@ import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   useAdSenseScript();
@@ -74,6 +75,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Lottos - Resultados &amp; Estatísticas das Loterias</title>
+        <meta name="description" content="Acompanhe resultados ao vivo, estatísticas e gere palpites inteligentes para todas as loterias da Caixa Econômica Federal." />
+        <link rel="canonical" href="https://grupolottoxp.com/" />
+        <meta property="og:title" content="Lottos - Resultados &amp; Estatísticas das Loterias" />
+        <meta property="og:description" content="Acompanhe resultados ao vivo, estatísticas e gere palpites inteligentes para todas as loterias da Caixa." />
+        <meta property="og:url" content="https://grupolottoxp.com/" />
+      </Helmet>
       <JsonLd
         data={[
           buildBreadcrumb([{ name: "Início", url: `${SITE_URL}/` }]),
@@ -186,6 +195,7 @@ const Index = () => {
           
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4">
               <span className="text-gradient">Lottos</span>
+              <span className="sr-only"> — Resultados e Estatísticas das Loterias Caixa</span>
             </h1>
           
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
@@ -255,7 +265,7 @@ const Index = () => {
                     <span className="text-xs font-semibold uppercase tracking-wider text-rose-400">Concurso Especial</span>
                     <span className="px-1.5 py-0.5 rounded-full bg-rose-500/20 text-[10px] font-bold text-rose-300 animate-pulse">AO VIVO</span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-foreground">Dupla de Páscoa</h3>
+                  <h2 className="text-lg sm:text-xl font-bold text-foreground">Dupla de Páscoa</h2>
                   <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">Clique para ver detalhes e contagem regressiva</p>
                 </div>
               </div>
