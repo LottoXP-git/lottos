@@ -469,6 +469,8 @@
      const lotteryId = url.searchParams.get("lottery");
      const mode = url.searchParams.get("mode") || "latest"; // 'latest' or 'history'
      const count = parseInt(url.searchParams.get("count") || "100", 10);
+      const concursoParam = url.searchParams.get("concurso");
+      const concurso = concursoParam ? parseInt(concursoParam, 10) : undefined;
  
      console.log(`Request: lottery=${lotteryId}, mode=${mode}, count=${count}`);
  
@@ -499,7 +501,7 @@
          );
        }
  
-       const result = await fetchLotteryResult(config);
+        const result = await fetchLotteryResult(config, concurso);
        return new Response(
          JSON.stringify({ result }),
          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
