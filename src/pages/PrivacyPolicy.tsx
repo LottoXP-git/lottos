@@ -3,10 +3,19 @@ import { Footer } from "@/components/Footer";
 import { Shield } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
+import { Helmet } from "react-helmet-async";
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Helmet>
+        <title>Política de Privacidade - Lottos</title>
+        <meta name="description" content="Política de privacidade do Lottos: como coletamos, usamos e protegemos seus dados pessoais conforme a LGPD." />
+        <link rel="canonical" href="https://grupolottoxp.com/privacidade" />
+        <meta property="og:title" content="Política de Privacidade - Lottos" />
+        <meta property="og:description" content="Como coletamos, usamos e protegemos seus dados pessoais conforme a LGPD." />
+        <meta property="og:url" content="https://grupolottoxp.com/privacidade" />
+      </Helmet>
       <JsonLd
         data={[
           buildBreadcrumb([
