@@ -44,13 +44,14 @@ function SummaryContent({ lotteries, contentRef }: { lotteries: LotteryResult[];
         <img
           src={lotusLogo}
           alt=""
+          role="presentation"
           className="w-48 h-48 object-contain opacity-[0.06]"
           style={{ filter: "grayscale(100%)" }}
         />
       </div>
       <div className="relative z-10 space-y-3">
       <div className="text-center pb-2 border-b border-border flex flex-col items-center gap-1">
-        <img src={lotusLogo} alt="Lotus" className="h-7 w-auto" />
+        <img src={lotusLogo} alt="Logo Lottos" className="h-7 w-auto" />
         <h2 className="text-base font-bold text-foreground">Resultados das Loterias Caixa</h2>
         <p className="text-[10px] text-muted-foreground">
           Atualizado em {new Date().toLocaleDateString("pt-BR")}
