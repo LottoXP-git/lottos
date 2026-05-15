@@ -106,15 +106,7 @@ export function RegistrationForm() {
         const { error: hubspotError } = await supabase.functions.invoke(
           "sync-hubspot-contact",
           {
-            body: {
-              fullName: data.fullName,
-              email: data.email,
-              phone: data.phone,
-              birthDate: format(data.birthDate, "yyyy-MM-dd"),
-              favoriteLotteries: data.favoriteLotteries,
-              acceptWhatsapp: data.acceptWhatsapp,
-              acceptEmail: data.acceptEmail
-            }
+            body: { email: data.email }
           }
         );
         if (hubspotError) {

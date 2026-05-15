@@ -18,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Eye, MousePointerClick, Target, RefreshCw, LogOut, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
-const STORAGE_KEY = "lottos_admin_pwd";
+const TOKEN_KEY = "lottos_admin_token";
 const FOCUS_SLOT = "8331815579";
 
 type SlotMetric = {
@@ -30,6 +30,8 @@ type SlotMetric = {
 };
 
 type MetricsResponse = {
+  token?: string | null;
+  tokenTtlMs?: number;
   totals: { impressions: number; clicks: number; ctr: number };
   slots: SlotMetric[];
   focus: SlotMetric & { daily: { date: string; impressions: number; clicks: number; ctr: number }[] };
@@ -56,49 +58,53 @@ function StatCard({ icon: Icon, label, value, sub }: { icon: React.ElementType; 
 
 export default function Admin() {
   const [password, setPassword] = useState("");
-  const [authedPwd, setAuthedPwd] = useState<string | null>(() => sessionStorage.getItem(STORAGE_KEY));
+  const [authToken, setAuthToken] = useState<string | null>(() => sessionStorage.getItem(TOKEN_KEY));
   const [data, setData] = useState<MetricsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchMetrics = async (pwd: string) => {
+  const fetchMetrics = async (auth: { password?: string; token?: string }) => {
     setLoading(true);
     try {
       const { data: res, error } = await supabase.functions.invoke<MetricsResponse>("admin-ad-metrics", {
-        body: { password: pwd },
+        body: auth,
       });
       if (error || !res) throw error ?? new Error("No data");
       if ((res as unknown as { error?: string }).error) throw new Error((res as unknown as { error: string }).error);
       setData(res);
-      sessionStorage.setItem(STORAGE_KEY, pwd);
-      setAuthedPwd(pwd);
+      const newToken = res.token ?? auth.token ?? null;
+      if (newToken) {
+        sessionStorage.setItem(TOKEN_KEY, newToken);
+        setAuthToken(newToken);
+      }
     } catch (err) {
       toast.error("Falha ao carregar métricas. Verifique a senha.");
-      sessionStorage.removeItem(STORAGE_KEY);
-      setAuthedPwd(null);
+      sessionStorage.removeItem(TOKEN_KEY);
+      setAuthToken(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (authedPwd) fetchMetrics(authedPwd);
+    if (authToken) fetchMetrics({ token: authToken });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) return;
-    fetchMetrics(password);
+    fetchMetrics({ password });
+    setPassword("");
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem(STORAGE_KEY);
-    setAuthedPwd(null);
+    sessionStorage.removeItem(TOKEN_KEY);
+    setAuthToken(null);
     setData(null);
     setPassword("");
   };
 
-  if (!authedPwd) {
+  if (!authToken && !data) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -147,7 +153,7 @@ export default function Admin() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => fetchMetrics(authedPwd)} disabled={loading}>
+            <Button variant="outline" size="sm" onClick={() => authToken && fetchMetrics({ token: authToken })} disabled={loading}>
               <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} /> Atualizar
             </Button>
             <Button variant="ghost" size="sm" onClick={handleLogout}>

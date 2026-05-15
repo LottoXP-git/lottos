@@ -3,8 +3,44 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-admin-password",
+    "authorization, x-client-info, apikey, content-type, x-admin-password, x-admin-token",
 };
+
+const TOKEN_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+async function hmac(secret: string, data: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(data));
+  return btoa(String.fromCharCode(...new Uint8Array(sig)))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function issueToken(secret: string): Promise<string> {
+  const exp = Date.now() + TOKEN_TTL_MS;
+  const payload = `admin.${exp}`;
+  const sig = await hmac(secret, payload);
+  return `${payload}.${sig}`;
+}
+
+async function verifyToken(secret: string, token: string): Promise<boolean> {
+  const parts = token.split(".");
+  if (parts.length !== 3) return false;
+  const [, expStr, sig] = parts;
+  const exp = Number(expStr);
+  if (!Number.isFinite(exp) || exp < Date.now()) return false;
+  const expected = await hmac(secret, `admin.${expStr}`);
+  // constant-time-ish compare
+  if (expected.length !== sig.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) mismatch |= expected.charCodeAt(i) ^ sig.charCodeAt(i);
+  return mismatch === 0;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -20,11 +56,23 @@ Deno.serve(async (req) => {
       );
     }
 
-    const provided =
-      req.headers.get("x-admin-password") ??
-      (await req.json().catch(() => ({}))).password;
+    const body = await req.json().catch(() => ({} as Record<string, unknown>));
+    const providedPwd =
+      req.headers.get("x-admin-password") ?? (body as { password?: string }).password;
+    const providedToken =
+      req.headers.get("x-admin-token") ?? (body as { token?: string }).token;
 
-    if (!provided || provided !== adminPassword) {
+    let authed = false;
+    let issuedToken: string | null = null;
+
+    if (providedToken && (await verifyToken(adminPassword, providedToken))) {
+      authed = true;
+    } else if (providedPwd && providedPwd === adminPassword) {
+      authed = true;
+      issuedToken = await issueToken(adminPassword);
+    }
+
+    if (!authed) {
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -119,6 +167,8 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({
+        token: issuedToken,
+        tokenTtlMs: issuedToken ? TOKEN_TTL_MS : undefined,
         totals: { impressions: totalImpressions, clicks: totalClicks, ctr: totalImpressions ? (totalClicks / totalImpressions) * 100 : 0 },
         slots,
         focus,
