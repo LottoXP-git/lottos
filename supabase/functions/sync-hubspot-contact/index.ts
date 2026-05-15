@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,14 +10,17 @@ const corsHeaders = {
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/hubspot";
 
-interface ContactPayload {
-  fullName: string;
-  email: string;
-  phone: string;
-  birthDate: string; // yyyy-MM-dd
-  favoriteLotteries: string[];
-  acceptWhatsapp: boolean;
-  acceptEmail: boolean;
+// Simple in-memory rate limiter (per-instance, best-effort).
+// Limits sync attempts per IP to prevent CRM flooding from anonymous callers.
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 5;
+const rateBuckets = new Map<string, number[]>();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const arr = (rateBuckets.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  arr.push(now);
+  rateBuckets.set(ip, arr);
+  return arr.length > RATE_LIMIT_MAX;
 }
 
 function splitName(fullName: string): { firstname: string; lastname: string } {
@@ -29,31 +33,13 @@ function splitName(fullName: string): { firstname: string; lastname: string } {
   };
 }
 
-function validatePayload(body: unknown): ContactPayload | null {
+function validateEmail(body: unknown): string | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
-  if (
-    typeof b.fullName !== "string" ||
-    typeof b.email !== "string" ||
-    typeof b.phone !== "string" ||
-    typeof b.birthDate !== "string" ||
-    !Array.isArray(b.favoriteLotteries) ||
-    typeof b.acceptWhatsapp !== "boolean" ||
-    typeof b.acceptEmail !== "boolean"
-  ) {
-    return null;
-  }
-  if (!b.email.includes("@")) return null;
-  if (b.fullName.trim().length < 3) return null;
-  return {
-    fullName: b.fullName,
-    email: b.email.toLowerCase().trim(),
-    phone: b.phone,
-    birthDate: b.birthDate,
-    favoriteLotteries: b.favoriteLotteries as string[],
-    acceptWhatsapp: b.acceptWhatsapp,
-    acceptEmail: b.acceptEmail,
-  };
+  if (typeof b.email !== "string") return null;
+  const email = b.email.toLowerCase().trim();
+  if (!email.includes("@") || email.length > 255) return null;
+  return email;
 }
 
 async function hubspotFetch(
@@ -79,6 +65,17 @@ serve(async (req) => {
   }
 
   try {
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("cf-connecting-ip") ||
+      "unknown";
+    if (rateLimited(ip)) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Rate limit exceeded" }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -89,8 +86,8 @@ serve(async (req) => {
     }
 
     const rawBody = await req.json().catch(() => null);
-    const payload = validatePayload(rawBody);
-    if (!payload) {
+    const email = validateEmail(rawBody);
+    if (!email) {
       return new Response(
         JSON.stringify({ success: false, error: "Invalid payload" }),
         {
@@ -100,27 +97,51 @@ serve(async (req) => {
       );
     }
 
-    const { firstname, lastname } = splitName(payload.fullName);
+    // Look up the registration server-side using the service role.
+    // This prevents anonymous callers from injecting arbitrary data into
+    // HubSpot — they can only trigger a sync for a record that already
+    // exists in our database.
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const { data: reg, error: regError } = await supabase
+      .from("user_registrations")
+      .select(
+        "full_name, email, phone, birth_date, favorite_lotteries, accept_whatsapp_marketing, accept_email_marketing",
+      )
+      .eq("email", email)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    // HubSpot accepts a semicolon-separated string for multi-checkbox
-    // properties; for plain text properties, a comma-separated list also
-    // works. We'll send a comma-separated list which works as plain text
-    // even if the property is created automatically.
+    if (regError || !reg) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Registration not found" }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    const { firstname, lastname } = splitName(reg.full_name);
+
     const properties: Record<string, string> = {
-      email: payload.email,
+      email: reg.email,
       firstname,
       lastname,
-      phone: payload.phone,
-      date_of_birth: payload.birthDate,
-      favorite_lotteries: payload.favoriteLotteries.join(", "),
-      whatsapp_marketing_opt_in: payload.acceptWhatsapp ? "true" : "false",
-      email_marketing_opt_in: payload.acceptEmail ? "true" : "false",
+      phone: reg.phone,
+      date_of_birth: reg.birth_date,
+      favorite_lotteries: (reg.favorite_lotteries ?? []).join(", "),
+      whatsapp_marketing_opt_in: reg.accept_whatsapp_marketing ? "true" : "false",
+      email_marketing_opt_in: reg.accept_email_marketing ? "true" : "false",
       lead_source: "Lottos App",
     };
 
     // Try to upsert by email using PATCH with idProperty=email.
     // If the contact does not exist, HubSpot returns 404 — then create it.
-    const encodedEmail = encodeURIComponent(payload.email);
+    const encodedEmail = encodeURIComponent(reg.email);
     let response = await hubspotFetch(
       `/crm/v3/objects/contacts/${encodedEmail}?idProperty=email`,
       {
