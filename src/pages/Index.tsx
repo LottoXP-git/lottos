@@ -94,13 +94,13 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Lottos",
-            url: "https://lottos.lovable.app/",
+            url: "https://grupolottoxp.com/",
             description:
               "Resultados, estatísticas e gerador de palpites para todas as loterias da Caixa Econômica Federal.",
             inLanguage: "pt-BR",
             potentialAction: {
               "@type": "SearchAction",
-              target: "https://lottos.lovable.app/historico?q={search_term_string}",
+              target: "https://grupolottoxp.com/historico?q={search_term_string}",
               "query-input": "required name=search_term_string",
             },
           },
@@ -111,17 +111,17 @@ const Index = () => {
             description:
               "Guia informativo sobre as loterias da Caixa Econômica Federal, suas modalidades e como o Lottos analisa resultados.",
             inLanguage: "pt-BR",
-            mainEntityOfPage: "https://lottos.lovable.app/",
+            mainEntityOfPage: "https://grupolottoxp.com/",
             author: { "@type": "Organization", name: "Lottos" },
             publisher: {
               "@type": "Organization",
               name: "Lottos",
               logo: {
                 "@type": "ImageObject",
-                url: "https://lottos.lovable.app/apple-touch-icon.png",
+                url: "https://grupolottoxp.com/apple-touch-icon.png",
               },
             },
-            image: "https://lottos.lovable.app/og-image.jpg",
+            image: "https://grupolottoxp.com/og-image.jpg",
             datePublished: "2025-01-01",
             dateModified: new Date().toISOString().slice(0, 10),
           },

@@ -15,6 +15,9 @@ import Admin from "./pages/Admin";
 import MonthlyReport from "./pages/MonthlyReport";
 import LotteryDraw from "./pages/LotteryDraw";
 import HowToWin from "./pages/HowToWin";
+import About from "./pages/About";
+import ResponsibleGambling from "./pages/ResponsibleGambling";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,8 @@ const App = () => {
                 <Route path="/relatorio-mensal" element={<Navigate to="/estatisticas" replace />} />
                 <Route path="/privacidade" element={<PrivacyPolicy />} />
                 <Route path="/termos" element={<TermsOfUse />} />
+                <Route path="/sobre" element={<About />} />
+                <Route path="/jogo-responsavel" element={<ResponsibleGambling />} />
                 <Route path="/admin" element={<Admin />} />
                 {/* SEO: guide pages targeting "como ganhar na X" keywords */}
                 <Route path="/como-ganhar/:lotteryId" element={<HowToWin />} />
@@ -46,6 +51,7 @@ const App = () => {
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <CookieConsent />
             </BrowserRouter>
           )}
         </TooltipProvider>
