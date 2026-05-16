@@ -96,6 +96,16 @@ export default function TermsOfUse() {
           </section>
 
           <section className="space-y-2">
+            <h2 className="text-lg font-semibold text-foreground">5.1. Jogo responsável e restrição de idade</h2>
+            <p>
+              O acesso a este site é restrito a maiores de 18 anos, conforme legislação brasileira aplicável a loterias e jogos de azar.
+              Os conteúdos aqui apresentados têm caráter exclusivamente informativo e estatístico — nenhuma estratégia, palpite ou ferramenta
+              do Lottos garante premiação. Jogue apenas o que pode perder. Em caso de dificuldades, consulte nossa página de{" "}
+              <a href="/jogo-responsavel" className="text-primary hover:underline">Jogo Responsável</a> ou ligue para o CVV 188.
+            </p>
+          </section>
+
+          <section className="space-y-2">
             <h2 className="text-lg font-semibold text-foreground">6. Propriedade intelectual</h2>
             <p>Todo o conteúdo do site, incluindo textos, gráficos, logotipos e código-fonte, é de propriedade do Lottos e protegido por leis de direitos autorais. As marcas e logotipos das loterias são de propriedade da Caixa Econômica Federal.
 

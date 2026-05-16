@@ -47,6 +47,8 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { loc: `${BASE_URL}/`, changefreq: "daily", priority: "1.0" },
   { loc: `${BASE_URL}/historico`, changefreq: "daily", priority: "0.8" },
   { loc: `${BASE_URL}/estatisticas`, changefreq: "weekly", priority: "0.8" },
+  { loc: `${BASE_URL}/sobre`, changefreq: "monthly", priority: "0.6" },
+  { loc: `${BASE_URL}/jogo-responsavel`, changefreq: "yearly", priority: "0.5" },
   { loc: `${BASE_URL}/privacidade`, changefreq: "yearly", priority: "0.3" },
   { loc: `${BASE_URL}/termos`, changefreq: "yearly", priority: "0.3" },
 ];

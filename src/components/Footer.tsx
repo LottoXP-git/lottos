@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
-import { Heart, Mail, Phone, MapPin, ExternalLink, Share2 } from "lucide-react";
+import { Heart, Mail, MapPin, ExternalLink, Share2, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
@@ -149,6 +149,10 @@ export function Footer() {
             © {new Date().getFullYear()} Lottos. Todos os direitos reservados.
           </p>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <Link to="/sobre" className="hover:text-primary transition-colors">Sobre</Link>
+            <span>•</span>
+            <Link to="/jogo-responsavel" className="hover:text-primary transition-colors">Jogo Responsável</Link>
+            <span>•</span>
             <Link to="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link>
             <span>•</span>
             <Link to="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link>
@@ -156,6 +160,19 @@ export function Footer() {
           <p className="text-xs text-muted-foreground text-center font-bold">
             Este App não possui vínculo oficial com a Caixa Econômica Federal.
           </p>
+        </div>
+
+        {/* Aviso de jogo responsável (exigência AdSense para conteúdo de loterias) */}
+        <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-center gap-2 text-xs text-muted-foreground text-center">
+          <ShieldAlert className="w-4 h-4 text-primary shrink-0" />
+          <span>
+            <strong className="text-foreground">+18.</strong> Jogue com responsabilidade. Se precisar de apoio, ligue para o{" "}
+            <a href="https://www.cvv.org.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              CVV 188
+            </a>
+            {" "}ou consulte nossa página de{" "}
+            <Link to="/jogo-responsavel" className="text-primary hover:underline">Jogo Responsável</Link>.
+          </span>
         </div>
       </div>
     </footer>);}
