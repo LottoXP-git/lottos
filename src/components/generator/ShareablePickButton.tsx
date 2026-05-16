@@ -252,7 +252,7 @@ function buildCard(props: ShareablePickButtonProps): HTMLCanvasElement {
   ctx.fillText(`${props.levelEmoji}  ${props.levelName}`, 100, H - 115);
   ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.font = "500 24px Inter, system-ui, sans-serif";
-  ctx.fillText("lottos.lovable.app", 100, H - 75);
+  ctx.fillText("grupolottoxp.com", 100, H - 75);
   ctx.fillStyle = "#ffffff";
   ctx.font = "bold 24px Inter, system-ui, sans-serif";
   ctx.textAlign = "right";

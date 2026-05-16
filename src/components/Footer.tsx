@@ -8,7 +8,7 @@ async function handleShareApp() {
   const shareData = {
     title: "Lottos - Resultados das Loterias",
     text: "Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa!",
-    url: "https://lottos.lovable.app",
+    url: "https://grupolottoxp.com",
   };
   if (navigator.share && navigator.canShare?.(shareData)) {
     try {

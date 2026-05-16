@@ -15,4 +15,4 @@ export function buildBreadcrumb(items: { name: string; url: string }[]) {
   };
 }
 
-export const SITE_URL = "https://lottos.lovable.app";
+export const SITE_URL = "https://grupolottoxp.com";

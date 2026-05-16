@@ -99,7 +99,7 @@ export function ShareResultImageButton({
       font-size:12px;opacity:0.8;
     `;
     footer.innerHTML = `
-      <span>lottos.lovable.app</span>
+      <span>grupolottoxp.com</span>
       <span>Sem vínculo oficial com a Caixa Econômica Federal</span>
     `;
     container.appendChild(footer);
@@ -183,7 +183,7 @@ export function ShareResultImageButton({
     }
   };
 
-  const caption = `🎰 ${lotteryName} - Concurso ${concurso}\n📅 ${date}${nextPrize ? `\n💰 Próximo: ${nextPrize}` : ""}\n\nlottos.lovable.app`;
+  const caption = `🎰 ${lotteryName} - Concurso ${concurso}\n📅 ${date}${nextPrize ? `\n💰 Próximo: ${nextPrize}` : ""}\n\ngrupolottoxp.com`;
 
   const handleConfirmDownload = () => {
     if (!previewUrl) return;
