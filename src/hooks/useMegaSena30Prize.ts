@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { MEGA_SENA_30_DATE } from "@/utils/megaSena30Date";
 
-const STORAGE_KEY = "lottos_megasena30_prize";
+const STORAGE_KEY = "lottos_megasena30_prize_v2";
 const DEFAULT_PRIZE = 300_000_000;
 const POLL_INTERVAL = 1000 * 60 * 10; // 10 min
 
