@@ -43,7 +43,7 @@ function Balloon({ className = "", variant = 1, gradientId }: { className?: stri
   );
 }
 
-export function MegaSena30Banner({ status, onClick, prizeCompact = "R$ 200" }: Props) {
+export function MegaSena30Banner({ status, onClick, prizeCompact = "R$ 300" }: Props) {
   const statusBadge =
     status === "live"
       ? { label: "AO VIVO", cls: "bg-rose-500 text-white animate-pulse" }
