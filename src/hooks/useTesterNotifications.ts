@@ -48,9 +48,10 @@ export function useTesterNotifications() {
     }
   }, []);
 
-  const schedule = useCallback(async (): Promise<
-    { ok: true } | { ok: false; reason: string }
-  > => {
+  const schedule = useCallback(async (): Promise<{
+    ok: boolean;
+    reason?: string;
+  }> => {
     setLoading(true);
     try {
       const dates = buildScheduleDates(new Date());
