@@ -20,7 +20,7 @@ export function TesterEngagementOptIn() {
 
   const handleEnable = async () => {
     const res = await schedule();
-    if (res.ok) {
+    if (res.ok === true) {
       toast.success("🔔 Lembretes ativados!", {
         description: "Você receberá dicas e novidades nos próximos 14 dias.",
       });
