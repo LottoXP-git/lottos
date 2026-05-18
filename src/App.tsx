@@ -18,6 +18,7 @@ import HowToWin from "./pages/HowToWin";
 import About from "./pages/About";
 import ResponsibleGambling from "./pages/ResponsibleGambling";
 import { CookieConsent } from "@/components/CookieConsent";
+import { TestVersionBanner } from "@/components/TestVersionBanner";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => {
             <AgeGate onVerified={() => setVerified(true)} />
           ) : (
             <BrowserRouter>
+              <TestVersionBanner />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/historico" element={<History />} />
