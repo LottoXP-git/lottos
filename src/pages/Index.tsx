@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { TesterEngagementOptIn } from "@/components/TesterEngagementOptIn";
 import { LotteryCard } from "@/components/LotteryCard";
 import { LotteryDetailModal } from "@/components/LotteryDetailModal";
 import { RegistrationForm } from "@/components/RegistrationForm";
@@ -432,6 +433,7 @@ const Index = () => {
         </section>
       </main>
 
+      <TesterEngagementOptIn />
       <Footer />
 
       <LotteryDetailModal
