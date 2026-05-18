@@ -24,7 +24,9 @@ export function TesterEngagementOptIn() {
       toast.success("🔔 Lembretes ativados!", {
         description: "Você receberá dicas e novidades nos próximos 14 dias.",
       });
-    } else if (res.reason === "denied") {
+      return;
+    }
+    if (res.reason === "denied") {
       toast.error("Permissão de notificação negada");
     } else {
       toast.error("Notificações não suportadas neste dispositivo");
