@@ -1,104 +1,54 @@
-## Diagnóstico
 
-Auditoria do projeto contra os requisitos do Google AdSense (Programa Policies + Better Ads Standards). Pontos críticos identificados:
+## Objetivo
 
-### Bloqueios prováveis de aprovação
+Manter os testadores do Closed Testing ativos durante os 14 dias exigidos pelo Google Play, disparando notificações locais agendadas em dias alternados (D+1, D+3, D+5, D+7, D+9, D+11, D+13) — sem depender de servidor de push.
 
-1. **Inconsistência de domínio (alto risco)**  
-   O `index.html`, `Footer`, `Index.tsx` e botões de compartilhamento ainda apontam para `lottos.lovable.app`, mas o site oficial é `grupolottoxp.com` (canonical, sitemap, ads.txt). O AdSense verifica o domínio cadastrado: se `og:url` / canonical / Organization JSON-LD divergem, o crawler pode classificar como duplicado/subdomínio Lovable e rejeitar.
+## Estratégia
 
-2. **Conteúdo de loterias sem disclaimer de jogo responsável (alto risco)**  
-   AdSense permite conteúdo de loteria, mas exige aviso claro de “+18 / jogo responsável” visível e link para ajuda (Jogadores Anônimos, CVV). Hoje só existe o AgeGate.
+Usar **`@capacitor/local-notifications`** no app nativo (Android) e **Notifications API + setTimeout/visibilitychange** no web, com o mesmo hook orquestrando ambos. Plugin nativo permite agendar disparos futuros mesmo com o app fechado — essencial para o teste fechado.
 
-3. **Falta de página “Sobre” (médio risco)**  
-   AdSense exige *About*, *Contact*, *Privacy*. Hoje só há Privacidade + Termos + e-mail no rodapé.
+Conteúdo das mensagens é rotativo e ligado a funcionalidades reais do app (resultados, palpite do dia, ranking, Mega 30 Anos), evitando padrão "spam" que o Google penaliza.
 
-4. **Sem banner de consentimento de cookies / CMP (médio risco)**  
-   Desde 2024, AdSense exige CMP certificada para tráfego EEE/UK. Mesmo para BR-only é boa prática para LGPD e aumenta a chance de aprovação.
+## Mudanças
 
-5. **AgeGate bloqueia conteúdo no primeiro paint (médio risco)**  
-   O modal cobre 100% da viewport antes do bot Google avaliar o site. Já há detecção de UA, mas o AdsBot do AdSense usa UA `AdsBot-Google` que está listado — preciso confirmar e tornar a detecção também server-friendly (atributo no `<html>`).
+### 1. Dependência nativa
+- Instalar `@capacitor/local-notifications`
+- Atualizar `android/app/src/main/AndroidManifest.xml` com permissões:
+  - `POST_NOTIFICATIONS` (Android 13+)
+  - `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`
+  - `RECEIVE_BOOT_COMPLETED` (re-agendar após reboot — já incluído pelo plugin)
 
-6. **Densidade de anúncios vs conteúdo (médio risco)**  
-   Páginas com `AdBanner` acima do primeiro parágrafo violam Better Ads. Verificar e mover banners para baixo do primeiro bloco de conteúdo.
+### 2. Novo módulo `src/lib/testerEngagement.ts`
+Define o calendário de 7 notificações (dias 1,3,5,7,9,11,13) com:
+- horário fixo (ex: 19h local)
+- título + corpo + deep-link interno (`/`, `/historico`, `/estatisticas`, `/como-ganhar/megasena`)
+- mensagens variadas: "Confira o resultado de hoje", "Gere seu palpite da sorte", "Veja os números mais sorteados", "Mega-Sena 30 Anos se aproxima!", etc.
 
-7. **ads.txt + meta `google-adsense-account`** — já corretos.
+### 3. Novo hook `src/hooks/useTesterNotifications.ts`
+- Detecta plataforma via `isNative()` (já existe em `src/lib/platform.ts`)
+- **Nativo (Android):** usa `LocalNotifications.schedule()` com 7 disparos futuros (`at: Date`) na primeira execução; persiste `lottos_tester_schedule_v1` em localStorage com a data-âncora para evitar re-agendar
+- **Web:** fallback que aproveita o `useDailyReminder` existente (já implementado) mas amplia para todos os dias ímpares dos próximos 14 dias
+- Método `cancelAll()` para desligar
 
-8. **`og-image.jpg` apontando para lovable.app** — quebrará preview se o crawler validar pelo domínio canônico.
+### 4. CTA discreto no app
+- Novo componente `src/components/TesterEngagementOptIn.tsx`: banner sutil acima do Footer em `/` perguntando "Ative os lembretes do teste (14 dias)" com botão único
+- Pede permissão nativa via `LocalNotifications.requestPermissions()` e agenda
+- Mostrado apenas se `!agendado && plataforma suporta`
+- Esconde após opt-in/dismiss (localStorage)
 
----
+### 5. Integração leve em `src/App.tsx`
+- Chamar `useTesterNotifications()` no topo para revalidar/limpar agendamentos expirados na abertura
+- Não dispara nada automaticamente — só responde ao opt-in do usuário
 
-## Plano de ação
-
-### 1. Padronizar domínio em `grupolottoxp.com`
-
-- `index.html`: trocar `og:image` / `og:image:secure_url` / `twitter:image` para `https://grupolottoxp.com/og-image.jpg`. Adicionar `<link rel="canonical" href="https://grupolottoxp.com/">`.
-- `src/pages/Index.tsx`: trocar todas as URLs `lottos.lovable.app` por `grupolottoxp.com` (WebSite JSON-LD, Organization logo, image).
-- `src/components/Footer.tsx` (`handleShareApp`), `ShareResultImageButton.tsx`, `generator/ShareablePickButton.tsx`: trocar texto e URL de compartilhamento.
-- Verificar `src/lib/breadcrumb.ts` (`SITE_URL`) — já deve estar em grupolottoxp.
-
-### 2. Criar página `/sobre`
-
-- Nova rota `src/pages/About.tsx` com:
-  - Quem somos / missão do app.
-  - Esclarecimento de que o app é informativo e independente da Caixa.
-  - Equipe / localização (Olinda/PE).
-  - Contato.
-- Adicionar rota em `App.tsx` e link no `Footer`.
-- Helmet com title/description/canonical próprios + JSON-LD `AboutPage` + Breadcrumb.
-
-### 3. Página + bloco de Jogo Responsável
-
-- Nova rota `/jogo-responsavel` com orientações, sinais de alerta e links para CVV (188) e Jogadores Anônimos BR.
-- Adicionar bloco compacto no rodapé: ícone + texto “Jogue com responsabilidade. +18. Se precisar de ajuda: CVV 188” + link.
-- Adicionar reforço no AgeGate.
-
-### 4. Banner de consentimento de cookies (CMP leve)
-
-- Componente `CookieConsent.tsx` exibido no primeiro acesso:
-  - Texto curto LGPD + AdSense.
-  - Botões: “Aceitar”, “Recusar não essenciais”, link para Privacidade.
-  - Persistência em `localStorage` (`lottos_cookie_consent`).
-- Carregar o script do AdSense só após consentimento OU após X segundos como fallback (manter o tag `<script async>` no `index.html` mas com `data-ad-client` apenas; remoção dinâmica é complexa — alternativa simpler: manter script, mas habilitar `(adsbygoogle = window.adsbygoogle || []).push({"google_tag_params": {"npa": 1}})` quando recusado).
-- Garantir compatibilidade com a abordagem atual em `AdBanner.tsx`.
-
-### 5. Endurecer AgeGate para crawlers
-
-- Expandir lista de UAs em `BOT_UA_PATTERN` para incluir explicitamente `AdsBot-Google-Mobile-Apps`, `APIs-Google`, `Storebot-Google`, `GoogleProducer`.
-- Definir `document.documentElement.dataset.bot = "true"` quando bot for detectado (ajuda em testes).
-- Quando bot detectado, montar a rota normalmente já é o comportamento atual — manter.
-- Adicionar `noscript` no `index.html` com texto descritivo do site (para crawlers sem JS, embora Googlebot execute JS, é redundância segura).
-
-### 6. Revisar densidade/posicionamento de anúncios
-
-- Auditar `Index.tsx`, `History.tsx`, `LotteryDraw.tsx`, `HowToWin.tsx`, `MonthlyReport.tsx`: garantir que nenhum `<AdBanner>` aparece antes do primeiro `<h1>` + 1 parágrafo de conteúdo. Mover banners se necessário.
-- Garantir rótulo “Anúncio” visível (já existe no componente).
-- Limitar a 1 banner por viewport mobile.
-
-### 7. Conteúdo institucional / E-A-T
-
-- Atualizar `PrivacyPolicy.tsx` para mencionar especificamente Google AdSense, cookies de personalização, opt-out via `adssettings.google.com` (parágrafo já existe, reforçar e linkar).
-- Atualizar `TermsOfUse.tsx` com cláusula de jogo responsável + “sem garantia de prêmio”.
-- Adicionar `dateModified` visível em ambas.
-
-### 8. Verificações finais
-
-- Rodar build local para confirmar que todas as rotas funcionam.
-- Validar canonical/og em DevTools.
-- Pedir ao usuário para reenviar o site no painel do AdSense após deploy.
-
----
-
-## Detalhes técnicos
-
-- **Arquivos novos**: `src/pages/About.tsx`, `src/pages/ResponsibleGambling.tsx`, `src/components/CookieConsent.tsx`.
-- **Arquivos editados**: `index.html`, `src/App.tsx`, `src/components/Footer.tsx`, `src/components/AgeGate.tsx`, `src/pages/Index.tsx`, `src/pages/PrivacyPolicy.tsx`, `src/pages/TermsOfUse.tsx`, `src/components/ShareResultImageButton.tsx`, `src/components/generator/ShareablePickButton.tsx`, `scripts/generate-sitemap.ts` (adicionar `/sobre`, `/jogo-responsavel`), `public/sitemap.xml` (regenerar).
-- **Sem mudanças de schema/banco/Edge Functions** — apenas frontend + conteúdo institucional.
-
----
+### 6. Documentação
+- Atualizar `RELEASE.md` com instrução: após `npx cap sync`, conferir que o plugin foi listado em `android/app/src/main/assets/capacitor.plugins.json`
 
 ## Fora do escopo
 
-- Integração com CMP certificada paga (Google Funding Choices, Cookiebot). Implementaremos CMP própria simples; se o tráfego EEE crescer, recomenda-se migrar.
-- Mudança de provedor de anúncios.
-- Reescrita do AgeGate em SSR (exigiria sair do Vite SPA).
+- Push remoto (FCM) — exige backend e Service Worker; pode ser uma segunda fase
+- iOS — projeto Android-only no momento (sem pasta `ios/`)
+- Lembrete diário existente (`useDailyReminder`) — preservado, atende caso o usuário queira ping diário em vez de em dias alternados
+
+## Resultado esperado
+
+Testador instala → vê banner → ativa lembretes → recebe 7 notificações ao longo de 14 dias mesmo sem abrir o app, aumentando DAU e satisfazendo o requisito do Play Console.
