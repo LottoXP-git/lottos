@@ -44,6 +44,88 @@ try {
   }
   Write-Ok "capacitor.config.ts OK (sem server.url)."
 
+  # 0.5 Resolver JAVA_HOME automaticamente
+  Write-Step "[0.5/4] Resolvendo JAVA_HOME..."
+
+  function Test-JdkPath($p) {
+    return ($p -and (Test-Path (Join-Path $p "bin\java.exe")))
+  }
+
+  function Find-LatestJdk($pattern) {
+    try {
+      $dir = Split-Path -Parent $pattern
+      $leaf = Split-Path -Leaf $pattern
+      if (-not (Test-Path $dir)) { return $null }
+      $matches = Get-ChildItem -Path $dir -Directory -Filter $leaf -ErrorAction SilentlyContinue |
+                 Sort-Object LastWriteTime -Descending
+      foreach ($m in $matches) {
+        if (Test-JdkPath $m.FullName) { return $m.FullName }
+      }
+    } catch {}
+    return $null
+  }
+
+  $jdk = $null
+
+  if (Test-JdkPath $env:JAVA_HOME) {
+    $jdk = $env:JAVA_HOME
+    Write-Ok "Usando JAVA_HOME já definido: $jdk"
+  }
+  else {
+    if ($env:JAVA_HOME) {
+      Write-Host "JAVA_HOME atual ('$env:JAVA_HOME') é inválido. Buscando outro JDK..." -ForegroundColor Yellow
+    } else {
+      Write-Host "JAVA_HOME não definido. Buscando JDK automaticamente..." -ForegroundColor Yellow
+    }
+
+    $candidates = @(
+      "C:\Program Files\Android\Android Studio\jbr",
+      "C:\Program Files\Android\Android Studio\jre",
+      (Join-Path $env:LOCALAPPDATA "Programs\Android Studio\jbr"),
+      (Join-Path $env:LOCALAPPDATA "Programs\Android Studio\jre")
+    )
+
+    foreach ($c in $candidates) {
+      if (Test-JdkPath $c) { $jdk = $c; break }
+    }
+
+    if (-not $jdk) {
+      $patterns = @(
+        "C:\Program Files\Eclipse Adoptium\jdk-*",
+        "C:\Program Files\Java\jdk-*",
+        "C:\Program Files\Microsoft\jdk-*",
+        "C:\Program Files\Zulu\zulu-*"
+      )
+      foreach ($p in $patterns) {
+        $found = Find-LatestJdk $p
+        if ($found) { $jdk = $found; break }
+      }
+    }
+
+    if (-not $jdk -and (Test-JdkPath $env:JDK_HOME)) {
+      $jdk = $env:JDK_HOME
+    }
+
+    if (-not $jdk) {
+      Write-Host ""
+      Write-Host "Nenhum JDK encontrado automaticamente." -ForegroundColor Red
+      Write-Host "Opções para resolver:" -ForegroundColor Yellow
+      Write-Host "  1) Instale o Temurin 17: https://adoptium.net/temurin/releases/?version=17" -ForegroundColor Yellow
+      Write-Host "  2) Ou instale o Android Studio (inclui JBR em ...\Android Studio\jbr)" -ForegroundColor Yellow
+      Write-Host "  3) Ou defina JAVA_HOME manualmente apontando para o JDK." -ForegroundColor Yellow
+      Write-Fail "JDK não encontrado. Defina JAVA_HOME e tente novamente."
+    }
+
+    $env:JAVA_HOME = $jdk
+    $env:Path = "$jdk\bin;$env:Path"
+    Write-Ok "JAVA_HOME definido para esta sessão: $jdk"
+  }
+
+  try {
+    $javaVersion = & "$env:JAVA_HOME\bin\java.exe" -version 2>&1 | Select-Object -First 1
+    if ($javaVersion) { Write-Host "  $javaVersion" -ForegroundColor DarkGray }
+  } catch {}
+
   # 1. Build web
   Write-Step "[1/4] Buildando o projeto web..."
   npm run build
