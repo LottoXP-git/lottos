@@ -37,11 +37,11 @@ const SPECIAL = {
   name: "Mega-Sena 30 Anos",
   lottery: "Mega-Sena • Concurso Especial",
   date: MEGA_SENA_30_DATE,
-  prize: "R$ 200.000.000,00",
+  prize: "R$ 300.000.000,00",
   description:
     "A Mega-Sena celebra 30 anos com um sorteio histórico! Prêmio que não acumula — se ninguém acertar a Sena, o valor desce para a faixa da Quina.",
   highlights: [
-    "Prêmio histórico de R$ 200 milhões",
+    "Prêmio histórico de R$ 300 milhões",
     "Comemoração dos 30 anos da Mega-Sena",
     "Não acumula — desce para a Quina se ninguém acertar",
     "Aposta mínima a partir de R$ 6,00",
@@ -77,8 +77,8 @@ export function MegaSena30Modal({
   open,
   onOpenChange,
   onGeneratePicks,
-  prizeCompact = "R$ 200",
-  prizeFull = "R$ 200.000.000,00",
+  prizeCompact = "R$ 300",
+  prizeFull = "R$ 300.000.000,00",
 }: MegaSena30ModalProps) {
   const [countdown, setCountdown] = useState<CountdownValues>(getCountdown(SPECIAL.date));
   const [status, setStatus] = useState(() => getMegaSena30Status());
