@@ -349,7 +349,22 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
           </div>
 
           {/* Share Button - Centralizado */}
-          <div className="flex justify-center">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Concurso anterior"
+              onClick={() => setOffset((o) => o - 1)}
+              disabled={!canGoPrev}
+              className="h-9 w-9 sm:h-10 sm:w-10 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
+            >
+              {isFetchingDraw && offset < 0 ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ChevronLeft className="w-4 h-4" />
+              )}
+            </Button>
             <ShareResultImageButton
               targetRef={captureRef}
               lotteryName={displayedLottery.name}
@@ -359,6 +374,21 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               nextPrize={displayedLottery.nextPrize}
               className="h-9 w-9 sm:h-10 sm:w-10 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
             />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Próximo concurso"
+              onClick={() => setOffset((o) => o + 1)}
+              disabled={!canGoNext}
+              className="h-9 w-9 sm:h-10 sm:w-10 transition-all duration-200 hover:scale-110 hover:bg-primary/10 hover:text-primary"
+            >
+              {isFetchingDraw && offset > 0 ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )}
+            </Button>
           </div>
 
 
