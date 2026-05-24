@@ -10,8 +10,10 @@ import { LotteryBall } from "./LotteryBall";
 
 import { ShareResultImageButton } from "./ShareResultImageButton";
 import { SpecialStats } from "./SpecialStats";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble } from "lucide-react";
-import { useMemo, useRef } from "react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useLotteryDraw } from "@/hooks/useLotteryResults";
 
 interface LotteryDetailModalProps {
   lottery: LotteryResult | null;
@@ -42,25 +44,103 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
   }, [lottery]);
   const captureRef = useRef<HTMLDivElement>(null);
 
+  const [offset, setOffset] = useState(0);
+
+  // Reset offset when lottery changes or modal closes
+  useEffect(() => {
+    setOffset(0);
+  }, [lottery?.id, lottery?.concurso, open]);
+
+  const baseConcurso = lottery?.concurso ?? 0;
+  const targetConcurso = baseConcurso + offset;
+
+  const {
+    data: fetchedDraw,
+    isLoading: isFetchingDraw,
+    isError: isDrawError,
+  } = useLotteryDraw(
+    offset !== 0 && lottery ? lottery.id : "",
+    offset !== 0 ? targetConcurso : 0,
+  );
+
   if (!lottery) return null;
+
+  const displayedLottery: LotteryResult =
+    offset === 0
+      ? lottery
+      : fetchedDraw
+        ? {
+            ...lottery,
+            ...fetchedDraw,
+            color: lottery.color,
+            maxNumber: lottery.maxNumber,
+            selectCount: lottery.selectCount,
+            name: lottery.name,
+          }
+        : lottery;
+
+  const canGoPrev = targetConcurso > 1 && !isFetchingDraw;
+  // Block "next" when we're already past the latest known and got an error
+  const atLatestKnown = offset >= 0 && isDrawError;
+  const canGoNext = !atLatestKnown && !isFetchingDraw;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
        <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden bg-card border-border p-2 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-0.5rem)] sm:w-auto rounded-xl">
         <DialogHeader className="space-y-0.5 sm:space-y-1">
-          <DialogTitle className="text-base sm:text-2xl font-bold flex items-baseline gap-1.5 sm:gap-3 flex-nowrap leading-tight min-w-0 overflow-hidden">
-              <span className="truncate min-w-0">{lottery.name}</span>
+          <DialogTitle className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-3 flex-nowrap leading-tight min-w-0 overflow-hidden">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Concurso anterior"
+                onClick={() => setOffset((o) => o - 1)}
+                disabled={!canGoPrev}
+                className="h-7 w-7 sm:h-9 sm:w-9 shrink-0"
+              >
+                {isFetchingDraw && offset < 0 ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ChevronLeft className="w-4 h-4" />
+                )}
+              </Button>
+              <span className="truncate min-w-0">{displayedLottery.name}</span>
               <span className="text-base sm:text-3xl font-bold text-primary shrink-0 whitespace-nowrap">
-                #{lottery.concurso}
+                #{displayedLottery.concurso}
               </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Próximo concurso"
+                onClick={() => setOffset((o) => o + 1)}
+                disabled={!canGoNext}
+                className="h-7 w-7 sm:h-9 sm:w-9 shrink-0 ml-auto"
+              >
+                {isFetchingDraw && offset > 0 ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ChevronRight className="w-4 h-4" />
+                )}
+              </Button>
             </DialogTitle>
           <DialogDescription className="sr-only">
-            Detalhes do resultado {lottery.name} concurso {lottery.concurso}
+            Detalhes do resultado {displayedLottery.name} concurso {displayedLottery.concurso}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 sm:space-y-6 overflow-x-hidden">
-          <div ref={captureRef} className="space-y-3 sm:space-y-6">
+          {isDrawError && offset !== 0 && (
+            <div className="text-xs text-center text-destructive bg-destructive/10 border border-destructive/20 rounded-md py-2 px-3">
+              Não foi possível carregar o concurso #{targetConcurso}.
+            </div>
+          )}
+          <div
+            ref={captureRef}
+            className={`space-y-3 sm:space-y-6 transition-opacity ${
+              isFetchingDraw && offset !== 0 ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
           {/* Current Result */}
           <div className="p-2 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
             <div className="flex items-center gap-1.5 mb-2 text-[10px] sm:text-sm text-muted-foreground">
