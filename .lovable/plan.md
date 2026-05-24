@@ -1,26 +1,35 @@
 ## Objetivo
-Adicionar ao `scripts/build-android.ps1` uma etapa que detecta automaticamente um JDK válido quando `JAVA_HOME` não está definido, evitando o erro "JAVA_HOME is not set" no Gradle.
 
-## Mudança
+Adicionar botões "Anterior" e "Próximo" no `LotteryDetailModal` para navegar entre concursos da mesma loteria, sem fechar o modal.
 
-Inserir nova etapa **"[0.5/4] Resolvendo JAVA_HOME..."** logo após a validação do `capacitor.config.ts` e antes do build web. Comportamento:
+## Mudanças
 
-1. Se `$env:JAVA_HOME` já existir e `"$env:JAVA_HOME\bin\java.exe"` for válido → usar e mostrar versão.
-2. Caso contrário, procurar em candidatos comuns (na ordem), o primeiro que contiver `bin\java.exe`:
-   - `$env:JAVA_HOME` (caso esteja inválido, pular)
-   - `C:\Program Files\Android\Android Studio\jbr`
-   - `C:\Program Files\Android\Android Studio\jre`
-   - `$env:LOCALAPPDATA\Programs\Android Studio\jbr`
-   - `$env:LOCALAPPDATA\Programs\Android Studio\jre`
-   - Maior versão encontrada em `C:\Program Files\Eclipse Adoptium\jdk-*`
-   - Maior versão encontrada em `C:\Program Files\Java\jdk-*`
-   - Maior versão encontrada em `C:\Program Files\Microsoft\jdk-*`
-   - `$env:JDK_HOME` (se setado e válido)
-3. Quando encontrar, definir `$env:JAVA_HOME` para o processo atual e prefixar `"$env:JAVA_HOME\bin"` em `$env:Path` (apenas durante a execução do script, sem alterar variáveis do sistema). Exibir `[OK] JAVA_HOME = ...`.
-4. Se nada for encontrado, `Write-Fail` com instrução clara: instalar Temurin 17 (https://adoptium.net/temurin/releases/?version=17) ou Android Studio, ou setar `JAVA_HOME` manualmente.
+### 1. `src/components/LotteryDetailModal.tsx`
+- Importar `ChevronLeft`, `ChevronRight` (lucide) e `useLotteryDraw` de `@/hooks/useLotteryResults`.
+- Adicionar estado interno `concursoOffset` (number, default `0`) que representa o deslocamento em relação ao concurso atual da prop `lottery`.
+- Resetar `concursoOffset` para `0` toda vez que `lottery?.id` ou `lottery?.concurso` mudar (via `useEffect`), e quando o modal fechar.
+- Calcular `targetConcurso = lottery.concurso + concursoOffset`.
+- Usar `useLotteryDraw(lottery.id, targetConcurso)` apenas quando `concursoOffset !== 0` (`enabled`), reaproveitando o cache do React Query.
+- `displayedLottery`: se `offset === 0` → usa `lottery` (prop); senão usa o resultado do hook, mantendo `color`, `maxNumber`, `selectCount` da loteria original como fallback caso a API não devolva.
+- Substituir as referências a `lottery.*` dentro do conteúdo do modal por `displayedLottery.*`. As keys de `useMemo`, `captureRef` e `ShareResultImageButton` passam a usar `displayedLottery`.
+- Renderizar dois botões compactos na linha do `DialogTitle` (à esquerda da contagem e à direita do nome):
+  - Esquerda: `ChevronLeft` → decrementa offset (`-1`). Desabilitado se `targetConcurso <= 1`.
+  - Direita: `ChevronRight` → incrementa offset (`+1`). Desabilitado quando já estamos no concurso "mais recente conhecido" (offset >= 0 e a request retornou 404/erro na próxima) — usar o estado `isError` do hook para próximo concurso para travar o avanço.
+  - Ambos com `aria-label`, `variant="ghost"`, `size="icon"`, `h-7 w-7 sm:h-9 sm:w-9`, e `disabled` durante `isLoading` ou nos limites.
+- Mostrar um skeleton/overlay leve (opacidade reduzida + spinner pequeno) sobre a área de conteúdo enquanto `isLoading && offset !== 0`, mantendo o header navegável.
+- Em erro de fetch (`isError`), exibir mensagem inline curta e manter o concurso anterior visível; reverter `concursoOffset` para o último válido seria opcional — preferimos apenas bloquear o botão correspondente.
 
-A renumeração das etapas seguintes não é necessária — a etapa nova fica como `[0.5/4]` para minimizar mudanças visuais.
+### 2. Sem mudanças em backend
+A função edge `fetch-lottery-results` já aceita `?lottery=&concurso=`, e `useLotteryDraw` já está implementado e cacheado (24h staleTime). Nenhuma migração ou edge function nova é necessária.
 
-## Detalhe técnico
+### 3. Restrições preservadas
+- Não altera lógica de negócios além da navegação visual.
+- Loteca: `useLotteryDraw` chama a edge function que pode falhar para Loteca (Caixa bloqueia IPs server). Aceitamos esse comportamento (botões habilitados, mas pode exibir erro inline). Sem mudanças no `fetchLotecaFromBrowser` para manter escopo enxuto.
 
-Usar helper local `Resolve-Jdk` que recebe lista de caminhos e retorna o primeiro válido (`Test-Path "$p\bin\java.exe"`). Para diretórios com wildcard (`jdk-*`), usar `Get-ChildItem -Directory` ordenado por `LastWriteTime` desc, escolhendo o primeiro com `bin\java.exe`.
+## Detalhes técnicos
+
+- Tipo do estado: `const [offset, setOffset] = useState(0)`.
+- `targetConcurso = (lottery?.concurso ?? 0) + offset`.
+- Hook condicional: `const { data: fetched, isLoading, isError } = useLotteryDraw(lottery?.id ?? "", targetConcurso)` — o `enabled` interno já cuida de não disparar se concurso inválido; adicionar guarda extra `offset !== 0`.
+- `displayedLottery = offset === 0 ? lottery : (fetched ? { ...lottery, ...fetched } : lottery)` para preservar campos visuais (`color`).
+- Botões posicionados dentro do `DialogHeader`, em uma nova linha flex `justify-between` acima do título atual, OU integrados no próprio título com `flex items-center justify-between gap-2`. Preferimos a segunda forma para manter altura compacta.
