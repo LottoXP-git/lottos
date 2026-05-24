@@ -88,41 +88,11 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
     <Dialog open={open} onOpenChange={onOpenChange}>
        <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden bg-card border-border p-2 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-0.5rem)] sm:w-auto rounded-xl">
         <DialogHeader className="space-y-0.5 sm:space-y-1">
-          <DialogTitle className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-3 flex-nowrap leading-tight min-w-0 overflow-hidden">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label="Concurso anterior"
-                onClick={() => setOffset((o) => o - 1)}
-                disabled={!canGoPrev}
-                className="h-7 w-7 sm:h-9 sm:w-9 shrink-0"
-              >
-                {isFetchingDraw && offset < 0 ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <ChevronLeft className="w-4 h-4" />
-                )}
-              </Button>
+          <DialogTitle className="text-base sm:text-2xl font-bold flex items-baseline gap-1.5 sm:gap-3 flex-nowrap leading-tight min-w-0 overflow-hidden">
               <span className="truncate min-w-0">{displayedLottery.name}</span>
               <span className="text-base sm:text-3xl font-bold text-primary shrink-0 whitespace-nowrap">
                 #{displayedLottery.concurso}
               </span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label="Próximo concurso"
-                onClick={() => setOffset((o) => o + 1)}
-                disabled={!canGoNext}
-                className="h-7 w-7 sm:h-9 sm:w-9 shrink-0 ml-auto"
-              >
-                {isFetchingDraw && offset > 0 ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <ChevronRight className="w-4 h-4" />
-                )}
-              </Button>
             </DialogTitle>
           <DialogDescription className="sr-only">
             Detalhes do resultado {displayedLottery.name} concurso {displayedLottery.concurso}
