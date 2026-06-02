@@ -468,7 +468,11 @@
      const url = new URL(req.url);
      const lotteryId = url.searchParams.get("lottery");
      const mode = url.searchParams.get("mode") || "latest"; // 'latest' or 'history'
-     const count = parseInt(url.searchParams.get("count") || "100", 10);
+     const MAX_HISTORY_COUNT = 200;
+     const rawCount = parseInt(url.searchParams.get("count") || "100", 10);
+     const count = Number.isFinite(rawCount)
+       ? Math.min(Math.max(1, rawCount), MAX_HISTORY_COUNT)
+       : 100;
       const concursoParam = url.searchParams.get("concurso");
       const concurso = concursoParam ? parseInt(concursoParam, 10) : undefined;
  
