@@ -22,6 +22,9 @@ import { isDuplaDePascoaActive } from "@/utils/easterDate";
 import { MegaSena30Modal } from "@/components/MegaSena30Modal";
 import { MegaSena30Banner } from "@/components/MegaSena30Banner";
 import { isMegaSena30AnosActive, getMegaSena30Status, MegaSena30Status } from "@/utils/megaSena30Date";
+import { QuinaSaoJoaoBanner } from "@/components/QuinaSaoJoaoBanner";
+import { QuinaSaoJoaoModal } from "@/components/QuinaSaoJoaoModal";
+import { isQuinaSaoJoaoActive, getQuinaSaoJoaoStatus, QuinaSaoJoaoStatus } from "@/utils/quinaSaoJoaoDate";
 import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useMegaSena30Prize } from "@/hooks/useMegaSena30Prize";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
@@ -35,9 +38,11 @@ const Index = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
   const [megaSena30Open, setMegaSena30Open] = useState(false);
+  const [quinaSaoJoaoOpen, setQuinaSaoJoaoOpen] = useState(false);
   const [quickBetPreselect, setQuickBetPreselect] = useState<string | undefined>();
   const showDuplaDePascoa = isDuplaDePascoaActive();
   const showMegaSena30 = isMegaSena30AnosActive();
+  const showQuinaSaoJoao = isQuinaSaoJoaoActive();
 
   // Live status for the Mega-Sena 30 Anos draw — updates every 30s.
   const [megaSena30Status, setMegaSena30Status] = useState<MegaSena30Status>(() => getMegaSena30Status());
@@ -48,6 +53,15 @@ const Index = () => {
     const id = setInterval(tick, 30_000);
     return () => clearInterval(id);
   }, [showMegaSena30]);
+
+  const [quinaSaoJoaoStatus, setQuinaSaoJoaoStatus] = useState<QuinaSaoJoaoStatus>(() => getQuinaSaoJoaoStatus());
+  useEffect(() => {
+    if (!showQuinaSaoJoao) return;
+    const tick = () => setQuinaSaoJoaoStatus(getQuinaSaoJoaoStatus());
+    tick();
+    const id = setInterval(tick, 30_000);
+    return () => clearInterval(id);
+  }, [showQuinaSaoJoao]);
 
   // Schedule local notifications (1 day before + live).
   useMegaSena30Notifications(showMegaSena30);
@@ -295,6 +309,15 @@ const Index = () => {
         </section>
         }
 
+        {showQuinaSaoJoao &&
+        <section className="mb-8 animate-fade-in">
+          <QuinaSaoJoaoBanner
+            status={quinaSaoJoaoStatus}
+            onClick={() => setQuinaSaoJoaoOpen(true)}
+          />
+        </section>
+        }
+
         {/* Lottery Results Grid */}
         <section className="mb-8 sm:mb-12">
            <div className="mb-4 sm:mb-6">
@@ -464,6 +487,19 @@ const Index = () => {
         onGeneratePicks={() => {
           setMegaSena30Open(false);
           setQuickBetPreselect("megasena");
+          setTimeout(() => {
+            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }} />
+      }
+
+      {showQuinaSaoJoao &&
+      <QuinaSaoJoaoModal
+        open={quinaSaoJoaoOpen}
+        onOpenChange={setQuinaSaoJoaoOpen}
+        onGeneratePicks={() => {
+          setQuinaSaoJoaoOpen(false);
+          setQuickBetPreselect("quina");
           setTimeout(() => {
             document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
           }, 100);
