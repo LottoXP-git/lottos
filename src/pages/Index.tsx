@@ -309,6 +309,15 @@ const Index = () => {
         </section>
         }
 
+        {showQuinaSaoJoao &&
+        <section className="mb-8 animate-fade-in">
+          <QuinaSaoJoaoBanner
+            status={quinaSaoJoaoStatus}
+            onClick={() => setQuinaSaoJoaoOpen(true)}
+          />
+        </section>
+        }
+
         {/* Lottery Results Grid */}
         <section className="mb-8 sm:mb-12">
            <div className="mb-4 sm:mb-6">
@@ -478,6 +487,19 @@ const Index = () => {
         onGeneratePicks={() => {
           setMegaSena30Open(false);
           setQuickBetPreselect("megasena");
+          setTimeout(() => {
+            document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }} />
+      }
+
+      {showQuinaSaoJoao &&
+      <QuinaSaoJoaoModal
+        open={quinaSaoJoaoOpen}
+        onOpenChange={setQuinaSaoJoaoOpen}
+        onGeneratePicks={() => {
+          setQuinaSaoJoaoOpen(false);
+          setQuickBetPreselect("quina");
           setTimeout(() => {
             document.getElementById("quick-bet-generator")?.scrollIntoView({ behavior: "smooth", block: "center" });
           }, 100);
