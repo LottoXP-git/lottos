@@ -3,7 +3,7 @@ import html2canvas from "html2canvas";
 import { LotteryResult } from "@/data/lotteryData";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Copy, Check, FileText, Download, Loader2 } from "lucide-react";
+import { Check, FileText, Share2, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { LotteryBall } from "@/components/LotteryBall";
 import lotusLogo from "@/assets/lotus-logo.png";
@@ -120,84 +120,67 @@ function SummaryContent({ lotteries, contentRef }: { lotteries: LotteryResult[];
 
 export function ResultsSummaryModal({ lotteries }: ResultsSummaryModalProps) {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [exporting, setExporting] = useState(false);
+  const [shared, setShared] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleShare = async () => {
-    const text = buildShareText(lotteries);
-    const shareData = { title: "Resultados das Loterias Caixa", text, url: window.location.href };
-
-    if (navigator.share && navigator.canShare?.(shareData)) {
-      try {
-        await navigator.share(shareData);
-        toast({ title: "Compartilhado!", description: "Resumo compartilhado com sucesso." });
-        return;
-      } catch (err) {
-        if ((err as Error).name === "AbortError") return;
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(`${shareData.title}\n\n${text}\n\n${shareData.url}`);
-      setCopied(true);
-      toast({ title: "Copiado!", description: "Resumo copiado para a área de transferência." });
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast({ title: "Erro", description: "Não foi possível copiar.", variant: "destructive" });
-    }
-  };
-
-  const handleExportImage = async () => {
     if (!contentRef.current) return;
-    setExporting(true);
+    setSharing(true);
+    const text = buildShareText(lotteries);
+    const url = window.location.href;
+    const title = "Resultados das Loterias Caixa";
+
     try {
-      const canvas = await html2canvas(contentRef.current, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
+      // Generate image
+      let file: File | null = null;
+      try {
+        const canvas = await html2canvas(contentRef.current, {
+          backgroundColor: null,
+          scale: 2,
+          useCORS: true,
+          logging: false,
+        });
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, "image/png")
+        );
+        if (blob) file = new File([blob], "resultados-loterias.png", { type: "image/png" });
+      } catch {
+        // ignore, fallback to text-only share
+      }
 
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png")
-      );
-
-      if (!blob) throw new Error("Failed to create blob");
-
-      // Try native share with image on mobile
-      if (navigator.share && navigator.canShare?.({ files: [new File([blob], "resultados.png", { type: "image/png" })] })) {
-        const file = new File([blob], "resultados-loterias.png", { type: "image/png" });
+      // Try native share with image (opens WhatsApp/Instagram/etc.)
+      if (file && navigator.share && navigator.canShare?.({ files: [file] })) {
         try {
-          await navigator.share({
-            title: "Resultados das Loterias Caixa",
-            files: [file],
-          });
-          toast({ title: "Compartilhado!", description: "Imagem compartilhada com sucesso." });
-          setExporting(false);
+          await navigator.share({ title, text, files: [file] });
+          toast({ title: "Compartilhado!", description: "Resumo enviado com sucesso." });
           return;
         } catch (err) {
-          if ((err as Error).name === "AbortError") {
-            setExporting(false);
-            return;
-          }
+          if ((err as Error).name === "AbortError") return;
         }
       }
 
-      // Fallback: download
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "resultados-loterias.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      toast({ title: "Baixado!", description: "Imagem salva com sucesso." });
+      // Try native share text-only
+      const textData = { title, text, url };
+      if (navigator.share && navigator.canShare?.(textData)) {
+        try {
+          await navigator.share(textData);
+          toast({ title: "Compartilhado!", description: "Resumo enviado com sucesso." });
+          return;
+        } catch (err) {
+          if ((err as Error).name === "AbortError") return;
+        }
+      }
+
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(`${title}\n\n${text}\n\n${url}`);
+      setShared(true);
+      toast({ title: "Copiado!", description: "Compartilhamento não disponível — texto copiado." });
+      setTimeout(() => setShared(false), 2000);
     } catch {
-      toast({ title: "Erro", description: "Não foi possível exportar a imagem.", variant: "destructive" });
+      toast({ title: "Erro", description: "Não foi possível compartilhar.", variant: "destructive" });
     } finally {
-      setExporting(false);
+      setSharing(false);
     }
   };
 
@@ -214,13 +197,15 @@ export function ResultsSummaryModal({ lotteries }: ResultsSummaryModalProps) {
           <DialogTitle className="flex items-center justify-between gap-2">
             <span>Resumo dos Resultados</span>
             <div className="flex gap-1.5">
-              <Button variant="outline" size="sm" onClick={handleExportImage} disabled={exporting} className="gap-2">
-                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                {exporting ? "Gerando..." : "Imagem"}
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
-                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                {copied ? "Copiado" : "Texto"}
+              <Button variant="outline" size="sm" onClick={handleShare} disabled={sharing} className="gap-2">
+                {sharing ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : shared ? (
+                  <Check className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Share2 className="w-4 h-4" />
+                )}
+                {sharing ? "Gerando..." : shared ? "Copiado" : "Compartilhar"}
               </Button>
             </div>
           </DialogTitle>
