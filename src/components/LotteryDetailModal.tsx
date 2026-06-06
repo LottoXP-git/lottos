@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LotecaVolante } from "./LotecaVolante";
+import { LotecaUpcomingMatches, LOTECA_1255 } from "./LotecaUpcomingMatches";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
@@ -117,7 +118,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <span>{displayedLottery.date}</span>
             </div>
             {displayedLottery.id === "loteca" && displayedLottery.jogos ? (
-              <LotecaVolante jogos={displayedLottery.jogos} concurso={displayedLottery.concurso} />
+              <div className="space-y-3">
+                {offset === 0 && displayedLottery.concurso < LOTECA_1255.concurso && (
+                  <LotecaUpcomingMatches {...LOTECA_1255} />
+                )}
+                <LotecaVolante jogos={displayedLottery.jogos} concurso={displayedLottery.concurso} />
+              </div>
             ) : displayedLottery.id === "federal" ? (
               <div className="space-y-2">
                 {displayedLottery.numbers.map((num, idx) => {
