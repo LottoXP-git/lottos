@@ -407,10 +407,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                     <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                     <span>Frequências</span>
                   </TabsTrigger>
-                  <TabsTrigger value="picks" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                    <span>Palpites</span>
-                  </TabsTrigger>
                 </>
               )}
             </TabsList>
@@ -440,12 +436,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                   </div>
                 </TabsContent>
 
-                <TabsContent value="picks" className="mt-2 sm:mt-4">
-                  <SmartPickGenerator
-                    lottery={lottery}
-                    frequencyData={frequencyData}
-                  />
-                </TabsContent>
               </>
             )}
           </Tabs>
