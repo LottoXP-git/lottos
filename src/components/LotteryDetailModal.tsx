@@ -118,12 +118,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <span>{displayedLottery.date}</span>
             </div>
             {displayedLottery.id === "loteca" && displayedLottery.jogos ? (
-              <div className="space-y-3">
-                {offset === 0 && displayedLottery.concurso < LOTECA_1255.concurso && (
-                  <LotecaUpcomingMatches {...LOTECA_1255} />
-                )}
-                <LotecaVolante jogos={displayedLottery.jogos} concurso={displayedLottery.concurso} />
-              </div>
+              <LotecaVolante jogos={displayedLottery.jogos} concurso={displayedLottery.concurso} />
             ) : displayedLottery.id === "federal" ? (
               <div className="space-y-2">
                 {displayedLottery.numbers.map((num, idx) => {
@@ -403,6 +398,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Histórico</span>
               </TabsTrigger>
+              {lottery.id === "loteca" && (
+                <TabsTrigger value="upcoming" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
+                  <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span>Próximo Concurso</span>
+                </TabsTrigger>
+              )}
               {lottery.id !== "loteca" && (
                 <>
                   <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
@@ -420,6 +421,12 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             <TabsContent value="history" className="mt-2 sm:mt-4">
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
+
+            {lottery.id === "loteca" && (
+              <TabsContent value="upcoming" className="mt-2 sm:mt-4">
+                <LotecaUpcomingMatches {...LOTECA_1255} />
+              </TabsContent>
+            )}
 
             {lottery.id !== "loteca" && (
               <>
