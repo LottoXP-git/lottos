@@ -182,6 +182,10 @@ try {
   Write-Host "  Build concluído com sucesso!"            -ForegroundColor Green
   Write-Host "  AAB:"                                    -ForegroundColor Green
   Write-Host "  android/app/build/outputs/bundle/release/app-release.aab" -ForegroundColor Green
+
+  $autoVc = [int](([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() - 1704067200000) / 60000)
+  Write-Host ""
+  Write-Host "  versionCode gerado: ~$autoVc (auto, minutos desde 2024-01-01 UTC)" -ForegroundColor Green
   Write-Host ""
   Write-Host "  Símbolos nativos (upload opcional na Play Store):" -ForegroundColor Green
   Write-Host "  android/app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip" -ForegroundColor Green
