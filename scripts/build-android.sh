@@ -86,6 +86,11 @@ echo "========================================="
 echo "  Build concluído com sucesso!"
 echo "  AAB:"
 echo "  android/app/build/outputs/bundle/release/app-release.aab"
+
+# Mostra versionCode gerado dinamicamente (minutos desde 2024-01-01 UTC)
+AUTO_VC=$(( ( $(date -u +%s) - 1704067200 ) / 60 ))
+echo ""
+echo "  versionCode gerado: ~$AUTO_VC (auto, minutos desde 2024-01-01 UTC)"
 echo ""
 echo "  Símbolos nativos (upload opcional na Play Store):"
 echo "  android/app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip"
