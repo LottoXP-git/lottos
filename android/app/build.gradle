@@ -21,11 +21,17 @@ android {
         }
     }
 
+    // versionCode dinâmico: minutos desde 2024-01-01 UTC.
+    // Garante valor sempre crescente e único por build, evitando
+    // rejeição do Play Console por "versionCode duplicado".
+    // Limite do Play é 2.100.000.000 — suficiente por ~4000 anos.
+    def autoVersionCode = (int) ((System.currentTimeMillis() - 1704067200000L) / 60000L)
+
     defaultConfig {
         applicationId "com.lottos.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
+        versionCode autoVersionCode
         versionName "1.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
