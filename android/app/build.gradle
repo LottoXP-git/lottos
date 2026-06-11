@@ -27,12 +27,50 @@ android {
     // Limite do Play é 2.100.000.000 — suficiente por ~4000 anos.
     def autoVersionCode = (int) ((System.currentTimeMillis() - 1704067200000L) / 60000L)
 
+    // versionName automático (major.minor.patch) baseado no contador de builds.
+    // - major/minor ficam em android/version.properties e são editados manualmente.
+    // - patch é incrementado automaticamente a cada bundleRelease/assembleRelease,
+    //   evitando edições manuais antes de cada upload no Play Console.
+    def versionPropsFile = rootProject.file("version.properties")
+    def versionProps = new Properties()
+    if (versionPropsFile.exists()) {
+        versionPropsFile.withInputStream { versionProps.load(it) }
+    } else {
+        versionProps['major'] = '1'
+        versionProps['minor'] = '0'
+        versionProps['patch'] = '0'
+    }
+
+    def vMajor = (versionProps['major'] ?: '1') as String
+    def vMinor = (versionProps['minor'] ?: '0') as String
+    def vPatch = (versionProps['patch'] ?: '0') as String
+
+    // Só bumpa o patch quando o usuário está realmente gerando um release
+    // (bundleRelease / assembleRelease). Builds debug/sync não incrementam.
+    def isReleaseBuild = gradle.startParameter.taskNames.any { name ->
+        name.toLowerCase().contains('bundlerelease') ||
+        name.toLowerCase().contains('assemblerelease')
+    }
+    if (isReleaseBuild) {
+        def nextPatch = (vPatch.toInteger() + 1).toString()
+        versionProps['major'] = vMajor
+        versionProps['minor'] = vMinor
+        versionProps['patch'] = nextPatch
+        versionPropsFile.withOutputStream { out ->
+            versionProps.store(out, "Auto-bumped patch on release build")
+        }
+        vPatch = nextPatch
+    }
+
+    def autoVersionName = "${vMajor}.${vMinor}.${vPatch}"
+    println "[Lottos] versionName=${autoVersionName} versionCode=${autoVersionCode} (releaseBuild=${isReleaseBuild})"
+
     defaultConfig {
         applicationId "com.lottos.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode autoVersionCode
-        versionName "1.1.1"
+        versionName autoVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
