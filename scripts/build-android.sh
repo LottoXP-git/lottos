@@ -91,6 +91,13 @@ echo "  android/app/build/outputs/bundle/release/app-release.aab"
 AUTO_VC=$(( ( $(date -u +%s) - 1704067200 ) / 60 ))
 echo ""
 echo "  versionCode gerado: ~$AUTO_VC (auto, minutos desde 2024-01-01 UTC)"
+
+if [ -f "android/version.properties" ]; then
+  V_MAJOR=$(grep -E '^major=' android/version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+  V_MINOR=$(grep -E '^minor=' android/version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+  V_PATCH=$(grep -E '^patch=' android/version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+  echo "  versionName atual:   ${V_MAJOR}.${V_MINOR}.${V_PATCH} (patch auto-incrementado neste build)"
+fi
 echo ""
 echo "  Símbolos nativos (upload opcional na Play Store):"
 echo "  android/app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip"
