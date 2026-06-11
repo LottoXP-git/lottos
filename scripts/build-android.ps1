@@ -186,6 +186,16 @@ try {
   $autoVc = [int](([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() - 1704067200000) / 60000)
   Write-Host ""
   Write-Host "  versionCode gerado: ~$autoVc (auto, minutos desde 2024-01-01 UTC)" -ForegroundColor Green
+
+  $vpPath = Join-Path $projectRoot "android/version.properties"
+  if (Test-Path $vpPath) {
+    $vp = @{}
+    Get-Content $vpPath | ForEach-Object {
+      if ($_ -match '^\s*([^#=]+?)\s*=\s*(.+?)\s*$') { $vp[$matches[1]] = $matches[2] }
+    }
+    $vn = "$($vp['major']).$($vp['minor']).$($vp['patch'])"
+    Write-Host "  versionName atual:   $vn (patch auto-incrementado neste build)" -ForegroundColor Green
+  }
   Write-Host ""
   Write-Host "  Símbolos nativos (upload opcional na Play Store):" -ForegroundColor Green
   Write-Host "  android/app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip" -ForegroundColor Green
