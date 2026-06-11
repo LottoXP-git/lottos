@@ -158,3 +158,14 @@ fs.appendFileSync(HISTORY_PATH, entry + '\n');
 
 console.log(`[OK] versionCode ${versionCode} é novo. Registrado em ${HISTORY_PATH}.`);
 console.log('Pode subir o AAB na Play Console com segurança.');
+
+// --- Resumo final destacado ---------------------------------------
+const line = '='.repeat(50);
+console.log('');
+console.log(line);
+console.log('  CONFIRME ANTES DO UPLOAD NA PLAY CONSOLE');
+console.log(line);
+console.log(`  AAB:         ${aabPath}`);
+console.log(`  versionName: ${versionName}`);
+console.log(`  versionCode: ${versionCode}`);
+console.log(line);
