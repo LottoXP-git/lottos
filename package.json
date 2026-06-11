@@ -11,6 +11,7 @@
     "prebuild": "npx tsx scripts/generate-sitemap.ts",
     "build:android": "bash scripts/build-android.sh",
     "build:android:win": "powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1",
+    "check:aab": "node scripts/check-aab-version.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
