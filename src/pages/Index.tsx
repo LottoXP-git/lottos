@@ -390,15 +390,6 @@ const Index = () => {
           <PrizeRanking lotteries={results} />
         </section>
 
-        {/* Registration Section */}
-        <section
-          className="mb-12 animate-fade-in">
-
-           <div className="max-w-xl mx-auto">
-            <RegistrationForm />
-          </div>
-        </section>
-
         {/* Prize Checker */}
         <section
           className="mb-8 sm:mb-12 animate-fade-in">
@@ -411,6 +402,15 @@ const Index = () => {
         <section className="mb-8 sm:mb-12 animate-fade-in">
           <div className="max-w-lg mx-auto px-1">
             <BetPricesCard />
+          </div>
+        </section>
+
+        {/* Registration Section */}
+        <section
+          className="mb-12 animate-fade-in">
+
+           <div className="max-w-xl mx-auto">
+            <RegistrationForm />
           </div>
         </section>
 
