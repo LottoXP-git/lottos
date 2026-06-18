@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Heart, Mail, MapPin, ExternalLink, Share2, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { SharePreviewDialog } from "./SharePreviewDialog";
 
