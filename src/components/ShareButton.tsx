@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Share2, Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { Share2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import {
   Tooltip,
@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SharePreviewDialog } from "./SharePreviewDialog";
 
 interface ShareButtonProps {
   title: string;
@@ -55,80 +56,37 @@ export function ShareButton({
   size = "icon",
   className,
 }: ShareButtonProps) {
-  const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
-  const handleShare = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+  useEffect(() => {
+    if (!open || !lotteryId) return;
+    let cancelled = false;
+    buildLotteryImageFile(lotteryId).then((f) => {
+      if (!cancelled) setFile(f);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, lotteryId]);
 
-    // Try to attach the lottery-specific OG image so WhatsApp/IG show a real preview.
-    if (lotteryId && navigator.share) {
-      const file = await buildLotteryImageFile(lotteryId);
-      if (file) {
-        const dataWithFile = { title, text, url, files: [file] };
-        if (navigator.canShare?.(dataWithFile)) {
-          try {
-            await navigator.share(dataWithFile);
-            toast({
-              title: "Compartilhado!",
-              description: "Resultado e imagem enviados com sucesso.",
-            });
-            return;
-          } catch (err) {
-            if ((err as Error).name === "AbortError") return;
-            // fall through to text-only share
-          }
-        }
-      }
-    }
-
-    const shareData = { title, text, url };
-    if (navigator.share && navigator.canShare?.(shareData)) {
-      try {
-        await navigator.share(shareData);
-        toast({
-          title: "Compartilhado!",
-          description: "Resultado compartilhado com sucesso.",
-        });
-        return;
-      } catch (err) {
-        if ((err as Error).name === "AbortError") return;
-      }
-    }
-
-    // Fallback: copy to clipboard
-    const shareText = `${title}\n\n${text}\n\n${url}`;
-    try {
-      await navigator.clipboard.writeText(shareText);
-      setCopied(true);
-      toast({
-        title: "Copiado!",
-        description: "Resultado copiado para a área de transferência.",
-      });
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast({
-        title: "Erro",
-        description: "Não foi possível copiar o resultado.",
-        variant: "destructive",
-      });
-    }
+  const handleOpen = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(true);
   };
 
   return (
+    <>
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant={variant}
             size={size}
-            onClick={handleShare}
+            onClick={handleOpen}
             className={className}
           >
-            {copied ? (
-              <Check className="w-4 h-4 text-emerald-400" />
-            ) : (
-              <Share2 className="w-4 h-4" />
-            )}
+            <Share2 className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -136,5 +94,14 @@ export function ShareButton({
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
+    <SharePreviewDialog
+      open={open}
+      onOpenChange={setOpen}
+      title={title}
+      text={text}
+      url={url}
+      file={file}
+    />
+    </>
   );
 }
