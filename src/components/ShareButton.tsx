@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "@/hooks/use-toast";
 import {
   Tooltip,
   TooltipContent,
