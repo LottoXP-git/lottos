@@ -8,7 +8,7 @@ async function handleShareApp() {
   const shareData = {
     title: "Lottos - Resultados das Loterias",
     text: "Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa!",
-    url: "https://grupolottoxp.com",
+    url: "https://play.google.com/store/apps/details?id=com.lottos.app&pcampaignid=web_share",
   };
   if (navigator.share && navigator.canShare?.(shareData)) {
     try {
