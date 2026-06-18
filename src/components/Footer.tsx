@@ -2,29 +2,14 @@ import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Heart, Mail, MapPin, ExternalLink, Share2, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { SharePreviewDialog } from "./SharePreviewDialog";
 
-async function handleShareApp() {
-  const shareData = {
-    title: "Lottos - Resultados das Loterias",
-    text: "Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa!",
-    url: "https://play.google.com/store/apps/details?id=com.lottos.app&pcampaignid=web_share",
-  };
-  if (navigator.share && navigator.canShare?.(shareData)) {
-    try {
-      await navigator.share(shareData);
-      return;
-    } catch (err) {
-      if ((err as Error).name === "AbortError") return;
-    }
-  }
-  try {
-    await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
-    toast({ title: "Link copiado!", description: "Compartilhe o Lottos com seus amigos." });
-  } catch {
-    toast({ title: "Erro", description: "Não foi possível compartilhar.", variant: "destructive" });
-  }
-}
+const APP_SHARE_DATA = {
+  title: "Lottos - Resultados das Loterias",
+  text: "Acompanhe resultados, estatísticas e gere palpites inteligentes para todas as loterias da Caixa!",
+  url: "https://play.google.com/store/apps/details?id=com.lottos.app&pcampaignid=web_share",
+};
 
 const usefulLinks = [
 { label: "Loterias Caixa", href: "https://loterias.caixa.gov.br", external: true },
@@ -48,6 +33,7 @@ const guideLinks = [
 ];
 
 export function Footer() {
+  const [shareOpen, setShareOpen] = useState(false);
   return (
     <footer className="border-t border-border bg-card/80 backdrop-blur-sm mt-12">
       <div className="container mx-auto px-4 py-10">
@@ -64,7 +50,7 @@ export function Footer() {
               <span>no Brasil</span>
             </div>
             <Button
-              onClick={handleShareApp}
+              onClick={() => setShareOpen(true)}
               variant="outline"
               size="sm"
               className="gap-2 w-full sm:w-auto"
@@ -72,6 +58,13 @@ export function Footer() {
               <Share2 className="w-4 h-4" />
               Compartilhar o app
             </Button>
+            <SharePreviewDialog
+              open={shareOpen}
+              onOpenChange={setShareOpen}
+              title={APP_SHARE_DATA.title}
+              text={APP_SHARE_DATA.text}
+              url={APP_SHARE_DATA.url}
+            />
           </div>
 
           {/* Links Úteis */}
