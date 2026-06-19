@@ -1,8 +1,10 @@
 package com.lottos.app;
 
+import android.app.PictureInPictureParams;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Rational;
 import android.view.WindowManager;
 import androidx.activity.EdgeToEdge;
 import com.getcapacitor.BridgeActivity;
@@ -35,6 +37,26 @@ public class MainActivity extends BridgeActivity {
             Log.i(TAG, "If URL is not https://localhost/, check capacitor.config.ts for server.url");
         } catch (Exception e) {
             Log.w(TAG, "Failed to read initial WebView URL", e);
+        }
+    }
+
+    /**
+     * Picture-in-Picture: ao sair do app (Home/recents), entra em modo PiP
+     * permitindo que o usuário continue acompanhando resultados/sorteios
+     * em uma janela flutuante enquanto usa outros apps.
+     */
+    @Override
+    public void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                PictureInPictureParams params = new PictureInPictureParams.Builder()
+                    .setAspectRatio(new Rational(9, 16))
+                    .build();
+                enterPictureInPictureMode(params);
+            } catch (Exception e) {
+                Log.w(TAG, "Failed to enter PiP mode", e);
+            }
         }
     }
 }
