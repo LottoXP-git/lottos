@@ -97,46 +97,12 @@ export function QuinaSaoJoaoModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[calc(100vw-1rem)] sm:w-full max-w-lg max-h-[92vh] overflow-y-auto bg-card border-border p-0 gap-0">
-        {/* Hero — official poster */}
-        <div className="relative overflow-hidden rounded-t-lg bg-[#1B5FB8]">
-          <img
-            src={poster.url}
-            alt="Cartaz oficial Quina de São João 2026 — Prêmio estimado R$ 250 milhões"
-            className="w-full h-auto block"
-            loading="eager"
-          />
-          {/* Top badge overlay */}
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-1.5 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/95 border border-orange-300 shadow-lg">
-              <Trophy className="w-3.5 h-3.5 text-white" />
-              <span className="text-[10px] font-bold text-white uppercase tracking-[0.18em]">
-                Concurso Especial
-              </span>
-            </div>
-            {status !== "upcoming" && (
-              <div
-                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold uppercase tracking-wider shadow-lg ${
-                  status === "one-day"
-                    ? "bg-amber-400 border-amber-300 text-blue-950 animate-pulse"
-                    : status === "live"
-                    ? "bg-rose-500 border-rose-400 text-white animate-pulse"
-                    : "bg-emerald-400 border-emerald-300 text-emerald-950"
-                }`}
-              >
-                {status === "one-day" && "Falta 1 dia"}
-                {status === "live" && "Ao vivo agora"}
-                {status === "finished" && "Sorteio realizado"}
-              </div>
-            )}
-          </div>
-
-          <DialogHeader>
-            <DialogTitle className="sr-only">Quina de São João</DialogTitle>
-            <DialogDescription className="sr-only">
-              Quina de São João — sorteio especial em 28 de Junho de 2026 com prêmio estimado de {prizeFull}.
-            </DialogDescription>
-          </DialogHeader>
-        </div>
+        <DialogHeader>
+          <DialogTitle className="sr-only">Quina de São João</DialogTitle>
+          <DialogDescription className="sr-only">
+            Quina de São João — sorteio especial em 28 de Junho de 2026 com prêmio estimado de {prizeFull}.
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="px-4 sm:px-6 pt-4 pb-4 sm:pb-6 space-y-3 sm:space-y-4">
           {/* Countdown */}
@@ -207,6 +173,40 @@ export function QuinaSaoJoaoModal({
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             Gerar Palpites para a Quina de São João
           </Button>
+        </div>
+
+        {/* Poster — positioned below the generate button */}
+        <div className="relative overflow-hidden rounded-b-lg bg-[#1B5FB8] mx-0">
+          <img
+            src={poster.url}
+            alt="Cartaz oficial Quina de São João 2026 — Prêmio estimado R$ 260 milhões"
+            className="w-full h-auto block"
+            loading="eager"
+          />
+          {/* Top badge overlay */}
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-1.5 flex-wrap">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/95 border border-orange-300 shadow-lg">
+              <Trophy className="w-3.5 h-3.5 text-white" />
+              <span className="text-[10px] font-bold text-white uppercase tracking-[0.18em]">
+                Concurso Especial
+              </span>
+            </div>
+            {status !== "upcoming" && (
+              <div
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold uppercase tracking-wider shadow-lg ${
+                  status === "one-day"
+                    ? "bg-amber-400 border-amber-300 text-blue-950 animate-pulse"
+                    : status === "live"
+                    ? "bg-rose-500 border-rose-400 text-white animate-pulse"
+                    : "bg-emerald-400 border-emerald-300 text-emerald-950"
+                }`}
+              >
+                {status === "one-day" && "Falta 1 dia"}
+                {status === "live" && "Ao vivo agora"}
+                {status === "finished" && "Sorteio realizado"}
+              </div>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
