@@ -1,30 +1,24 @@
-## Contexto
-O app já está publicado nas lojas (Google Play / App Store) e a página de detalhes tem o site do desenvolvedor apontando para `grupolottoxp.com`. O publisher ID da conta é `pub-2147498950861352`.
+Objetivo: registrar o Google Mobile Ads SDK no app Android do Lottos, seguindo o guia oficial da AdMob. Os pré-requisitos de SDK jáfunctions ext in variables.gradle) já estão satisfeitos: minSdkVersion 24 (>= 23) e compileSdkVersion 36 (>= 35).
 
-## Objetivo
-Criar o arquivo `app-ads.txt` e torná-lo acessível na raiz do domínio do desenvolvedor para que a AdMob possa rastreá-lo e verificá-lo.
+Tarefas
 
-## Plano de Implementação
+1. Adicionar dependência do Google Mobile Ads SDK
+   - Arquivo: `android/app/build.gradle`
+   - Ação: incluir `implementation("com.google.android.gms:play-services-ads:25.4.0")` no bloco `dependencies`.
 
-### 1. Criar o arquivo `public/app-ads.txt`
-O arquivo deve conter a mesma linha de autorização de vendedor já presente no `ads.txt` existente:
+2. Registrar o AdMob App ID no AndroidManifest.xml
+   - Arquivo: `android/app/src/main/AndroidManifest.xml`
+   - Ação: adicionar a tag `<meta-data>` dentro do nó `<application>` com:
+     - `android:name="com.google.android.gms.ads.APPLICATION_ID"`
+     - `android:value="ca-app-pub-2147498950861352~1835716024"`
 
-```
-google.com, pub-2147498950861352, DIRECTIVECT, f08c47fec0942fa0
-```
+3. Validação do build
+   - Executar `./gradlew assembleDebug` (ou equivalente do script do projeto) para confirmar que o build não quebra com a nova dependência e a meta-data.
 
-Ao colocar o arquivo na pasta `public/`, o Vite o copia para a raiz do build. Assim, após publicar o site, o arquivo ficará acessível em:
-`https://grupolottoxp.com/app-ads.txt`
+4. Sincronização com o projeto web (após publicação)
+   - Como o app é Capacitor, instruir o usuário a executar `npx cap sync` após publicar o site, para refletir as mudanças nativas no projeto Android.
 
-### 2. Verificar o ads.txt existente (sanity check)
-Garantir que `public/ads.txt` ainda está presente e correto — não será alterado.
-
-### 3. Publicar o site
-Após a criação do arquivo, o site precisa ser republicado no Lovable para que o novo arquivo vá para o ambiente de produção.
-
-## Pós-Implementação
-- Aguardar a AdMob rastrear e verificar o arquivo (pode levar até 24h).
-- Conferir o status na conta AdMob em: Apps → app-ads.txt.
-
-## Nota
-O arquivo `app-ads.txt` deve ficar **exatamente na raiz do domínio**, não em subdiretórios. O Lovable hosting com custom domain já atende esse requisito ao servir arquivos estáticos de `public/` na raiz.
+Notas
+- Não serão instalados plugins Capacitor de AdMob (nenhum anúncio nativo será exibido nesta etapa).
+- Os anúncios atuais via AdSense no WebView continuam funcionando normalmente.
+- O `AD_ID` permission já existe no manifest.
