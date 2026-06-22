@@ -4,7 +4,7 @@ import { Trophy, Gift, Calendar, Clock, TrendingUp, Sparkles, PartyPopper } from
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QUINA_SAO_JOAO_DATE, getQuinaSaoJoaoStatus } from "@/utils/quinaSaoJoaoDate";
-import poster from "@/assets/quina-sao-joao-2026.png.asset.json";
+import poster from "@/assets/quina-sao-joao-260m.jpg.asset.json";
 
 interface QuinaSaoJoaoModalProps {
   open: boolean;
@@ -38,7 +38,7 @@ const SPECIAL = {
   description:
     "A Quina de São João traz o maior prêmio do ano para os apostadores da Quina! Prêmio que não acumula — se ninguém acertar, o valor desce para a faixa de 4 acertos.",
   highlights: [
-    "Prêmio histórico de R$ 250 milhões",
+    "Prêmio histórico de R$ 260 milhões",
     "Tradicional festa junina das loterias",
     "Não acumula — desce para a quadra se ninguém acertar",
     "Aposta mínima a partir de R$ 3,00",
