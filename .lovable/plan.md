@@ -1,53 +1,40 @@
-## Problema identificado
 
-Os arquivos em `android/app/src/main/res/mipmap-*` ainda são os **placeholders padrão do Capacitor** (o "X" azul claro sobre fundo branco quadriculado), não o ícone oficial do Lottos. Por isso, após instalar o APK/AAB, a tela inicial do usuário mostra esse ícone genérico em vez da marca.
+# Tour Inicial com Toasts Explicativos
 
-Verificações feitas:
-- `AndroidManifest.xml` referencia corretamente `@mipmap/ic_launcher` e `@mipmap/ic_launcher_round`.
-- `mipmap-anydpi-v26/ic_launcher.xml` está correto (adaptive icon com background `#FFFFFF` + foreground PNG).
-- Todas as densidades existem (mdpi → xxxhdpi) com tamanhos corretos.
-- **O conteúdo das PNGs é o placeholder do Capacitor** — confirmado por inspeção visual do `mipmap-xxxhdpi/ic_launcher.png`.
+## Objetivo
+Na primeira visita do usuário (após o Age Gate), exibir uma sequência de toasts (`sonner`) apresentando as principais funcionalidades do app. Disparar uma única vez por dispositivo, com possibilidade de pular.
 
-## O que será feito
+## Comportamento
 
-Após você anexar o PNG oficial 1024×1024:
+- Dispara apenas se `localStorage["lottos_tour_v1_done"]` não existir.
+- Inicia ~1,2s após o Age Gate ser concluído / após montagem da Home.
+- Mostra 5 toasts em sequência (intervalo ~3,5s entre eles), cada um com título, descrição e ícone temático.
+- Cada toast tem duração ~5s, posição `top-center` em mobile / `bottom-right` em desktop.
+- Primeiro toast inclui ação "Pular tour" que cancela os próximos e marca como concluído.
+- Último toast inclui ação "Entendi!" que também marca conclusão.
+- Ao final (natural ou pulado), grava `localStorage["lottos_tour_v1_done"] = "1"`.
+- Versionado (`_v1`) para permitir relançar um novo tour no futuro alterando a chave.
 
-1. Salvar o original em `/tmp/lottos-icon-source.png`.
-2. Gerar e sobrescrever, com Pillow, em todas as densidades:
-   - `ic_launcher.png` (legado, Android < 8) — quadrado nos tamanhos 48, 72, 96, 144, 192.
-   - `ic_launcher_round.png` (legado round) — mesmo tamanho com máscara circular.
-   - `ic_launcher_foreground.png` (adaptive, Android 8+) — 108, 162, 216, 324, 432, com o logo ocupando ~66% central (safe zone) e o resto transparente.
-3. Manter o fundo branco (`ic_launcher_background.xml = #FFFFFF`) conforme escolhido.
-4. Manter o `adaptive-icon` XML existente (já está correto).
-5. Atualizar também o ícone do PWA/web em `public/favicon.png` (mesma imagem) para manter consistência entre instalação Android e atalho web.
+## Conteúdo dos toasts
 
-## Detalhes técnicos
+1. **Bem-vindo ao Lottos! 🎲** — "Resultados oficiais e ferramentas para todas as loterias da Caixa. Vamos te mostrar o essencial." (ação: Pular tour)
+2. **Resultados em tempo real 📊** — "Toque em qualquer card de loteria para ver detalhes, dezenas sorteadas e prêmios."
+3. **Gerador Inteligente de Palpites 🧠** — "Use estatísticas reais (números quentes/frios) para gerar combinações com mais critério."
+4. **Conferidor de Apostas ✅** — "Cole seu jogo e descubra rapidamente se você ganhou — sem precisar olhar dezena por dezena."
+5. **Histórico e Estatísticas 📈** — "Navegue por sorteios anteriores e veja frequência, atrasos e rankings." (ação: Entendi!)
 
-```text
-android/app/src/main/res/
-├── mipmap-mdpi/
-│   ├── ic_launcher.png            (48×48)
-│   ├── ic_launcher_round.png      (48×48, circular)
-│   └── ic_launcher_foreground.png (108×108, safe zone 66dp)
-├── mipmap-hdpi/                   (72 / 162)
-├── mipmap-xhdpi/                  (96 / 216)
-├── mipmap-xxhdpi/                 (144 / 324)
-└── mipmap-xxxhdpi/                (192 / 432)
-```
+## Arquivos
 
-A safe zone do adaptive icon obriga o conteúdo a caber num círculo central de 66dp em 108dp — por isso a foreground será redimensionada para ~70% do canvas, evitando que máscaras circulares/squircle das fabricantes cortem o logo.
+- **Criar** `src/hooks/useInitialTour.ts`
+  - Hook sem dependências externas além de `sonner`.
+  - Expõe `useInitialTour()` que: checa flag, agenda os toasts com `setTimeout`, cancela timers em unmount, marca flag ao concluir/pular.
+  - Função interna `markDone()` grava no `localStorage`.
+- **Editar** `src/pages/Index.tsx`
+  - Chamar `useInitialTour()` no topo do componente (executa só uma vez no mount).
 
-## Passos pós-deploy (você roda localmente)
+## Não-objetivos
 
-Após o `git pull`:
-```
-npm install
-npx cap sync android
-./scripts/build-android.sh
-```
-O novo AAB já trará o ícone correto. Em devices que tinham a versão antiga instalada, o launcher pode levar alguns segundos (ou exigir reinstalação) para atualizar o cache de ícones.
-
-## Fora do escopo
-
-- Splash screen (continua como está — me avise se quiser refazer também).
-- Ícone do iOS (não há projeto `ios/` no repositório atualmente).
+- Não modificar `AgeGate`, layout, rotas, design system ou qualquer outra tela.
+- Não adicionar dependências novas (usa `sonner` já existente).
+- Não criar overlays/spotlights — apenas toasts.
+- Sem botão "rever tour" nesta entrega (pode ser adicionado depois).

@@ -28,12 +28,14 @@ import { isQuinaSaoJoaoActive, getQuinaSaoJoaoStatus, QuinaSaoJoaoStatus } from 
 import { useMegaSena30Notifications } from "@/hooks/useMegaSena30Notifications";
 import { useMegaSena30Prize } from "@/hooks/useMegaSena30Prize";
 import { useAdSenseScript } from "@/hooks/useAdSenseScript";
+import { useInitialTour } from "@/hooks/useInitialTour";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumb, SITE_URL } from "@/lib/breadcrumb";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   useAdSenseScript();
+  useInitialTour();
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
