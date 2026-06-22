@@ -74,8 +74,9 @@ export function QuinaSaoJoaoModal({
   open,
   onOpenChange,
   onGeneratePicks,
-  prizeCompact = "R$ 250",
-  prizeFull = "R$ 250.000.000,00",
+  prizeCompact = "R$ 260",
+  prizeFull = "R$ 260.000.000,00",
+
 }: QuinaSaoJoaoModalProps) {
   const [countdown, setCountdown] = useState<CountdownValues>(getCountdown(QUINA_SAO_JOAO_DATE));
   const [status, setStatus] = useState(() => getQuinaSaoJoaoStatus());
