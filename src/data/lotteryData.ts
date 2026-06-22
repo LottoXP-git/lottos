@@ -241,8 +241,9 @@ export const generateSmartPicks = (
   count: number,
   strategy: 'hot' | 'cold' | 'balanced'
 ): number[] => {
+  const allNumbers = frequencyData.map(d => d.number);
   let picks: number[] = [];
-  
+
   switch (strategy) {
     case 'hot':
       // Pick from most frequent numbers
@@ -273,6 +274,17 @@ export const generateSmartPicks = (
       picks = [...hotPicks, ...coldPicks];
       break;
   }
-  
-  return [...new Set(picks)].sort((a, b) => a - b).slice(0, count);
+
+  const uniquePicks = new Set<number>(picks);
+
+  // Fill up to `count` with random numbers from the full pool if needed
+  if (uniquePicks.size < count) {
+    const shuffled = [...allNumbers].sort(() => Math.random() - 0.5);
+    for (const n of shuffled) {
+      uniquePicks.add(n);
+      if (uniquePicks.size >= count) break;
+    }
+  }
+
+  return Array.from(uniquePicks).sort((a, b) => a - b);
 };
