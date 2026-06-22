@@ -1,65 +1,30 @@
-## Problema
+## Contexto
+O app já está publicado nas lojas (Google Play / App Store) e a página de detalhes tem o site do desenvolvedor apontando para `grupolottoxp.com`. O publisher ID da conta é `pub-2147498950861352`.
 
-O Play Console rejeitou o `app-release.aab` com "Código de versão 10 já foi usado". Isso significa que o AAB enviado foi gerado com `versionCode = 10` — **valor antigo, hardcoded**.
+## Objetivo
+Criar o arquivo `app-ads.txt` e torná-lo acessível na raiz do domínio do desenvolvedor para que a AdMob possa rastreá-lo e verificá-lo.
 
-No Lovable, o `android/app/build.gradle` já foi atualizado para usar `versionCode` automático (minutos desde 2024-01-01 UTC, gerando ~1.280.000+). Como você roda o build localmente no Windows, o repositório da sua máquina precisa estar sincronizado com essas mudanças antes de gerar o AAB.
+## Plano de Implementação
 
-## Passos para resolver
-
-Execute na raiz do projeto, no PowerShell:
-
-```powershell
-# 1. Puxe as últimas mudanças do Lovable (build.gradle + version.properties + scripts)
-git pull
-
-# 2. Confirme que o build.gradle local NÃO tem mais "versionCode 10"
-Select-String -Path "android/app/build.gradle" -Pattern "versionCode"
-# Deve mostrar: versionCode autoVersionCode  (NÃO "versionCode 10")
-
-# 3. (Opcional) Confirme que version.properties existe
-Get-Content android/version.properties
-
-# 4. Limpe o build anterior para garantir AAB novo
-cd android
-.\gradlew.bat clean
-cd ..
-
-# 5. Rode o build de release
-npm run build:android:win
-```
-
-## O que observar no output
-
-Durante o build, o `build.gradle` imprime uma linha que confirma os valores reais que serão usados no AAB:
+### 1. Criar o arquivo `public/app-ads.txt`
+O arquivo deve conter a mesma linha de autorização de vendedor já presente no `ads.txt` existente:
 
 ```
-[Lottos] versionName=1.1.2 versionCode=1281234 (releaseBuild=true)
+google.com, pub-2147498950861352, DIRECTIVECT, f08c47fec0942fa0
 ```
 
-- `versionCode` deve ser um número grande (~1.280.000+), **nunca 10**.
-- `releaseBuild=true` confirma que o `patch` foi auto-incrementado.
+Ao colocar o arquivo na pasta `public/`, o Vite o copia para a raiz do build. Assim, após publicar o site, o arquivo ficará acessível em:
+`https://grupolottoxp.com/app-ads.txt`
 
-E no final, o script PowerShell também imprime:
+### 2. Verificar o ads.txt existente (sanity check)
+Garantir que `public/ads.txt` ainda está presente e correto — não será alterado.
 
-```
-versionCode gerado: ~1281234 (auto, minutos desde 2024-01-01 UTC)
-versionName atual:   1.1.2 (patch auto-incrementado neste build)
-```
+### 3. Publicar o site
+Após a criação do arquivo, o site precisa ser republicado no Lovable para que o novo arquivo vá para o ambiente de produção.
 
-## Upload no Play Console
+## Pós-Implementação
+- Aguardar a AdMob rastrear e verificar o arquivo (pode levar até 24h).
+- Conferir o status na conta AdMob em: Apps → app-ads.txt.
 
-Suba o arquivo recém-gerado:
-
-```
-android/app/build/outputs/bundle/release/app-release.aab
-```
-
-Confirme no Play Console (aba "Detalhes do app bundle") que o `versionCode` mostrado é o número grande — não 10, 11 ou 12.
-
-## Se ainda falhar
-
-Caso `git pull` reporte conflitos ou as alterações não apareçam, me avise com:
-- saída de `git status`
-- saída de `Select-String -Path "android/app/build.gradle" -Pattern "versionCode"`
-
-que eu te ajudo a desbloquear.
+## Nota
+O arquivo `app-ads.txt` deve ficar **exatamente na raiz do domínio**, não em subdiretórios. O Lovable hosting com custom domain já atende esse requisito ao servir arquivos estáticos de `public/` na raiz.
