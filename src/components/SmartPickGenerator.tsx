@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
+import { isNative } from "@/lib/platform";
+import { showRewardedAd } from "@/lib/rewardedAd";
 import {
   buildFrequency,
   emptyFreq,
@@ -112,7 +114,12 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
 
   const generatePicks = () => {
     if (freeGenerations <= 0) {
-      setShowVideoAd(true);
+      // Native: use real AdMob Rewarded Ad. Web: fall back to simulated modal.
+      if (isNative()) {
+        triggerNativeRewardedAd();
+      } else {
+        setShowVideoAd(true);
+      }
       return;
     }
     runGeneration();
@@ -121,7 +128,40 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
   const handleAdComplete = () => {
     setShowVideoAd(false);
     setFreeGenerations(2);
+    toast.success("🎁 Recompensa liberada! +2 gerações grátis", {
+      description: "Aproveite seus palpites extras.",
+    });
     runGeneration();
+  };
+
+  const triggerNativeRewardedAd = async () => {
+    const loadingToast = toast.loading("Carregando anúncio...");
+    try {
+      const earned = await showRewardedAd();
+      toast.dismiss(loadingToast);
+      if (earned) {
+        setFreeGenerations(2);
+        toast.success("🎁 Recompensa liberada! +2 gerações grátis", {
+          description: "Aproveite seus palpites extras.",
+        });
+        confetti({
+          particleCount: 80,
+          spread: 90,
+          origin: { y: 0.6 },
+          colors: ["#f59e0b", "#22c55e", "#3b82f6"],
+        });
+        runGeneration();
+      } else {
+        toast.error("Anúncio não concluído", {
+          description: "Assista até o fim para liberar a recompensa.",
+        });
+      }
+    } catch (err) {
+      toast.dismiss(loadingToast);
+      console.error("[Rewarded Ad]", err);
+      // Native plugin failed — fall back to the simulated modal so the user is not blocked.
+      setShowVideoAd(true);
+    }
   };
 
   const runGeneration = () => {
