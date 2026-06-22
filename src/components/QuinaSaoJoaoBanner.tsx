@@ -8,7 +8,7 @@ interface Props {
   prizeCompact?: string;
 }
 
-export function QuinaSaoJoaoBanner({ status, onClick, prizeCompact = "R$ 250" }: Props) {
+export function QuinaSaoJoaoBanner({ status, onClick, prizeCompact = "R$ 260" }: Props) {
   const statusBadge =
     status === "live"
       ? { label: "AO VIVO", cls: "bg-rose-500 text-white animate-pulse" }
