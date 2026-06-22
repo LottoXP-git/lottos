@@ -34,6 +34,7 @@ import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   useAdSenseScript();
+  useInitialTour();
   const [selectedLottery, setSelectedLottery] = useState<LotteryResult | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [specialDrawOpen, setSpecialDrawOpen] = useState(false);
