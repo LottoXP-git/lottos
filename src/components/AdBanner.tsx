@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { isNativeIOS } from "@/lib/platform";
+import { isNative, isNativeIOS } from "@/lib/platform";
+import { useNativeBannerAd } from "@/hooks/useNativeBannerAd";
+import { BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
 
 type AdFormat = "leaderboard" | "inline" | "sidebar" | "interstitial";
 
@@ -17,6 +19,9 @@ declare global {
     adsbygoogle: unknown[];
   }
 }
+
+/** Real AdMob banner unit ID for native Android/iOS. */
+const NATIVE_BANNER_AD_ID = "ca-app-pub-2147498950861352/6527438374";
 
 const adSlotConfig: Record<AdFormat, { slot: string; format: string; style: React.CSSProperties }> = {
   leaderboard: {
@@ -49,10 +54,17 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
   const config = adSlotConfig[format];
   const adSlot = slot ?? config.slot;
 
-  // App Store compliance: AdSense em WebView viola a política do AdSense e
-  // costuma causar rejeição na revisão da Apple. Esconder no iOS nativo até
-  // integrarmos o SDK nativo (AdMob) numa próxima fase.
-  const skipRender = isNativeIOS();
+  // Native AdMob banner overlay — must be called unconditionally (top-level hook).
+  useNativeBannerAd({
+    adId: NATIVE_BANNER_AD_ID,
+    position: BannerAdPosition.BOTTOM_CENTER,
+    adSize: format === "leaderboard" ? BannerAdSize.LEADERBOARD : BannerAdSize.ADAPTIVE_BANNER,
+  });
+
+  // App Store compliance: AdSense in WebView violates AdSense policy and
+  // usually causes Apple review rejection. Hide on native iOS until we
+  // integrate the native SDK (AdMob) in a future phase.
+  const skipRender = isNativeIOS() || isNative();
 
   useEffect(() => {
     if (skipRender) return;

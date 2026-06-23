@@ -1,20 +1,10 @@
 import { isNative } from "./platform";
+import { ensureAdMobInit } from "./admob";
 
 // Google's official test rewarded ad unit IDs.
 // Replace with your real AdMob Rewarded Ad Unit when ready.
 const TEST_REWARDED_ANDROID = "ca-app-pub-3940256099942544/5224354917";
 const TEST_REWARDED_IOS = "ca-app-pub-3940256099942544/1712485313";
-
-let initialized = false;
-
-async function ensureInit() {
-  if (initialized || !isNative()) return;
-  const { AdMob } = await import("@capacitor-community/admob");
-  await AdMob.initialize({
-    initializeForTesting: true,
-  });
-  initialized = true;
-}
 
 /**
  * Loads and shows a real AdMob Rewarded ad on native platforms.
@@ -23,7 +13,7 @@ async function ensureInit() {
  */
 export async function showRewardedAd(): Promise<boolean> {
   if (!isNative()) throw new Error("Rewarded ads only available on native");
-  await ensureInit();
+  await ensureAdMobInit();
   const { AdMob, AdmobConsentStatus } = await import("@capacitor-community/admob");
 
   // Best-effort UMP consent (required for EEA, harmless elsewhere).
