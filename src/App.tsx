@@ -19,6 +19,7 @@ import About from "./pages/About";
 import ResponsibleGambling from "./pages/ResponsibleGambling";
 import { CookieConsent } from "@/components/CookieConsent";
 import { TestVersionBanner } from "@/components/TestVersionBanner";
+import { NativeBannerMount } from "@/components/NativeBannerMount";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => {
           ) : (
             <BrowserRouter>
               <TestVersionBanner />
+              <NativeBannerMount />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/historico" element={<History />} />
