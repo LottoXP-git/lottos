@@ -267,6 +267,9 @@
          acumulado: raw.acumulado,
          timeCoracao: raw.nomeTimeCoracaoMesSorte,
          mesSorte: raw.nomeTimeCoracaoMesSorte,
+         valorArrecadado: raw.valorArrecadado,
+         valorAcumuladoConcurso_0_5: raw.valorAcumuladoConcurso_0_5,
+         valorAcumuladoConcursoEspecial: raw.valorAcumuladoConcursoEspecial,
          _raw: raw,
        };
      } else {
@@ -418,6 +421,10 @@
         selectCount: config.selectCount,
         accumulated,
         totalCollected: data.valorArrecadado ?? data.valor_arrecadado ?? undefined,
+        accumulatedNextFinalZeroFive:
+          data.valorAcumuladoConcurso_0_5 ?? data.valorAcumuladoConcursoFinalZeroOuCinco ?? undefined,
+        accumulatedSpecial:
+          data.valorAcumuladoConcursoEspecial ?? undefined,
       };
  
      return result;
