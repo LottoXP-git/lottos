@@ -1,1 +1,4 @@
 project_id = "hpfwrxcfncielvbjmeiv"
+
+[functions.verify-age]
+verify_jwt = false

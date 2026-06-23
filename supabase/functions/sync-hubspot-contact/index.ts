@@ -77,12 +77,19 @@ serve(async (req) => {
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
     const HUBSPOT_API_KEY = Deno.env.get("HUBSPOT_API_KEY");
-    if (!HUBSPOT_API_KEY) {
-      throw new Error("HUBSPOT_API_KEY is not configured");
+    if (!LOVABLE_API_KEY || !HUBSPOT_API_KEY) {
+      // Log internally but return a generic message to the caller.
+      console.error(
+        "sync-hubspot-contact misconfigured: missing required env vars",
+      );
+      return new Response(
+        JSON.stringify({ success: false, error: "Service unavailable" }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     const rawBody = await req.json().catch(() => null);
@@ -171,8 +178,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: `HubSpot API failed [${response.status}]`,
-          details: data,
+          error: "Upstream sync failed",
         }),
         {
           status: 502,
@@ -191,10 +197,11 @@ serve(async (req) => {
       },
     );
   } catch (error) {
+    // Keep internal details in logs only — never echo them back to callers.
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("sync-hubspot-contact error:", message);
     return new Response(
-      JSON.stringify({ success: false, error: message }),
+      JSON.stringify({ success: false, error: "Internal server error" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

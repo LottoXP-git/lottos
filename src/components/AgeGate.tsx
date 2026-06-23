@@ -2,8 +2,11 @@ import { useState } from "react";
 import { ShieldAlert, Calendar, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
+import { supabase } from "@/integrations/supabase/client";
 
-const AGE_VERIFIED_KEY = "lottos_age_verified";
+const AGE_TOKEN_KEY = "lottos_age_token_v1";
+// Legacy key kept only so we can clear stale "true" values on first run.
+const LEGACY_AGE_VERIFIED_KEY = "lottos_age_verified";
 
 const BOT_UA_PATTERN = /Googlebot|AdsBot-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile-Apps|Mediapartners-Google|Google-InspectionTool|Google-Read-Aloud|GoogleOther|Storebot-Google|GoogleProducer|APIs-Google|FeedFetcher-Google|Chrome-Lighthouse|bingbot|DuckDuckBot|Slurp|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Applebot|PetalBot|SemrushBot|AhrefsBot/i;
 
@@ -12,19 +15,63 @@ function isSearchBot(): boolean {
   return BOT_UA_PATTERN.test(navigator.userAgent || "");
 }
 
+function b64urlDecodeToString(s: string): string | null {
+  try {
+    const pad = s.length % 4 === 0 ? "" : "=".repeat(4 - (s.length % 4));
+    const b64 = s.replace(/-/g, "+").replace(/_/g, "/") + pad;
+    return atob(b64);
+  } catch {
+    return null;
+  }
+}
+
+function isTokenStructurallyValid(token: string): boolean {
+  // Format: <payloadB64Url>.<sigB64Url>
+  // Signature is verified server-side (we cannot verify HMAC here without the
+  // secret), but we can still reject trivially-forged values: anything that
+  // does not parse as our payload shape or is expired is rejected.
+  const parts = token.split(".");
+  if (parts.length !== 2) return false;
+  const [payloadStr, sig] = parts;
+  if (!payloadStr || !sig || sig.length < 32) return false;
+  const decoded = b64urlDecodeToString(payloadStr);
+  if (!decoded) return false;
+  try {
+    const payload = JSON.parse(decoded) as { v?: number; exp?: number };
+    if (payload.v !== 1) return false;
+    if (typeof payload.exp !== "number") return false;
+    if (payload.exp < Date.now()) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function isAgeVerified(): boolean {
   if (isSearchBot()) return true;
-  return localStorage.getItem(AGE_VERIFIED_KEY) === "true";
+  // Migrate away from the legacy boolean flag — it was trivially bypassable.
+  if (typeof localStorage === "undefined") return false;
+  if (localStorage.getItem(LEGACY_AGE_VERIFIED_KEY)) {
+    localStorage.removeItem(LEGACY_AGE_VERIFIED_KEY);
+  }
+  const token = localStorage.getItem(AGE_TOKEN_KEY);
+  if (!token) return false;
+  if (!isTokenStructurallyValid(token)) {
+    localStorage.removeItem(AGE_TOKEN_KEY);
+    return false;
+  }
+  return true;
 }
 
 export function AgeGate({ onVerified }: { onVerified: () => void }) {
   const [birthYear, setBirthYear] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const year = parseInt(birthYear);
     if (!year) {
       setError("Selecione seu ano de nascimento.");
@@ -37,8 +84,22 @@ export function AgeGate({ onVerified }: { onVerified: () => void }) {
       return;
     }
 
-    localStorage.setItem(AGE_VERIFIED_KEY, "true");
-    onVerified();
+    setSubmitting(true);
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("verify-age", {
+        body: { birthYear: year },
+      });
+      if (fnError || !data?.success || !data?.token) {
+        setError("Não foi possível verificar a idade. Tente novamente.");
+        return;
+      }
+      localStorage.setItem(AGE_TOKEN_KEY, data.token);
+      onVerified();
+    } catch {
+      setError("Não foi possível verificar a idade. Tente novamente.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -89,10 +150,10 @@ export function AgeGate({ onVerified }: { onVerified: () => void }) {
         <Button
           onClick={handleVerify}
           className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-          disabled={!birthYear}
+          disabled={!birthYear || submitting}
         >
           <CheckCircle2 className="w-4 h-4" />
-          Confirmar Idade
+          {submitting ? "Verificando..." : "Confirmar Idade"}
         </Button>
 
         <p className="text-xs text-muted-foreground leading-relaxed">
