@@ -118,6 +118,10 @@ async function fetchLotteryFromCaixa(
       selectCount: cfg.selectCount,
       accumulated,
       totalCollected: data.valorArrecadado ?? data.valor_arrecadado ?? undefined,
+      accumulatedNextFinalZeroFive:
+        data.valorAcumuladoConcurso_0_5 ?? data.valorAcumuladoConcursoFinalZeroOuCinco ?? undefined,
+      accumulatedSpecial:
+        data.valorAcumuladoConcursoEspecial ?? undefined,
     } as LotteryResult;
   } catch (err) {
     console.warn(`[caixa-browser] ${cfg.name} failed:`, err);

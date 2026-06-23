@@ -45,6 +45,8 @@ export interface LotteryResult {
   selectCount: number;
   accumulated?: boolean;
   totalCollected?: number;
+  accumulatedNextFinalZeroFive?: number;
+  accumulatedSpecial?: number;
 }
 
 export interface NumberFrequency {
