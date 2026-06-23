@@ -117,6 +117,7 @@ async function fetchLotteryFromCaixa(
       maxNumber: cfg.maxNumber,
       selectCount: cfg.selectCount,
       accumulated,
+      totalCollected: data.valorArrecadado ?? data.valor_arrecadado ?? undefined,
     } as LotteryResult;
   } catch (err) {
     console.warn(`[caixa-browser] ${cfg.name} failed:`, err);
@@ -196,6 +197,7 @@ async function fetchLotecaFromBrowser(concurso?: number): Promise<LotteryResult 
       maxNumber: 14,
       selectCount: 14,
       accumulated: data.acumulado || false,
+      totalCollected: data.valorArrecadado ?? data.valor_arrecadado ?? undefined,
     };
   } catch (error) {
     console.error("Error fetching Loteca from browser:", error);

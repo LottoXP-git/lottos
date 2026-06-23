@@ -205,6 +205,7 @@
         maxNumber: config.maxNumber,
         selectCount: config.selectCount,
         accumulated: data.acumulado || false,
+        totalCollected: data.valorArrecadado ?? data.valor_arrecadado ?? undefined,
       };
     } catch (error) {
       console.error(`Error fetching Loteca:`, error);
@@ -416,6 +417,7 @@
         maxNumber: config.maxNumber,
         selectCount: config.selectCount,
         accumulated,
+        totalCollected: data.valorArrecadado ?? data.valor_arrecadado ?? undefined,
       };
  
      return result;
