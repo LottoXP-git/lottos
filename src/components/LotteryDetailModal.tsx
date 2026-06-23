@@ -126,6 +126,24 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 </span>
               </div>
             )}
+            {typeof displayedLottery.accumulatedNextFinalZeroFive === "number" && displayedLottery.accumulatedNextFinalZeroFive > 0 && (
+              <div className="flex items-center justify-center gap-1.5 mb-2 px-2 py-1.5 rounded-md bg-amber-500/5 border border-amber-500/20 text-[10px] sm:text-sm">
+                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />
+                <span className="text-muted-foreground">Acumulado próx. concurso final 0 ou 5:</span>
+                <span className="font-semibold text-foreground font-mono">
+                  R$ {displayedLottery.accumulatedNextFinalZeroFive.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+            )}
+            {typeof displayedLottery.accumulatedSpecial === "number" && displayedLottery.accumulatedSpecial > 0 && (
+              <div className="flex items-center justify-center gap-1.5 mb-2 px-2 py-1.5 rounded-md bg-fuchsia-500/5 border border-fuchsia-500/20 text-[10px] sm:text-sm">
+                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 text-fuchsia-500" />
+                <span className="text-muted-foreground">Acumulado p/ sorteio especial:</span>
+                <span className="font-semibold text-foreground font-mono">
+                  R$ {displayedLottery.accumulatedSpecial.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+            )}
             {displayedLottery.id === "loteca" && displayedLottery.jogos ? (
               <LotecaVolante jogos={displayedLottery.jogos} concurso={displayedLottery.concurso} />
             ) : displayedLottery.id === "federal" ? (
