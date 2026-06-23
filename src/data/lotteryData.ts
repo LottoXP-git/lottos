@@ -44,6 +44,7 @@ export interface LotteryResult {
   maxNumber: number;
   selectCount: number;
   accumulated?: boolean;
+  totalCollected?: number;
 }
 
 export interface NumberFrequency {
