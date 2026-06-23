@@ -10,7 +10,7 @@ import { LotteryBall } from "./LotteryBall";
 
 import { ShareResultImageButton } from "./ShareResultImageButton";
 import { SpecialStats } from "./SpecialStats";
-import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Heart, CalendarDays, Trophy, Flame, MapPin, Dribbble, ChevronLeft, ChevronRight, Loader2, Coins } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLotteryDraw } from "@/hooks/useLotteryResults";
@@ -117,6 +117,15 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{displayedLottery.date}</span>
             </div>
+            {typeof displayedLottery.totalCollected === "number" && displayedLottery.totalCollected > 0 && (
+              <div className="flex items-center justify-center gap-1.5 mb-2 px-2 py-1.5 rounded-md bg-primary/5 border border-primary/10 text-[10px] sm:text-sm">
+                <Coins className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                <span className="text-muted-foreground">Arrecadação total:</span>
+                <span className="font-semibold text-foreground font-mono">
+                  R$ {displayedLottery.totalCollected.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+            )}
             {displayedLottery.id === "loteca" && displayedLottery.jogos ? (
               <LotecaVolante jogos={displayedLottery.jogos} concurso={displayedLottery.concurso} />
             ) : displayedLottery.id === "federal" ? (
