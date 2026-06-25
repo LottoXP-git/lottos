@@ -288,8 +288,10 @@ async function fetchLotteryResults(): Promise<LotteryResult[]> {
    return useQuery({
      queryKey: ["lottery-results"],
      queryFn: fetchLotteryResults,
-     staleTime: 1000 * 60 * 5, // 5 minutes
-     refetchInterval: 1000 * 60 * 10, // Refetch every 10 minutes
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    refetchInterval: 1000 * 60 * 30, // Refetch every 30 minutes
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
    });
  }
  
