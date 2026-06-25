@@ -4,6 +4,7 @@ import { Heart, Mail, MapPin, ExternalLink, Share2, ShieldAlert } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { SharePreviewDialog } from "./SharePreviewDialog";
+import lottosLogo from "@/assets/lottos-logo.png";
 
 const APP_SHARE_DATA = {
   title: "Lottos - Resultados das Loterias",
