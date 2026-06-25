@@ -77,6 +77,20 @@ export function SharePreviewDialog({
         </DialogHeader>
 
         <div className="space-y-3">
+          {imageUrl && (
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+              <img
+                src={imageUrl}
+                alt="Logo Lottos"
+                className="h-12 w-12 rounded-md object-contain bg-background ring-1 ring-border"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">{title}</p>
+                <p className="text-xs text-muted-foreground">Aplicativo para Android</p>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
             <p className="text-sm font-semibold text-foreground">{title}</p>
             <p className="text-sm text-muted-foreground whitespace-pre-line">{text}</p>
