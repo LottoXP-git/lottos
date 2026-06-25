@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
-import { AgeGate, isAgeVerified } from "@/components/AgeGate";
+import { AgeGate, isAgeVerified, verifyAgeTokenServerSide } from "@/components/AgeGate";
 import Index from "./pages/Index";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
@@ -25,6 +25,16 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [verified, setVerified] = useState(isAgeVerified());
+
+  // Defense-in-depth: re-verify the stored age token's HMAC signature with
+  // the edge function. A forged token that passes the local structural check
+  // is cleared here, forcing the gate to re-appear.
+  useEffect(() => {
+    if (!verified) return;
+    verifyAgeTokenServerSide().then((ok) => {
+      if (!ok) setVerified(false);
+    });
+  }, [verified]);
 
   return (
     <QueryClientProvider client={queryClient}>
