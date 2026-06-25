@@ -23,6 +23,7 @@ export function SharePreviewDialog({
   text,
   url,
   file,
+  imageUrl,
 }: SharePreviewDialogProps) {
   const [copied, setCopied] = useState(false);
   const fullMessage = `${text}\n\n${url}`;
