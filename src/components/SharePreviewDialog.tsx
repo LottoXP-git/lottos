@@ -12,6 +12,8 @@ interface SharePreviewDialogProps {
   url: string;
   /** Optional file (e.g. OG image) to attach when using native share. */
   file?: File | null;
+  /** Optional app/logo image URL to show as a thumbnail preview. */
+  imageUrl?: string;
 }
 
 export function SharePreviewDialog({
@@ -21,6 +23,7 @@ export function SharePreviewDialog({
   text,
   url,
   file,
+  imageUrl,
 }: SharePreviewDialogProps) {
   const [copied, setCopied] = useState(false);
   const fullMessage = `${text}\n\n${url}`;
@@ -74,6 +77,20 @@ export function SharePreviewDialog({
         </DialogHeader>
 
         <div className="space-y-3">
+          {imageUrl && (
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+              <img
+                src={imageUrl}
+                alt="Logo Lottos"
+                className="h-12 w-12 rounded-md object-contain bg-background ring-1 ring-border"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">{title}</p>
+                <p className="text-xs text-muted-foreground">Aplicativo para Android</p>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
             <p className="text-sm font-semibold text-foreground">{title}</p>
             <p className="text-sm text-muted-foreground whitespace-pre-line">{text}</p>
