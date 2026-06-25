@@ -65,6 +65,7 @@ export function Footer() {
               title={APP_SHARE_DATA.title}
               text={APP_SHARE_DATA.text}
               url={APP_SHARE_DATA.url}
+              imageUrl={lottosLogo}
             />
           </div>
 
