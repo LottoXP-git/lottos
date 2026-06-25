@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShieldAlert, Calendar, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
@@ -63,31 +63,76 @@ export function isAgeVerified(): boolean {
   return true;
 }
 
+/**
+ * Verifies the stored token's HMAC signature server-side. The structural
+ * check in {@link isAgeVerified} runs synchronously so the UI can render
+ * without flicker, but a forged token would also pass that check — this
+ * call enforces the real cryptographic check.
+ */
+export async function verifyAgeTokenServerSide(): Promise<boolean> {
+  if (isSearchBot()) return true;
+  if (typeof localStorage === "undefined") return false;
+  const token = localStorage.getItem(AGE_TOKEN_KEY);
+  if (!token) return false;
+  try {
+    const { data, error } = await supabase.functions.invoke("verify-age", {
+      body: { action: "verify", token },
+    });
+    if (error || !data?.valid) {
+      localStorage.removeItem(AGE_TOKEN_KEY);
+      return false;
+    }
+    return true;
+  } catch {
+    // On network failure keep the local token; next load will retry.
+    return true;
+  }
+}
+
 export function AgeGate({ onVerified }: { onVerified: () => void }) {
   const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   const handleVerify = async () => {
     const year = parseInt(birthYear);
-    if (!year) {
-      setError("Selecione seu ano de nascimento.");
+    const month = parseInt(birthMonth);
+    const day = parseInt(birthDay);
+    if (!year || !month || !day) {
+      setError("Selecione sua data de nascimento completa.");
       return;
     }
 
-    const age = currentYear - year;
-    if (age < 18) {
+    const birthDate = new Date(year, month - 1, day);
+    if (
+      birthDate.getFullYear() !== year ||
+      birthDate.getMonth() !== month - 1 ||
+      birthDate.getDate() !== day
+    ) {
+      setError("Data de nascimento inválida.");
+      return;
+    }
+    const eighteenth = new Date(year + 18, month - 1, day);
+    if (eighteenth > new Date()) {
       setError("Você deve ter pelo menos 18 anos para acessar este aplicativo. Loterias são destinadas exclusivamente a maiores de idade.");
       return;
     }
 
+    const birthDateStr = `${year.toString().padStart(4, "0")}-${month
+      .toString()
+      .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+
     setSubmitting(true);
     try {
       const { data, error: fnError } = await supabase.functions.invoke("verify-age", {
-        body: { birthYear: year },
+        body: { birthDate: birthDateStr },
       });
       if (fnError || !data?.success || !data?.token) {
         setError("Não foi possível verificar a idade. Tente novamente.");
@@ -124,21 +169,43 @@ export function AgeGate({ onVerified }: { onVerified: () => void }) {
         <div className="space-y-3">
           <label className="flex items-center gap-2 text-sm font-medium text-foreground justify-center">
             <Calendar className="w-4 h-4 text-primary" />
-            Ano de Nascimento
+            Data de Nascimento
           </label>
-          <select
-            value={birthYear}
-            onChange={(e) => {
-              setBirthYear(e.target.value);
-              setError("");
-            }}
-            className="w-full h-11 px-4 rounded-lg bg-background/50 border border-border/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary appearance-none cursor-pointer"
-          >
-            <option value="">Selecione o ano</option>
-            {years.map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
+          <div className="grid grid-cols-3 gap-2">
+            <select
+              value={birthDay}
+              onChange={(e) => { setBirthDay(e.target.value); setError(""); }}
+              className="h-11 px-2 rounded-lg bg-background/50 border border-border/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary appearance-none cursor-pointer"
+              aria-label="Dia"
+            >
+              <option value="">Dia</option>
+              {days.map((d) => (
+                <option key={d} value={d}>{d.toString().padStart(2, "0")}</option>
+              ))}
+            </select>
+            <select
+              value={birthMonth}
+              onChange={(e) => { setBirthMonth(e.target.value); setError(""); }}
+              className="h-11 px-2 rounded-lg bg-background/50 border border-border/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary appearance-none cursor-pointer"
+              aria-label="Mês"
+            >
+              <option value="">Mês</option>
+              {months.map((m) => (
+                <option key={m} value={m}>{m.toString().padStart(2, "0")}</option>
+              ))}
+            </select>
+            <select
+              value={birthYear}
+              onChange={(e) => { setBirthYear(e.target.value); setError(""); }}
+              className="h-11 px-2 rounded-lg bg-background/50 border border-border/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary appearance-none cursor-pointer"
+              aria-label="Ano"
+            >
+              <option value="">Ano</option>
+              {years.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {error && (
@@ -150,7 +217,7 @@ export function AgeGate({ onVerified }: { onVerified: () => void }) {
         <Button
           onClick={handleVerify}
           className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-          disabled={!birthYear || submitting}
+          disabled={!birthYear || !birthMonth || !birthDay || submitting}
         >
           <CheckCircle2 className="w-4 h-4" />
           {submitting ? "Verificando..." : "Confirmar Idade"}
