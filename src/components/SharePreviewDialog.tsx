@@ -12,6 +12,8 @@ interface SharePreviewDialogProps {
   url: string;
   /** Optional file (e.g. OG image) to attach when using native share. */
   file?: File | null;
+  /** Optional app/logo image URL to show as a thumbnail preview. */
+  imageUrl?: string;
 }
 
 export function SharePreviewDialog({
