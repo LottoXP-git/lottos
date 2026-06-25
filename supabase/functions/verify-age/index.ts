@@ -15,6 +15,26 @@ function b64url(bytes: Uint8Array): string {
   return btoa(str).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
+function b64urlDecodeToBytes(s: string): Uint8Array | null {
+  try {
+    const pad = s.length % 4 === 0 ? "" : "=".repeat(4 - (s.length % 4));
+    const b64 = s.replace(/-/g, "+").replace(/_/g, "/") + pad;
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  } catch {
+    return null;
+  }
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 async function hmacSign(secret: string, data: string): Promise<string> {
   const key = await crypto.subtle.importKey(
     "raw",
@@ -29,6 +49,26 @@ async function hmacSign(secret: string, data: string): Promise<string> {
     new TextEncoder().encode(data),
   );
   return b64url(new Uint8Array(sig));
+}
+
+async function verifyToken(secret: string, token: string): Promise<boolean> {
+  const parts = token.split(".");
+  if (parts.length !== 2) return false;
+  const [payloadStr, sig] = parts;
+  if (!payloadStr || !sig) return false;
+  const expected = await hmacSign(secret, payloadStr);
+  if (!timingSafeEqual(sig, expected)) return false;
+  const decoded = b64urlDecodeToBytes(payloadStr);
+  if (!decoded) return false;
+  try {
+    const payload = JSON.parse(new TextDecoder().decode(decoded)) as { v?: number; exp?: number };
+    if (payload.v !== 1) return false;
+    if (typeof payload.exp !== "number") return false;
+    if (payload.exp < Date.now()) return false;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 serve(async (req) => {
@@ -46,23 +86,46 @@ serve(async (req) => {
       );
     }
 
-    const body = await req.json().catch(() => null) as { birthYear?: unknown } | null;
-    const birthYear = typeof body?.birthYear === "number"
-      ? body!.birthYear
-      : typeof body?.birthYear === "string"
-        ? parseInt(body!.birthYear as string, 10)
-        : NaN;
+    const body = await req.json().catch(() => null) as
+      | { action?: string; token?: unknown; birthDate?: unknown }
+      | null;
 
-    const currentYear = new Date().getUTCFullYear();
-    if (!Number.isFinite(birthYear) || birthYear < 1900 || birthYear > currentYear) {
+    // --- Server-side token verification action ---
+    if (body?.action === "verify") {
+      const token = typeof body.token === "string" ? body.token : "";
+      const valid = token ? await verifyToken(secret, token) : false;
       return new Response(
-        JSON.stringify({ success: false, error: "Invalid birth year" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        JSON.stringify({ valid }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    const age = currentYear - birthYear;
-    if (age < 18) {
+    // --- Issue a new token (requires a full birth date) ---
+    const birthDateStr = typeof body?.birthDate === "string" ? body.birthDate.trim() : "";
+    // Strict YYYY-MM-DD format.
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDateStr)) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Invalid birth date" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const [y, m, d] = birthDateStr.split("-").map((n) => parseInt(n, 10));
+    const birthDate = new Date(Date.UTC(y, m - 1, d));
+    if (
+      !Number.isFinite(birthDate.getTime()) ||
+      birthDate.getUTCFullYear() !== y ||
+      birthDate.getUTCMonth() !== m - 1 ||
+      birthDate.getUTCDate() !== d ||
+      y < 1900
+    ) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Invalid birth date" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const today = new Date();
+    const age18 = new Date(Date.UTC(y + 18, m - 1, d));
+    if (age18.getTime() > today.getTime()) {
       return new Response(
         JSON.stringify({ success: false, error: "Underage" }),
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
