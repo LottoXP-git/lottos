@@ -111,6 +111,29 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               isFetchingDraw && offset !== 0 ? "opacity-50 pointer-events-none" : ""
             }`}
           >
+          {/* Special Accumulation Badges */}
+          {(displayedLottery.accumulatedNextFinalZeroFive > 0 || displayedLottery.accumulatedSpecial > 0) && (
+            <div className="flex flex-wrap justify-center gap-2">
+              {displayedLottery.accumulatedNextFinalZeroFive > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 border-2 border-amber-500/30 text-[10px] sm:text-xs font-bold text-foreground shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Final 0/5</span>
+                  <span className="font-mono">
+                    R$ {displayedLottery.accumulatedNextFinalZeroFive.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+              )}
+              {displayedLottery.accumulatedSpecial > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-fuchsia-500/15 border-2 border-fuchsia-500/30 text-[10px] sm:text-xs font-bold text-foreground shadow-sm">
+                  <Trophy className="w-3.5 h-3.5 text-fuchsia-500" />
+                  <span>Sorteio Especial</span>
+                  <span className="font-mono">
+                    R$ {displayedLottery.accumulatedSpecial.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           {/* Current Result */}
           <div className="p-2 sm:p-4 rounded-lg sm:rounded-xl bg-secondary/30 border border-border">
             <div className="flex items-center gap-1.5 mb-2 text-[10px] sm:text-sm text-muted-foreground">
@@ -123,24 +146,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <span className="text-muted-foreground">Arrecadação total:</span>
                 <span className="font-semibold text-foreground font-mono">
                   R$ {displayedLottery.totalCollected.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              </div>
-            )}
-            {typeof displayedLottery.accumulatedNextFinalZeroFive === "number" && displayedLottery.accumulatedNextFinalZeroFive > 0 && (
-              <div className="flex items-center justify-center gap-1.5 mb-2 px-2 py-1.5 rounded-md bg-amber-500/5 border border-amber-500/20 text-[10px] sm:text-sm">
-                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />
-                <span className="text-muted-foreground">Acumulado próx. concurso final 0 ou 5:</span>
-                <span className="font-semibold text-foreground font-mono">
-                  R$ {displayedLottery.accumulatedNextFinalZeroFive.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              </div>
-            )}
-            {typeof displayedLottery.accumulatedSpecial === "number" && displayedLottery.accumulatedSpecial > 0 && (
-              <div className="flex items-center justify-center gap-1.5 mb-2 px-2 py-1.5 rounded-md bg-fuchsia-500/5 border border-fuchsia-500/20 text-[10px] sm:text-sm">
-                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 text-fuchsia-500" />
-                <span className="text-muted-foreground">Acumulado p/ sorteio especial:</span>
-                <span className="font-semibold text-foreground font-mono">
-                  R$ {displayedLottery.accumulatedSpecial.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             )}
