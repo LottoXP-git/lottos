@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LotecaVolante } from "./LotecaVolante";
-import { LotecaUpcomingMatches, LOTECA_1257 } from "./LotecaUpcomingMatches";
+import { LotecaUpcomingMatchesLive } from "./LotecaUpcomingMatchesLive";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
@@ -456,7 +456,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
             {lottery.id === "loteca" && (
               <TabsContent value="upcoming" className="mt-2 sm:mt-4">
-                <LotecaUpcomingMatches {...LOTECA_1257} />
+                <LotecaUpcomingMatchesLive />
               </TabsContent>
             )}
 
