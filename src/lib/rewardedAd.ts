@@ -1,11 +1,9 @@
 import { isNative } from "./platform";
 import { ensureAdMobInit } from "./admob";
 
-// AdMob Rewarded Ad Unit IDs.
-// NOTE: the publisher unit 1961507403 is a *Native Advanced* unit, which is
-// incompatible with rewarded video. Until a real Rewarded unit is provisioned
-// in AdMob, we use Google's official test IDs to avoid policy violations.
-const REWARDED_ANDROID = "ca-app-pub-3940256099942544/5224354917";
+// AdMob Rewarded Ad Unit IDs (produção).
+const REWARDED_ANDROID = "ca-app-pub-2147498950861352/2849021580";
+// iOS ainda sem unit própria — usa o ID oficial de teste do Google até ser provisionado.
 const REWARDED_IOS = "ca-app-pub-3940256099942544/1712485313";
 
 /**
