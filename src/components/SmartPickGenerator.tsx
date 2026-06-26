@@ -113,23 +113,19 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
   }, [freq]);
 
   const generatePicks = () => {
-    if (freeGenerations <= 0) {
-      // Native: use real AdMob Rewarded Ad. Web: fall back to simulated modal.
-      if (isNative()) {
-        triggerNativeRewardedAd();
-      } else {
-        setShowVideoAd(true);
-      }
-      return;
+    // Always require a rewarded ad before revealing new picks.
+    // Native: real AdMob Rewarded. Web: simulated VideoAdModal fallback.
+    if (isNative()) {
+      triggerNativeRewardedAd();
+    } else {
+      setShowVideoAd(true);
     }
-    runGeneration();
   };
 
   const handleAdComplete = () => {
     setShowVideoAd(false);
-    setFreeGenerations(2);
-    toast.success("🎁 Recompensa liberada! +2 gerações grátis", {
-      description: "Aproveite seus palpites extras.",
+    toast.success("🎁 Recompensa liberada!", {
+      description: "Gerando seus palpites...",
     });
     runGeneration();
   };
@@ -140,9 +136,8 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
       const earned = await showRewardedAd();
       toast.dismiss(loadingToast);
       if (earned) {
-        setFreeGenerations(2);
-        toast.success("🎁 Recompensa liberada! +2 gerações grátis", {
-          description: "Aproveite seus palpites extras.",
+        toast.success("🎁 Recompensa liberada!", {
+          description: "Gerando seus palpites...",
         });
         confetti({
           particleCount: 80,
@@ -334,17 +329,13 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
                 ) : (
                   <Ticket className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                 )}
-                {freeGenerations > 0
-                  ? `Gerar Bilhetes (${freeGenerations} restante${freeGenerations > 1 ? "s" : ""})`
-                  : "Assistir Anúncio para Gerar"}
+                Assistir Anúncio e Gerar Bilhetes
               </Button>
             </motion.div>
 
-            {freeGenerations <= 0 && federalPicks.length > 0 && (
-              <p className="text-xs text-center text-muted-foreground animate-pulse">
-                🎬 Assista um anúncio rápido para liberar mais 2 gerações gratuitas
-              </p>
-            )}
+            <p className="text-[10px] sm:text-xs text-center text-muted-foreground">
+              🎬 Um anúncio curto é exibido antes de cada geração.
+            </p>
 
             <AnimatePresence>
               {federalPicks.length > 0 && (
@@ -437,17 +428,13 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                   </motion.span>
                 )}
-                {freeGenerations > 0
-                  ? `Gerar Palpite (${freeGenerations} restante${freeGenerations > 1 ? "s" : ""})`
-                  : "Assistir Anúncio para Gerar"}
+                Assistir Anúncio e Gerar Palpite
               </Button>
             </motion.div>
 
-            {freeGenerations <= 0 && picks.length > 0 && (
-              <p className="text-xs text-center text-muted-foreground animate-pulse">
-                🎬 Assista um anúncio rápido para liberar mais 2 palpites gratuitos
-              </p>
-            )}
+            <p className="text-[10px] sm:text-xs text-center text-muted-foreground">
+              🎬 Um anúncio curto é exibido antes de cada geração.
+            </p>
 
             <AnimatePresence>
               {picks.length > 0 && (
