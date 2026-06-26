@@ -1,10 +1,11 @@
 import { isNative } from "./platform";
 import { ensureAdMobInit } from "./admob";
 
-// Google's official test rewarded ad unit IDs.
-// Replace with your real AdMob Rewarded Ad Unit when ready.
-const TEST_REWARDED_ANDROID = "ca-app-pub-3940256099942544/5224354917";
-const TEST_REWARDED_IOS = "ca-app-pub-3940256099942544/1712485313";
+// Production AdMob Rewarded Ad Unit IDs.
+// Android: real unit from the publisher's AdMob account.
+// iOS: still using Google's official test ID until a production unit is provided.
+const REWARDED_ANDROID = "ca-app-pub-2147498950861352/1961507403";
+const REWARDED_IOS = "ca-app-pub-3940256099942544/1712485313";
 
 /**
  * Loads and shows a real AdMob Rewarded ad on native platforms.
@@ -30,10 +31,10 @@ export async function showRewardedAd(): Promise<boolean> {
   }
 
   const adId =
-    (typeof navigator !== "undefined" &&
-      navigator.userAgent.toLowerCase().includes("iphone"))
-      ? TEST_REWARDED_IOS
-      : TEST_REWARDED_ANDROID;
+    typeof navigator !== "undefined" &&
+    navigator.userAgent.toLowerCase().includes("iphone")
+      ? REWARDED_IOS
+      : REWARDED_ANDROID;
 
   await AdMob.prepareRewardVideoAd({ adId });
   const reward = await AdMob.showRewardVideoAd();
