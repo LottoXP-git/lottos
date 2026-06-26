@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
-import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays, Dribbble } from "lucide-react";
+import { Calendar, Trophy, Users, TrendingUp, Flame, Sparkles, Clover, Heart, CalendarDays, Dribbble, MousePointerClick } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isDuplaDePascoaActive } from "@/utils/easterDate";
 import { ShareCardImageButton } from "./ShareCardImageButton";
@@ -276,6 +276,12 @@ export function LotteryCard({
               💰 Acima de R$ 20 milhões! Não perca!
             </p>
           </div>}
+
+        {/* Click hint footer */}
+        <div className="mt-3 pt-2 border-t border-white/15 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-white/75">
+          <MousePointerClick className="w-3.5 h-3.5" />
+          <span>Clique para mais detalhes</span>
+        </div>
       </CardContent>
     </Card>;
 }
