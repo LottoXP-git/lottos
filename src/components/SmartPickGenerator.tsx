@@ -113,23 +113,19 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
   }, [freq]);
 
   const generatePicks = () => {
-    if (freeGenerations <= 0) {
-      // Native: use real AdMob Rewarded Ad. Web: fall back to simulated modal.
-      if (isNative()) {
-        triggerNativeRewardedAd();
-      } else {
-        setShowVideoAd(true);
-      }
-      return;
+    // Always require a rewarded ad before revealing new picks.
+    // Native: real AdMob Rewarded. Web: simulated VideoAdModal fallback.
+    if (isNative()) {
+      triggerNativeRewardedAd();
+    } else {
+      setShowVideoAd(true);
     }
-    runGeneration();
   };
 
   const handleAdComplete = () => {
     setShowVideoAd(false);
-    setFreeGenerations(2);
-    toast.success("🎁 Recompensa liberada! +2 gerações grátis", {
-      description: "Aproveite seus palpites extras.",
+    toast.success("🎁 Recompensa liberada!", {
+      description: "Gerando seus palpites...",
     });
     runGeneration();
   };
@@ -140,9 +136,8 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
       const earned = await showRewardedAd();
       toast.dismiss(loadingToast);
       if (earned) {
-        setFreeGenerations(2);
-        toast.success("🎁 Recompensa liberada! +2 gerações grátis", {
-          description: "Aproveite seus palpites extras.",
+        toast.success("🎁 Recompensa liberada!", {
+          description: "Gerando seus palpites...",
         });
         confetti({
           particleCount: 80,
