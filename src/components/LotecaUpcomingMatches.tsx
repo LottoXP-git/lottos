@@ -14,27 +14,27 @@ interface LotecaUpcomingMatchesProps {
   apuracao: string;
 }
 
-// Programação oficial — Concurso 1255
-export const LOTECA_1255: LotecaUpcomingMatchesProps = {
-  concurso: 1255,
-  periodoApostas: "30/05/2026 até 18h de 13/06/2026",
-  dataJogos: "13/06/2026 a 17/06/2026",
-  apuracao: "18h de 17/06/2026",
+// Programação oficial — Concurso 1257
+export const LOTECA_1257: LotecaUpcomingMatchesProps = {
+  concurso: 1257,
+  periodoApostas: "18/06/2026 até as 21h de 21/06/2026",
+  dataJogos: "21/06/2026 a 24/06/2026",
+  apuracao: "21h de 21/06/2026",
   jogos: [
-    { equipeUm: "Brasil", equipeDois: "Marrocos", campeonato: "Copa do Mundo" },
-    { equipeUm: "Haiti", equipeDois: "Escócia", campeonato: "Copa do Mundo" },
-    { equipeUm: "Alemanha", equipeDois: "Curaçao", campeonato: "Copa do Mundo" },
-    { equipeUm: "Holanda", equipeDois: "Japão", campeonato: "Copa do Mundo" },
-    { equipeUm: "Costa do Marfim", equipeDois: "Equador", campeonato: "Copa do Mundo" },
-    { equipeUm: "Suécia", equipeDois: "Tunísia", campeonato: "Copa do Mundo" },
-    { equipeUm: "Espanha", equipeDois: "Cabo Verde", campeonato: "Copa do Mundo" },
-    { equipeUm: "Bélgica", equipeDois: "Egito", campeonato: "Copa do Mundo" },
-    { equipeUm: "Arábia Saudita", equipeDois: "Uruguai", campeonato: "Copa do Mundo" },
-    { equipeUm: "França", equipeDois: "Senegal", campeonato: "Copa do Mundo" },
-    { equipeUm: "Iraque", equipeDois: "Noruega", campeonato: "Copa do Mundo" },
-    { equipeUm: "Argentina", equipeDois: "Argélia", campeonato: "Copa do Mundo" },
-    { equipeUm: "Portugal", equipeDois: "Congo", campeonato: "Copa do Mundo" },
-    { equipeUm: "Inglaterra", equipeDois: "Croácia", campeonato: "Copa do Mundo" },
+    { equipeUm: "Escócia", equipeDois: "Brasil", campeonato: "Copa do Mundo" },
+    { equipeUm: "Nova Zelândia", equipeDois: "Egito", campeonato: "Copa do Mundo" },
+    { equipeUm: "Argentina", equipeDois: "Áustria", campeonato: "Copa do Mundo" },
+    { equipeUm: "França", equipeDois: "Iraque", campeonato: "Copa do Mundo" },
+    { equipeUm: "Noruega", equipeDois: "Senegal", campeonato: "Copa do Mundo" },
+    { equipeUm: "Portugal", equipeDois: "Uzbequistão", campeonato: "Copa do Mundo" },
+    { equipeUm: "Inglaterra", equipeDois: "Gana", campeonato: "Copa do Mundo" },
+    { equipeUm: "Panamá", equipeDois: "Croácia", campeonato: "Copa do Mundo" },
+    { equipeUm: "Colômbia", equipeDois: "Congo", campeonato: "Copa do Mundo" },
+    { equipeUm: "Suíça", equipeDois: "Canadá", campeonato: "Copa do Mundo" },
+    { equipeUm: "Bósnia Herzegovina", equipeDois: "Catar", campeonato: "Copa do Mundo" },
+    { equipeUm: "Marrocos", equipeDois: "Haiti", campeonato: "Copa do Mundo" },
+    { equipeUm: "África do Sul", equipeDois: "Coreia do Sul", campeonato: "Copa do Mundo" },
+    { equipeUm: "República Tcheca", equipeDois: "México", campeonato: "Copa do Mundo" },
   ],
 };
 
