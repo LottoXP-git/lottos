@@ -1,21 +1,14 @@
-## Objetivo
-Mostrar a **arrecadação total** de cada concurso no modal de detalhes (LotteryDetailModal), usando o campo `valorArrecadado` retornado pela API da Caixa.
+### Objetivo
+Adicionar um rodapé visual nos cards de loteria indicando que são clicáveis para mais detalhes.
 
-## Alterações
+### Escopo
+- **Arquivo alvo:** `src/components/LotteryCard.tsx`
+- **Mudança:** Inserir um elemento de rodapé dentro do `Card` (após o `CardContent`) com texto "Clique para mais detalhes" e um ícone sutil (ex: `ChevronDown` ou `Info`), estilizado com opacidade reduzida para não competir com o conteúdo principal.
 
-1. **`src/data/lotteryData.ts`**
-   - Adicionar campo opcional `totalCollected?: number` em `LotteryResult`.
+### Detalhes técnicos
+- Usar classes Tailwind consistentes com o tema do card (texto branco com baixa opacidade).
+- Garantir que o elemento não interfira com clicks nos elementos internos (Link, ShareCardImageButton).
+- O `onClick` do card já está no `Card` wrapper, então o rodapé será puramente informativo.
 
-2. **`supabase/functions/fetch-lottery-results/index.ts`**
-   - Ler `raw.valorArrecadado` (e variações: `valor_arrecadado`) e incluir no payload normalizado (`totalCollected`).
-
-3. **`src/hooks/useLotteryResults.ts`**
-   - Em `fetchLotteryFromCaixa` e `fetchLotecaFromBrowser`, propagar `data.valorArrecadado` para `totalCollected`.
-
-4. **`src/components/LotteryDetailModal.tsx`**
-   - Quando `totalCollected > 0`, exibir uma linha "Arrecadação total: R$ X,XX" formatada em BRL, no bloco de informações do concurso (próximo a data/ganhadores), seguindo o estilo já existente do modal. Ocultar se ausente (ex.: mocks antigos ou Loteca sem dado).
-
-## Observações
-- Apenas leitura/exibição; sem mudanças no banco.
-- Loteca normalmente não traz `valorArrecadado` — o campo simplesmente não aparece quando ausente.
-- Nenhuma alteração de layout além da nova linha de texto.
+### Entrega
+- `LotteryCard.tsx` com o novo rodapé informativo em todos os cards.
