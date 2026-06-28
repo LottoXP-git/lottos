@@ -233,6 +233,14 @@ export function LotteryCard({
           </div>
         )}
 
+        {/* Badge de sorteios diários - Dia de Sorte */}
+        {result.id === "diadesorte" && (
+          <div className="flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-white/15 border border-white/30">
+            <Repeat className="w-3.5 h-3.5 text-white" />
+            <span className="text-xs font-semibold text-white">Sorteios diários de segunda a sábado</span>
+          </div>
+        )}
+
         {/* Mês da Sorte - Dia de Sorte */}
         {result.id === "diadesorte" && result.mesSorte && (
           <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
