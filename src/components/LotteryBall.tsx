@@ -81,7 +81,7 @@ export function LotteryBall({
         textShadow: "0 1px 2px rgba(0,0,0,0.7), 0 0 3px rgba(0,0,0,0.5)",
       }}
     >
-      {number.toString().padStart(2, "0")}
+      {variant === "supersete" ? number.toString() : number.toString().padStart(2, "0")}
     </div>
   );
 }
