@@ -477,6 +477,7 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                       data={frequencyData}
                       maxNumber={lottery.maxNumber}
                       title={`Mapa de Frequência - ${lottery.name}`}
+                      lotteryId={lottery.id}
                     />
                   </div>
                 </TabsContent>
