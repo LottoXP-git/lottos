@@ -103,7 +103,7 @@ async function fetchLotteryFromCaixa(
       name: cfg.name,
       concurso: data.numero || 0,
       date: formatDate(data.dataApuracao || ""),
-      numbers: cfg.id === "federal" ? numbers : numbers.sort((a, b) => a - b),
+      numbers: cfg.id === "federal" || cfg.id === "supersete" ? numbers : numbers.sort((a, b) => a - b),
       trevos,
       timeCoracao: timeCoracao || undefined,
       mesSorte: mesSorte || undefined,
