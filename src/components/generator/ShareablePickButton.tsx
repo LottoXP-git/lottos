@@ -210,7 +210,7 @@ function buildCard(props: ShareablePickButtonProps): HTMLCanvasElement {
     ctx.textBaseline = "middle";
     ctx.shadowColor = "rgba(0,0,0,0.6)";
     ctx.shadowBlur = 4;
-    ctx.fillText(formatLotteryNumber(n, lotteryColor === "lottery-supersete" ? "supersete" : undefined), cx, cy + 3);
+    ctx.fillText(formatLotteryNumber(n, props.lotteryColor === "lottery-supersete" ? "supersete" : undefined), cx, cy + 3);
     ctx.shadowBlur = 0;
   });
   ctx.textBaseline = "alphabetic";
