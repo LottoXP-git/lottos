@@ -25,7 +25,11 @@ const lotteryOptions = [
 { id: "timemania", label: "Timemania", color: "bg-[#00FF48]" },
 { id: "duplasena", label: "Dupla Sena", color: "bg-[#A61324]" },
 { id: "diadesorte", label: "Dia de Sorte", color: "bg-[#CB852B]" },
-{ id: "supersete", label: "Super Sete", color: "bg-[#A8CF45]" }];
+{ id: "supersete", label: "Super Sete", color: "bg-[#A8CF45]" },
+{ id: "maismilionaria", label: "+Milionária", color: "bg-[#4338ca]" },
+{ id: "federal", label: "Federal", color: "bg-[#0284c7]" },
+{ id: "loteca", label: "Loteca", color: "bg-[#dc2626]" }
+];
 
 
 const minAge18Date = subYears(new Date(), 18);
