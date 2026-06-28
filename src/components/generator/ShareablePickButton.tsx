@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { formatLotteryNumber } from "@/lib/formatNumber";
 
 interface ShareablePickButtonProps {
   lotteryName: string;
@@ -209,7 +210,7 @@ function buildCard(props: ShareablePickButtonProps): HTMLCanvasElement {
     ctx.textBaseline = "middle";
     ctx.shadowColor = "rgba(0,0,0,0.6)";
     ctx.shadowBlur = 4;
-    ctx.fillText(String(n).padStart(2, "0"), cx, cy + 3);
+    ctx.fillText(formatLotteryNumber(n, lotteryColor === "lottery-supersete" ? "supersete" : undefined), cx, cy + 3);
     ctx.shadowBlur = 0;
   });
   ctx.textBaseline = "alphabetic";
