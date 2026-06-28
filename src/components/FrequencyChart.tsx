@@ -1,13 +1,15 @@
 import { NumberFrequency } from "@/data/lotteryData";
 import { cn } from "@/lib/utils";
+import { formatLotteryNumber } from "@/lib/formatNumber";
 
 interface FrequencyChartProps {
   data: NumberFrequency[];
   maxNumber: number;
   title?: string;
+  lotteryId?: string;
 }
 
-export function FrequencyChart({ data, maxNumber, title }: FrequencyChartProps) {
+export function FrequencyChart({ data, maxNumber, title, lotteryId }: FrequencyChartProps) {
   const maxFreq = Math.max(...data.map(d => d.frequency));
   const sortedByNumber = [...data].sort((a, b) => a.number - b.number);
 
@@ -37,7 +39,7 @@ export function FrequencyChart({ data, maxNumber, title }: FrequencyChartProps) 
                 )}
                 title={`Dezena ${item.number}: ${item.frequency} vezes`}
               >
-                <span className="font-bold text-white text-[10px] sm:text-xs">{item.number.toString().padStart(2, "0")}</span>
+                <span className="font-bold text-white text-[10px] sm:text-xs">{formatLotteryNumber(item.number, lotteryId)}</span>
                 <span className="text-[8px] sm:text-[10px] text-white/70">{item.frequency}</span>
                 
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-card border border-border px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg hidden sm:block">
