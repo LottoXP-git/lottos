@@ -311,16 +311,22 @@
      
      console.log(`[${source}] Received data for ${config.name} concurso=${data.concurso || data.numero}`);
  
-     // Handle different API response formats
-     let numbers: number[] = [];
-     
-     if (data.dezenas) {
-       numbers = data.dezenas.map((d: string) => parseInt(d, 10));
-     } else if (data.listaDezenas) {
-       numbers = data.listaDezenas.map((d: string) => parseInt(d, 10));
-     } else if (Array.isArray(data.numeros)) {
-       numbers = data.numeros.map((d: string | number) => typeof d === 'string' ? parseInt(d, 10) : d);
-     }
+      // Handle different API response formats.
+      // Super Sete is positional: each digit belongs to a fixed column (1ª→7ª)
+      // exactly as Caixa returns in `listaDezenas`/normalized `dezenas`.
+      // Never use sorted order for Super Sete history or single-draw lookups,
+      // otherwise repeated/low digits are moved away from their original column.
+      let numbers: number[] = [];
+      const rawDezenas =
+        config.id === "supersete"
+          ? data.dezenas || data.listaDezenas || []
+          : data.dezenas || data.listaDezenas || data.dezenasSorteadasOrdemSorteio || [];
+      
+      if (rawDezenas.length > 0) {
+        numbers = rawDezenas.map((d: string | number) => typeof d === 'string' ? parseInt(d, 10) : d);
+      } else if (Array.isArray(data.numeros)) {
+        numbers = data.numeros.map((d: string | number) => typeof d === 'string' ? parseInt(d, 10) : d);
+      }
  
      // Format date - handle different formats
      const formatDate = (dateStr: string) => {
@@ -406,7 +412,9 @@
         name: config.name,
         concurso: data.concurso || data.numero || 0,
         date: formatDate(data.data || data.dataApuracao || ""),
-        numbers: config.id === "federal" ? numbers : numbers.sort((a, b) => a - b),
+        // Federal keeps prize order (1º→5º). Super Sete keeps Caixa column order
+        // (1ª→7ª) across latest result, history and specific contest lookups.
+        numbers: config.id === "federal" || config.id === "supersete" ? numbers : numbers.sort((a, b) => a - b),
         trevos,
         timeCoracao: timeCoracao || undefined,
         mesSorte: mesSorte || undefined,
