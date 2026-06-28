@@ -53,9 +53,17 @@ async function fetchLotteryFromCaixa(
     if (!response.ok) return null;
     const data = await response.json();
 
-    const numbers: number[] = (data.listaDezenas || data.dezenasSorteadasOrdemSorteio || []).map((d: string) =>
-      parseInt(d, 10),
-    );
+    // Super Sete: a Caixa retorna em `listaDezenas` os 7 dígitos JÁ na ordem
+    // das colunas (1ª → 7ª), que é como o site oficial exibe o resultado.
+    // Usamos exclusivamente esse campo para essa modalidade — nunca o
+    // `dezenasSorteadasOrdemSorteio` (ordem de sorteio das bolas), pois isso
+    // embaralharia a posição/coluna de cada dígito. Para as demais loterias,
+    // mantemos o fallback para `dezenasSorteadasOrdemSorteio`.
+    const rawDezenas: string[] =
+      cfg.id === "supersete"
+        ? data.listaDezenas || []
+        : data.listaDezenas || data.dezenasSorteadasOrdemSorteio || [];
+    const numbers: number[] = rawDezenas.map((d: string) => parseInt(d, 10));
 
     const trevos: number[] =
       cfg.id === "maismilionaria"
@@ -103,6 +111,9 @@ async function fetchLotteryFromCaixa(
       name: cfg.name,
       concurso: data.numero || 0,
       date: formatDate(data.dataApuracao || ""),
+      // Federal: bilhetes em ordem dos prêmios (1º→5º). Super Sete: dígitos
+      // em ordem das colunas (1ª→7ª). Ambos preservam a ordem original da
+      // Caixa. Demais loterias são exibidas em ordem crescente.
       numbers: cfg.id === "federal" || cfg.id === "supersete" ? numbers : numbers.sort((a, b) => a - b),
       trevos,
       timeCoracao: timeCoracao || undefined,
