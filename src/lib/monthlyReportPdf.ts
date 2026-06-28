@@ -225,6 +225,8 @@ export function generateMonthlyReportPdf(
 
     const hot = frequency.slice(0, 10);
     const cold = [...frequency].slice(-10).reverse();
+    const fmtNum = (n: number) =>
+      result.id === "supersete" ? String(n) : String(n).padStart(2, "0");
 
     // Section labels
     doc.setFontSize(10);
@@ -239,7 +241,7 @@ export function generateMonthlyReportPdf(
       head: [["#", "Dezena", "Freq.", "%"]],
       body: hot.map((f, idx) => [
         idx + 1,
-        String(f.number).padStart(2, "0"),
+        fmtNum(f.number),
         f.frequency,
         `${f.percentage.toFixed(1)}%`,
       ]),
@@ -255,7 +257,7 @@ export function generateMonthlyReportPdf(
       head: [["#", "Dezena", "Freq.", "%"]],
       body: cold.map((f, idx) => [
         idx + 1,
-        String(f.number).padStart(2, "0"),
+        fmtNum(f.number),
         f.frequency,
         `${f.percentage.toFixed(1)}%`,
       ]),
@@ -279,7 +281,7 @@ export function generateMonthlyReportPdf(
     doc.text("Palpites Sugeridos do Mês", 15, afterY);
 
     const fmt = (nums: number[]) =>
-      nums.map((n) => String(n).padStart(2, "0")).join("  ·  ");
+      nums.map((n) => fmtNum(n)).join("  ·  ");
 
     autoTable(doc, {
       startY: afterY + 4,

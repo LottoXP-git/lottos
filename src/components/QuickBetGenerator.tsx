@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, generateFrequencyData, generateSmartPicks, NumberFrequency } from "@/data/lotteryData";
 import { analyzeBet, buildTemperatureMap, BetAnalysis } from "@/lib/lotteryStats";
+import { formatLotteryNumber } from "@/lib/formatNumber";
 import { BetAnalysisCard } from "./BetAnalysisCard";
 import { Dices, RefreshCw, Copy, Check, Clover, Heart, CalendarDays, Flame, Snowflake, Scale, Ticket, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -349,7 +350,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
 
   const copyNumbers = () => {
     if (numbers.length === 0) return;
-    let text = numbers.map((n) => n.toString().padStart(2, "0")).join(" - ");
+    let text = numbers.map((n) => formatLotteryNumber(n, selected?.id)).join(" - ");
     if (trevos.length > 0) text += ` | Trevos: ${trevos.join(" - ")}`;
     if (timeCoracao) text += ` | Time: ${timeCoracao}`;
     if (mesSorte) text += ` | Mês: ${mesSorte}`;

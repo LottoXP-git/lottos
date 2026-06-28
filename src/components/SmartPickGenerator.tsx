@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, NumberFrequency, generateSmartPicks } from "@/data/lotteryData";
+import { formatLotteryNumber } from "@/lib/formatNumber";
 import { Sparkles, Flame, Snowflake, Scale, RefreshCw, Copy, Check, Wand2, Dices, Star, Zap, Ticket, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -204,7 +205,7 @@ export function SmartPickGenerator({ lottery, frequencyData }: SmartPickGenerato
 
   const copyPicks = () => {
     if (picks.length === 0) return;
-    const text = picks.map((n) => n.toString().padStart(2, "0")).join(" - ");
+    const text = picks.map((n) => formatLotteryNumber(n, lottery.id)).join(" - ");
     navigator.clipboard.writeText(text);
     setCopied(true);
     toast.success("Palpite copiado!");

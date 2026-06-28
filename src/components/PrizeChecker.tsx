@@ -299,7 +299,7 @@ function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: Lottery
             <div className="flex flex-wrap gap-1">
               {draw.matchedNumbers.map(n => (
                 <span key={n} className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] sm:text-xs font-bold">
-                  {n.toString().padStart(2, "0")}
+                  {variant === "supersete" ? n.toString() : n.toString().padStart(2, "0")}
                 </span>
               ))}
             </div>
@@ -314,7 +314,7 @@ function DrawResultBlock({ draw, variant }: { draw: DrawResult; variant: Lottery
             <div className="flex flex-wrap gap-1">
               {draw.unmatchedNumbers.map(n => (
                 <span key={n} className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-destructive/10 border border-destructive/30 text-destructive text-[10px] sm:text-xs font-bold">
-                  {n.toString().padStart(2, "0")}
+                  {variant === "supersete" ? n.toString() : n.toString().padStart(2, "0")}
                 </span>
               ))}
             </div>

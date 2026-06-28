@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { validateImportPayload, type PickHistoryItem } from "@/hooks/usePickHistory";
 import { rarityInfo } from "@/lib/pickRarity";
+import { formatLotteryNumber } from "@/lib/formatNumber";
 
 interface PickHistoryListProps {
   items: PickHistoryItem[];
@@ -27,7 +28,7 @@ function formatTime(ts: number) {
 
 function buildShareText(item: PickHistoryItem) {
   let text = `${item.lotteryName}: ${item.numbers
-    .map((n) => n.toString().padStart(2, "0"))
+    .map((n) => formatLotteryNumber(n, item.lotteryId))
     .join(" - ")}`;
   if (item.trevos?.length) text += ` | Trevos: ${item.trevos.join(" - ")}`;
   if (item.timeCoracao) text += ` | Time: ${item.timeCoracao}`;
@@ -262,7 +263,7 @@ export function PickHistoryList({
                           key={i}
                           className="inline-flex items-center justify-center min-w-[1.5rem] h-5 px-1 rounded-md bg-primary/10 border border-primary/20 text-[10px] font-mono font-bold text-primary"
                         >
-                          {n.toString().padStart(2, "0")}
+                          {formatLotteryNumber(n, item.lotteryId)}
                         </span>
                       ))}
                       {item.trevos?.map((t, i) => (
