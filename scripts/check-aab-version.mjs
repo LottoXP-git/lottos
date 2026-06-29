@@ -21,6 +21,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
+import { execSync } from 'node:child_process';
 
 const DEFAULT_AAB = 'android/app/build/outputs/bundle/release/app-release.aab';
 const HISTORY_PATH = 'android/used-versions.txt';
@@ -110,12 +111,40 @@ if (!versionCode || !versionName) {
   );
 }
 
+// --- Identidade do commit que originou este AAB -------------------
+let commitHash = '(desconhecido)';
+let commitBranch = '(desconhecido)';
+let commitDirty = false;
+let behindOrigin = null;
+try {
+  commitHash = execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  commitBranch = execSync('git rev-parse --abbrev-ref HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  const status = execSync('git status --porcelain', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  commitDirty = status.length > 0;
+  try {
+    execSync('git fetch origin --quiet', { stdio: 'ignore' });
+    behindOrigin = parseInt(
+      execSync(`git rev-list --count HEAD..origin/${commitBranch}`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(),
+      10
+    );
+  } catch {
+    behindOrigin = null;
+  }
+} catch {
+  // git não disponível — segue sem hash
+}
+
 console.log('=========================================');
 console.log('  Validação de versão do AAB');
 console.log('=========================================');
 console.log(`AAB:         ${aabPath}`);
 console.log(`versionCode: ${versionCode}`);
 console.log(`versionName: ${versionName}`);
+console.log(`commit:      ${commitHash} (${commitBranch})${commitDirty ? ' [DIRTY: alterações não commitadas]' : ''}`);
+if (behindOrigin !== null && behindOrigin > 0) {
+  console.log(`AVISO: seu clone está ${behindOrigin} commit(s) atrás de origin/${commitBranch}.`);
+  console.log('       Rode `git pull` e refaça o build para empacotar a versão mais recente.');
+}
 console.log('');
 
 // --- Checa histórico ----------------------------------------------
@@ -168,4 +197,8 @@ console.log(line);
 console.log(`  AAB:         ${aabPath}`);
 console.log(`  versionName: ${versionName}`);
 console.log(`  versionCode: ${versionCode}`);
+console.log(`  commit:      ${commitHash} (${commitBranch})${commitDirty ? ' [DIRTY]' : ''}`);
+if (behindOrigin !== null && behindOrigin > 0) {
+  console.log(`  AVISO:       ${behindOrigin} commit(s) atrás de origin/${commitBranch}!`);
+}
 console.log(line);

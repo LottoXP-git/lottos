@@ -1,0 +1,8 @@
+# Versão semântica do app Android.
+# - major / minor: editados manualmente para releases significativos.
+# - patch: incrementado AUTOMATICAMENTE pelo build.gradle a cada
+#   bundleRelease / assembleRelease bem-sucedido em configuração.
+# Não edite "patch" manualmente a menos que queira resetar a contagem.
+major=1
+minor=5
+patch=0
