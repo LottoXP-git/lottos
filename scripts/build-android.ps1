@@ -23,6 +23,39 @@ try {
   Write-Host "  Lottos - Build Android Release (Win)"   -ForegroundColor Yellow
   Write-Host "=========================================" -ForegroundColor Yellow
 
+  # -1. Verifica sincronia com origin/<branch atual> antes de buildar.
+  #     Sem isso é fácil gerar um AAB de código antigo (as mudanças do
+  #     Lovable já estão em origin/main, mas o pull local não foi feito).
+  Write-Step "[-1/4] Verificando sincronia com origin..."
+  $gitExe = Get-Command git -ErrorAction SilentlyContinue
+  if ($gitExe -and (Test-Path ".git")) {
+    try {
+      $branch = (& git rev-parse --abbrev-ref HEAD).Trim()
+      & git fetch origin --quiet 2>$null
+      if ($LASTEXITCODE -eq 0) {
+        $behind = [int]((& git rev-list --count "HEAD..origin/$branch" 2>$null).Trim())
+        if ($behind -gt 0) {
+          Write-Host ""
+          Write-Host "Seu clone esta $behind commit(s) atras de origin/$branch." -ForegroundColor Red
+          Write-Host "O AAB ficaria com codigo DESATUALIZADO." -ForegroundColor Red
+          Write-Host ""
+          Write-Host "Resolva com:" -ForegroundColor Yellow
+          Write-Host "  git pull --rebase origin $branch" -ForegroundColor Yellow
+          Write-Host "  npm ci"                            -ForegroundColor Yellow
+          Write-Host "  powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1" -ForegroundColor Yellow
+          Write-Fail "Aborte e atualize antes de buildar."
+        }
+        Write-Ok "Em sincronia com origin/$branch."
+      } else {
+        Write-Host "git fetch falhou (sem rede?). Seguindo sem verificar sincronia." -ForegroundColor Yellow
+      }
+    } catch {
+      Write-Host "Falha ao verificar sincronia com origin. Seguindo." -ForegroundColor Yellow
+    }
+  } else {
+    Write-Host "git nao disponivel. Pulando verificacao de sincronia." -ForegroundColor Yellow
+  }
+
   # 0. Validação: capacitor.config.ts não pode conter server.url ativo
   Write-Step "[0/4] Validando capacitor.config.ts..."
   if (-not (Test-Path "capacitor.config.ts")) {
