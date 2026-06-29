@@ -5,6 +5,36 @@ echo "========================================="
 echo "  Lottos - Build Android Release"
 echo "========================================="
 
+# -1. Garante que o clone local está em sincronia com origin/<branch atual>
+#    Se estiver atrás, aborta — caso contrário o AAB sairia com código antigo
+#    (cenário comum: mudanças feitas no Lovable já estão em origin/main, mas
+#    o build local foi disparado antes do `git pull`).
+echo ""
+echo "[-1/4] Verificando sincronia com origin..."
+if command -v git >/dev/null 2>&1 && [ -d .git ]; then
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  if git fetch origin --quiet; then
+    BEHIND=$(git rev-list --count "HEAD..origin/${BRANCH}" 2>/dev/null || echo 0)
+    if [ "${BEHIND}" -gt 0 ]; then
+      echo ""
+      echo "❌ ERRO: seu clone está ${BEHIND} commit(s) atrás de origin/${BRANCH}."
+      echo "   O AAB ficaria com código DESATUALIZADO (mudanças feitas no Lovable não entrariam)."
+      echo ""
+      echo "   Resolva com:"
+      echo "     git pull --rebase origin ${BRANCH}"
+      echo "     npm ci"
+      echo "     bash scripts/build-android.sh"
+      echo ""
+      exit 1
+    fi
+    echo "✅ Em sincronia com origin/${BRANCH}."
+  else
+    echo "⚠️  git fetch falhou (sem rede?). Seguindo sem verificar sincronia."
+  fi
+else
+  echo "⚠️  git não disponível. Pulando verificação de sincronia."
+fi
+
 # 0. Validação: capacitor.config.ts não pode conter server.url
 echo ""
 echo "[0/4] Validando capacitor.config.ts..."
