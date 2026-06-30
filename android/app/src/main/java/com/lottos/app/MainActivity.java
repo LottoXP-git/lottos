@@ -1,14 +1,16 @@
 package com.lottos.app;
 
 import android.app.PictureInPictureParams;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Rational;
 import android.view.WindowManager;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
+import android.view.View;
+import androidx.activity.EdgeToEdge;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -16,34 +18,38 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Habilita edge-to-edge com compatibilidade retroativa (Play Console
+        // recomenda EdgeToEdge.enable() para Java). A androidx.activity 1.11+
+        // usa internamente LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS, sem
+        // referência à constante SHORT_EDGES descontinuada no Android 15.
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
-        // Edge-to-edge manual: evita androidx.activity.EdgeToEdge, que
-        // internamente referencia LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        // (descontinuado no Android 15 / SDK 35).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            // Android 15+ (SDK 35+): o sistema já força edge-to-edge
-            // automaticamente para apps com targetSdk >= 35.
-            // Só precisamos garantir o modo ALWAYS para o notch/cutout.
+        // Garante exibição sobre notch/cutout em todos os modos (paisagem
+        // inclusive). LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS substitui o
+        // antigo SHORT_EDGES sem disparar avisos no Play Console.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getWindow().getAttributes().layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-        } else {
-            // Android < 15: edge-to-edge via WindowCompat (sem referência à
-            // constante descontinuada). O conteúdo desenha atrás das barras do
-            // sistema, mantendo compatibilidade retroativa.
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                getWindow().getAttributes().layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        }
+
+        // Aplica os recuos (insets) das barras do sistema ao conteúdo da
+        // WebView, evitando que header/footer fiquem escondidos atrás da
+        // status bar ou navigation bar no Android 15+.
+        try {
+            final View root = findViewById(android.R.id.content);
+            if (root != null) {
+                ViewCompat.setOnApplyWindowInsetsListener(root, (v, windowInsets) -> {
+                    Insets bars = windowInsets.getInsets(
+                        WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout()
+                    );
+                    v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+                    return WindowInsetsCompat.CONSUMED;
+                });
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
-                getWindow().setNavigationBarColor(Color.TRANSPARENT);
-            }
-            WindowInsetsControllerCompat controller =
-                new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
-            controller.setAppearanceLightStatusBars(false);
-            controller.setAppearanceLightNavigationBars(false);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to apply system bar insets", e);
         }
 
         // Defensive boot log: if the WebView loads anything other than
