@@ -56,6 +56,22 @@ try {
     Write-Host "git nao disponivel. Pulando verificacao de sincronia." -ForegroundColor Yellow
   }
 
+  # -0.5 Aviso se package-lock.json esta modificado localmente
+  if ($gitExe -and (Test-Path ".git")) {
+    try {
+      $lockDiff = & git status --porcelain package-lock.json 2>$null
+      if ($lockDiff) {
+        Write-Host ""
+        Write-Host "AVISO: package-lock.json esta modificado localmente." -ForegroundColor Yellow
+        Write-Host "Isso normalmente significa que voce rodou 'npm install' (que reescreve o lock)" -ForegroundColor Yellow
+        Write-Host "em vez de 'npm ci'. Para evitar conflitos no proximo git pull, prefira:" -ForegroundColor Yellow
+        Write-Host "  git restore package-lock.json" -ForegroundColor Yellow
+        Write-Host "  npm ci" -ForegroundColor Yellow
+        Write-Host ""
+      }
+    } catch {}
+  }
+
   # 0. Validação: capacitor.config.ts não pode conter server.url ativo
   Write-Step "[0/4] Validando capacitor.config.ts..."
   if (-not (Test-Path "capacitor.config.ts")) {
