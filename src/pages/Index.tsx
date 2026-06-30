@@ -13,7 +13,6 @@ import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-r
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ResultsSummaryModal } from "@/components/ResultsSummaryModal";
-import { PrizeRanking } from "@/components/PrizeRanking";
 import { PrizeChecker } from "@/components/PrizeChecker";
 import { BetPricesCard } from "@/components/BetPricesCard";
 import { AdBanner } from "@/components/AdBanner";
@@ -384,13 +383,6 @@ const Index = () => {
 
         {/* Ad - Inline */}
         <AdBanner format="inline" className="mb-8" />
-
-        {/* Prize Ranking */}
-        <section
-          className="mb-12 animate-fade-in">
-
-          <PrizeRanking lotteries={results} />
-        </section>
 
         {/* Prize Checker */}
         <section
