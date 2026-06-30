@@ -1,6 +1,5 @@
 package com.lottos.app;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +15,7 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Habilita edge-to-edge com compatibilidade retroativa usando a API
-        // recomendada pelo Play Console para Java. A versão AndroidX atual
-        // evita o parâmetro SHORT_EDGES descontinuado no Android 15+.
+        // recomendada pelo Play Console para Java.
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
