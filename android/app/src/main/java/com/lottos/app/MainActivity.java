@@ -1,9 +1,7 @@
 package com.lottos.app;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.WindowManager;
 import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
@@ -16,20 +14,10 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Habilita edge-to-edge com compatibilidade retroativa (Play Console
-        // recomenda EdgeToEdge.enable() para Java). A androidx.activity 1.11+
-        // usa internamente LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS, sem
-        // referência à constante SHORT_EDGES descontinuada no Android 15.
+        // Habilita edge-to-edge com compatibilidade retroativa usando a API
+        // recomendada pelo Play Console para Java.
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-
-        // Garante exibição sobre notch/cutout em todos os modos (paisagem
-        // inclusive). LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS substitui o
-        // antigo SHORT_EDGES sem disparar avisos no Play Console.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getWindow().getAttributes().layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-        }
 
         // Aplica os recuos (insets) das barras do sistema ao conteúdo da
         // WebView, evitando que header/footer fiquem escondidos atrás da
