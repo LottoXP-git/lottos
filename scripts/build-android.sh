@@ -35,6 +35,19 @@ else
   echo "⚠️  git não disponível. Pulando verificação de sincronia."
 fi
 
+# -0.5 Aviso se package-lock.json está modificado localmente
+if command -v git >/dev/null 2>&1 && [ -d .git ]; then
+  if [ -n "$(git status --porcelain package-lock.json 2>/dev/null)" ]; then
+    echo ""
+    echo "⚠️  AVISO: package-lock.json está modificado localmente."
+    echo "   Isso normalmente significa que você rodou 'npm install' (que reescreve o lock)"
+    echo "   em vez de 'npm ci'. Para evitar conflitos no próximo git pull, prefira:"
+    echo "     git restore package-lock.json"
+    echo "     npm ci"
+    echo ""
+  fi
+fi
+
 # 0. Validação: capacitor.config.ts não pode conter server.url
 echo ""
 echo "[0/4] Validando capacitor.config.ts..."
