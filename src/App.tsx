@@ -6,6 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { AgeGate, isAgeVerified, verifyAgeTokenServerSide } from "@/components/AgeGate";
+import { ForceUpdateScreen } from "@/components/ForceUpdateScreen";
+import { useForceUpdate } from "@/hooks/useForceUpdate";
+import { Skeleton } from "@/components/ui/skeleton";
 import Index from "./pages/Index";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
@@ -25,6 +28,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [verified, setVerified] = useState(isAgeVerified());
+  const { needsUpdate, isLoading, checkAgain } = useForceUpdate();
 
   // Defense-in-depth: re-verify the stored age token's HMAC signature with
   // the edge function. A forged token that passes the local structural check
@@ -35,6 +39,22 @@ const App = () => {
       if (!ok) setVerified(false);
     });
   }, [verified]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Skeleton className="h-8 w-8 rounded-full" />
+      </div>
+    );
+  }
+
+  if (needsUpdate) {
+    return (
+      <div className="bg-background">
+        <ForceUpdateScreen onRetry={checkAgain} />
+      </div>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
