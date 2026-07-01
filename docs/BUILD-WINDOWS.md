@@ -163,3 +163,43 @@ Instale o Temurin 17 (<https://adoptium.net/temurin/releases/?version=17>) **ou*
 - [ ] `versionCode` e `versionName` confirmados no log do build
 
 Pronto para upload no Google Play Console.
+
+---
+
+## 6. Forçar atualização obrigatória nos dispositivos dos usuários
+
+O app possui um mecanismo de **verificação de versão obrigatória** que bloqueia o uso até o usuário atualizar pela Google Play Store.
+
+### Como funciona
+- Ao abrir, o app lê sua própria `versionName` nativa (ex: `1.5.1`).
+- Consulta a tabela `app_version_config` no backend e compara com `min_version_name`.
+- Se `force_update = true` **e** o app estiver abaixo da versão mínima, uma tela de bloqueio aparece com botão direto para a Play Store.
+
+### Ativar o bloqueio (antes de publicar um release crítico)
+
+1. Gere o build de release e anote o `versionName` que o Gradle vai gerar (ex: `1.6.0`).
+2. **Antes** de subir o AAB para a Play Store, atualize a configuração no backend:
+
+```sql
+UPDATE app_version_config
+SET min_version_name = '1.6.0',
+    force_update = true,
+    updated_at = now();
+```
+
+> ⚠️ **Importante:** faça isso **depois** que o novo AAB já está pronto e **antes** de divulgar o update. Se atualizar a configuração antes do AAB existir na loja, os usuários ficarão bloqueados sem conseguir atualizar.
+
+### Desativar o bloqueio (rollback de emergência)
+
+```sql
+UPDATE app_version_config
+SET force_update = false,
+    updated_at = now();
+```
+
+Isso libera imediatamente todos os dispositivos, mesmo que estejam em uma versão antiga.
+
+### Regra de ouro
+- **Nunca deixe `force_update = true` com uma `min_version_name` que ainda não foi publicada na Play Store.**
+- Teste o fluxo em Closed Testing antes de ativar no público.
+- Para releases não críticos, mantenha `force_update = false` — o Google Play já notifica os usuários normalmente.
