@@ -44,6 +44,27 @@ export type Database = {
         }
         Relationships: []
       }
+      app_version_config: {
+        Row: {
+          force_update: boolean
+          id: string
+          min_version_name: string
+          updated_at: string
+        }
+        Insert: {
+          force_update?: boolean
+          id?: string
+          min_version_name?: string
+          updated_at?: string
+        }
+        Update: {
+          force_update?: boolean
+          id?: string
+          min_version_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_registrations: {
         Row: {
           accept_email_marketing: boolean
