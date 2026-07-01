@@ -40,7 +40,7 @@ export function useForceUpdate(): ForceUpdateState {
       }
 
       const info = await App.getInfo();
-      const localVersion = info.versionName || info.version || "0.0.0";
+      const localVersion = info.version || "0.0.0";
 
       const { data, error: supaError } = await supabase
         .from("app_version_config")
