@@ -6,7 +6,7 @@ export async function ensureAdMobInit() {
   if (initialized || !isNative()) return;
   const { AdMob } = await import("@capacitor-community/admob");
   await AdMob.initialize({
-    initializeForTesting: true,
+    initializeForTesting: false,
   });
   initialized = true;
 }

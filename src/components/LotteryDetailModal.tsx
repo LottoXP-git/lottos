@@ -14,6 +14,24 @@ import { BarChart3, Sparkles, History, Calendar, Clock, TrendingUp, Clover, Hear
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLotteryDraw } from "@/hooks/useLotteryResults";
+import { useNativeBannerAd } from "@/hooks/useNativeBannerAd";
+import { isNativeAndroid } from "@/lib/platform";
+import { ADMOB_UNITS } from "@/lib/admobUnits";
+import { BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
+
+/**
+ * Overrides the global native banner with the Lottery Detail slot while
+ * mounted (Android only). Restored automatically on unmount.
+ */
+function LotteryDetailAdSlot() {
+  useNativeBannerAd({
+    adId: ADMOB_UNITS.lotteryDetailBanner.android,
+    position: BannerAdPosition.BOTTOM_CENTER,
+    adSize: BannerAdSize.ADAPTIVE_BANNER,
+    priority: 10,
+  });
+  return null;
+}
 
 interface LotteryDetailModalProps {
   lottery: LotteryResult | null;
@@ -86,7 +104,8 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-       <DialogContent className="max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden bg-card border-border p-2 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-0.5rem)] sm:w-auto rounded-xl">
+       <DialogContent className={`max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden bg-card border-border p-2 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-0.5rem)] sm:w-auto rounded-xl ${isNativeAndroid() ? "pb-20 sm:pb-24" : ""}`}>
+        {open && isNativeAndroid() && <LotteryDetailAdSlot />}
         <DialogHeader className="space-y-0.5 sm:space-y-1">
           <DialogTitle className="text-base sm:text-2xl font-bold flex items-baseline gap-1.5 sm:gap-3 flex-nowrap leading-tight min-w-0 overflow-hidden">
               <span className="truncate min-w-0">{displayedLottery.name}</span>
