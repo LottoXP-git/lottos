@@ -1,53 +1,46 @@
 ## Objetivo
-Implementar uma verificação de versão obrigatória no app Capacitor Android. Se o app estiver desatualizado, o usuário verá uma tela de bloqueio com link direto para a atualização na Google Play Store.
+Exibir um banner adaptativo AdMob (Android) fixo no rodapé do `LotteryDetailModal` enquanto ele estiver aberto. iOS e web ignoram (sem impacto).
 
-## O que será construído
+## Ad Unit
+- Android: `ca-app-pub-2147498950861352/1152796535` (banner adaptativo, produção)
+- iOS/web: nenhum (early-return)
 
-### 1. Plugin Capacitor para leitura de versão nativa
-- Instalar `@capacitor/app` (plugin oficial) para obter `versionName` e `versionCode` do build Android nativo.
-- Instalar `@capacitor/browser` para abrir a Play Store de forma confiável dentro do app.
+## Mudanças
 
-### 2. Configuração remota de versão mínima
-- Criar uma tabela `app_version_config` no Lovable Cloud (Supabase) com RLS, contendo:
-  - `min_version_name` (ex: `"1.5.1"`)
-  - `force_update` (booleano)
-  - `updated_at`
-- Criar uma policy para leitura pública (ou via edge function), já que o check acontece antes do login.
-- Criar um hook `useAppVersionCheck` que consulta essa configuração via React Query.
+### 1. `src/lib/admobUnits.ts` (novo)
+Centralizar IDs por plataforma para evitar strings soltas:
+```ts
+export const ADMOB_UNITS = {
+  lotteryDetailBanner: { android: "ca-app-pub-2147498950861352/1152796535" },
+};
+```
 
-### 3. Hook de comparação de versões
-- Criar `src/hooks/useForceUpdate.ts` que:
-  1. Lê a versão nativa via `App.getInfo()`.
-  2. Busca a versão mínima obrigatória no backend.
-  3. Compara semânticamente (major.minor.patch).
-  4. Retorna `needsUpdate: boolean` e `isLoading`.
+### 2. `src/hooks/useNativeBannerAd.ts` (ajuste mínimo)
+Já suporta banner adaptativo com refCount global. Adicionar margem inferior configurável — o banner nativo é renderizado FORA da WebView (overlay do sistema), então precisamos empurrar o conteúdo do modal para não ficar coberto. Duas opções:
 
-### 4. Tela de bloqueio (Force Update)
-- Criar `src/components/ForceUpdateScreen.tsx`:
-  - Layout full-screen centralizado, estilo consistente com o app.
-  - Ícone de alerta + título "Atualização necessária".
-  - Texto explicativo: "Uma nova versão do Lottos está disponível com melhorias e correções."
-  - Botão principal "Atualizar na Play Store" que abre o link da loja via `Browser.open()`.
-  - Botão secundário "Tentar novamente" para recarregar a verificação.
+- **A (escolhida):** manter `position: BOTTOM_CENTER` e adicionar padding-bottom dinâmico ao `DialogContent` do modal (via prop/estado) quando o banner estiver ativo em nativo. Simples, sem mexer em posicionamento do AdMob.
 
-### 5. Integração no fluxo principal
-- Em `src/App.tsx`, adicionar a verificação junto ao `AgeGate`:
-  - Se `needsUpdate === true`, renderiza `<ForceUpdateScreen />` em vez do `<BrowserRouter>`.
-  - Enquanto `isLoading`, mostra um `<Skeleton>` ou spinner para não travar a inicialização.
+### 3. `src/components/LotteryDetailModal.tsx`
+- Importar `useNativeBannerAd`, `isNativeAndroid` (novo helper) e `ADMOB_UNITS`.
+- Chamar o hook condicionalmente apenas quando `open === true` E `isNativeAndroid()`. Como hooks não podem ser condicionais, criamos um wrapper `<LotteryDetailAdSlot />` renderizado só quando `open` — ele monta/desmonta e o hook cuida do show/remove.
+- Aplicar `pb-20` (safe area + altura do banner) ao container do modal só em Android nativo, para o conteúdo não ficar oculto pelo banner do sistema.
 
-### 6. Documentação de uso
-- Adicionar instruções em `docs/BUILD-WINDOWS.md` (ou arquivo separado) explicando:
-  - Como editar a versão mínima obrigatória na tabela do backend antes de publicar um release crítico.
-  - Como desativar o force-update (setar `force_update = false`) caso precise de rollback.
+### 4. `src/lib/platform.ts`
+Adicionar helper `isNativeAndroid()` (já existe `isNativeIOS` e `isNative`).
 
-## Pontos de decisão (não bloqueantes)
-- **Formato da versão:** usaremos `versionName` (string semântica) e não `versionCode` (numérico), pois o `versionName` é legível e fácil de comparar.
-- **Play Store URL:** `https://play.google.com/store/apps/details?id=com.lottos.app` — aberto via `@capacitor/browser` para garantir que funcione dentro do wrapper nativo.
+### 5. `src/lib/admob.ts`
+Trocar `initializeForTesting: true` por `false` — estamos usando IDs de produção. Mantém idempotência via flag `initialized`.
 
-## Checklist de entrega
-- [ ] `@capacitor/app` e `@capacitor/browser` instalados e sincronizados no Android.
-- [ ] Tabela `app_version_config` criada no backend com RLS e GRANT adequados.
-- [ ] Hook `useForceUpdate` funcional, comparando versão local vs. remota.
-- [ ] Componente `ForceUpdateScreen` bloqueando o app quando necessário.
-- [ ] Integrado em `App.tsx` antes do roteamento.
-- [ ] Testado no preview web (deve ignorar a verificação quando `!isNative()`).
+## O que NÃO muda
+- `NativeBannerMount` global (banner do app inteiro) continua igual — este novo slot é independente e o refCount do hook garante que só um banner esteja ativo por vez. Quando o modal abre, o refCount já estará ≥ 1 pelo banner global, então o modal NÃO disparará um segundo `showBanner`. **Ajuste necessário:** o modal precisa forçar seu próprio banner por cima do global. Solução: parametrizar o hook com uma `key`/`slot` e manter refCount POR slot, empilhando shows (o AdMob permite trocar via novo `showBanner`; ele substitui o atual). O modal chama `showBanner` do seu slot ao abrir e, no unmount, re-exibe o banner global.
+
+Detalhe técnico simplificado: adicionar suporte a "stack" no hook — guardar o último `adId` global e restaurá-lo quando o modal fechar.
+
+## Validação
+- `npm run build` local (não roda AdMob na web).
+- Verificar em device Android: abrir modal → banner aparece no rodapé com o novo unit; fechar → banner global volta.
+- iOS/web: nenhum banner extra, sem erros no console.
+
+## Fora de escopo
+- iOS AdMob (mantém desativado, conforme plano iOS v1).
+- Intersticiais e frequência capping.
