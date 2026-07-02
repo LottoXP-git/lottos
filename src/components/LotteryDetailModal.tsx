@@ -104,7 +104,17 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-       <DialogContent className={`max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden bg-card border-border p-2 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-0.5rem)] sm:w-auto rounded-xl ${isNativeAndroid() ? "pb-20 sm:pb-24" : ""}`}>
+       <DialogContent
+         className="max-w-4xl overflow-y-auto overflow-x-hidden bg-card border-border p-2 sm:p-6 mx-0 sm:mx-auto w-[calc(100vw-0.5rem)] sm:w-auto rounded-xl"
+         style={{
+           // Shrink when the soft keyboard is open so inputs stay visible.
+           maxHeight: "calc(95vh - var(--keyboard-h, 0px))",
+           // Reserve space for the AdMob banner + keyboard + safe area so the
+           // last piece of content is never covered.
+           paddingBottom:
+             "calc(env(safe-area-inset-bottom, 0px) + var(--admob-banner-h, 0px) + var(--keyboard-h, 0px) + 0.75rem)",
+         }}
+       >
         {open && isNativeAndroid() && <LotteryDetailAdSlot />}
         <DialogHeader className="space-y-0.5 sm:space-y-1">
           <DialogTitle className="text-base sm:text-2xl font-bold flex items-baseline gap-1.5 sm:gap-3 flex-nowrap leading-tight min-w-0 overflow-hidden">

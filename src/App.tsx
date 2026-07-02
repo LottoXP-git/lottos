@@ -23,12 +23,14 @@ import ResponsibleGambling from "./pages/ResponsibleGambling";
 import { CookieConsent } from "@/components/CookieConsent";
 import { TestVersionBanner } from "@/components/TestVersionBanner";
 import { NativeBannerMount } from "@/components/NativeBannerMount";
+import { useNativeInsets } from "@/hooks/useNativeInsets";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [verified, setVerified] = useState(isAgeVerified());
   const { needsUpdate, isLoading, checkAgain } = useForceUpdate();
+  useNativeInsets();
 
   // Defense-in-depth: re-verify the stored age token's HMAC signature with
   // the edge function. A forged token that passes the local structural check
