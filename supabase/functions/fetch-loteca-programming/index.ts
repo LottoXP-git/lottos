@@ -132,8 +132,12 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error('[fetch-loteca-programming]', err);
     return new Response(
-      JSON.stringify({ success: false, error: 'Não foi possível obter a programação no momento.' }),
-      { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      JSON.stringify({
+        success: false,
+        fallback: true,
+        error: 'Não foi possível obter a programação no momento.',
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 });
