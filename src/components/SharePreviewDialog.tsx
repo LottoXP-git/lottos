@@ -1,8 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Share2, MessageCircle } from "lucide-react";
+import { Copy, Check, Share2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { SocialShareButtons } from "./SocialShareButtons";
 
 interface SharePreviewDialogProps {
   open: boolean;
@@ -37,12 +38,6 @@ export function SharePreviewDialog({
     } catch {
       toast({ title: "Erro", description: "Não foi possível copiar.", variant: "destructive" });
     }
-  };
-
-  const handleWhatsApp = () => {
-    const wa = `https://wa.me/?text=${encodeURIComponent(fullMessage)}`;
-    window.open(wa, "_blank", "noopener,noreferrer");
-    onOpenChange(false);
   };
 
   const handleNative = async () => {
@@ -105,10 +100,12 @@ export function SharePreviewDialog({
           </div>
 
           <div className="grid grid-cols-1 gap-2">
-            <Button onClick={handleWhatsApp} className="gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white">
-              <MessageCircle className="w-4 h-4" />
-              Compartilhar no WhatsApp
-            </Button>
+            <SocialShareButtons
+              file={file ?? null}
+              caption={`${title}\n${text}`}
+              url={url}
+              onDone={() => onOpenChange(false)}
+            />
 
             {hasNativeShare && (
               <Button onClick={handleNative} variant="outline" className="gap-2">
