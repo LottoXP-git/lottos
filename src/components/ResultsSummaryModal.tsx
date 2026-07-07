@@ -8,6 +8,8 @@ import { toast } from "@/hooks/use-toast";
 import { LotteryBall } from "@/components/LotteryBall";
 import lotusLogo from "@/assets/lotus-logo.png";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { shareImageToInstagram, shareImageToWhatsApp } from "@/lib/socialShare";
+import { MessageCircle, Instagram } from "lucide-react";
 
 type LotteryVariant = "megasena" | "lotofacil" | "quina" | "lotomania" | "duplasena" | "diadesorte" | "supersete" | "maismilionaria" | "timemania" | "federal" | "loteca";
 
@@ -122,7 +124,54 @@ export function ResultsSummaryModal({ lotteries }: ResultsSummaryModalProps) {
   const [open, setOpen] = useState(false);
   const [shared, setShared] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [socialBusy, setSocialBusy] = useState<"wa" | "ig" | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const buildImageFile = async (): Promise<File | null> => {
+    if (!contentRef.current) return null;
+    const canvas = await html2canvas(contentRef.current, {
+      backgroundColor: null,
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/png"),
+    );
+    if (!blob) return null;
+    return new File([blob], "resultados-loterias.png", { type: "image/png" });
+  };
+
+  const handleSocialShare = async (target: "wa" | "ig") => {
+    setSocialBusy(target);
+    try {
+      const file = await buildImageFile();
+      const caption = buildShareText(lotteries) + `\n\n${window.location.href}`;
+      if (!file) {
+        toast({ title: "Erro", description: "Não foi possível gerar a imagem.", variant: "destructive" });
+        return;
+      }
+      const outcome =
+        target === "wa"
+          ? await shareImageToWhatsApp(file, caption)
+          : await shareImageToInstagram(file, caption);
+      if (outcome === "shared") {
+        toast({ title: target === "wa" ? "Enviado para o WhatsApp!" : "Enviado para o Instagram!" });
+      } else if (outcome === "fallback") {
+        toast({
+          title: "Imagem baixada",
+          description:
+            target === "wa"
+              ? "Anexe no WhatsApp — a legenda já foi copiada."
+              : "Publique no Instagram — a legenda já foi copiada.",
+        });
+      }
+    } catch {
+      toast({ title: "Erro", description: "Não foi possível compartilhar.", variant: "destructive" });
+    } finally {
+      setSocialBusy(null);
+    }
+  };
 
   const handleShare = async () => {
     if (!contentRef.current) return;
@@ -197,6 +246,38 @@ export function ResultsSummaryModal({ lotteries }: ResultsSummaryModalProps) {
           <DialogTitle className="flex items-center justify-between gap-2">
             <span>Resumo dos Resultados</span>
             <div className="flex gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSocialShare("wa")}
+                disabled={socialBusy !== null || sharing}
+                className="gap-1.5 bg-[#25D366] hover:bg-[#1ebe5d] text-white border-0"
+              >
+                {socialBusy === "wa" ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="w-4 h-4" />
+                )}
+                WhatsApp
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSocialShare("ig")}
+                disabled={socialBusy !== null || sharing}
+                className="gap-1.5 text-white border-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg,#f58529 0%,#dd2a7b 50%,#8134af 100%)",
+                }}
+              >
+                {socialBusy === "ig" ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Instagram className="w-4 h-4" />
+                )}
+                Instagram
+              </Button>
               <Button variant="outline" size="sm" onClick={handleShare} disabled={sharing} className="gap-2">
                 {sharing ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -205,7 +286,7 @@ export function ResultsSummaryModal({ lotteries }: ResultsSummaryModalProps) {
                 ) : (
                   <Share2 className="w-4 h-4" />
                 )}
-                {sharing ? "Gerando..." : shared ? "Copiado" : "Compartilhar"}
+                {sharing ? "Gerando..." : shared ? "Copiado" : "Outros"}
               </Button>
             </div>
           </DialogTitle>
