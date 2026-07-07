@@ -17,6 +17,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { SocialShareButtons } from "./SocialShareButtons";
 
 interface ShareResultImageButtonProps {
   targetRef: RefObject<HTMLElement>;
@@ -278,6 +279,13 @@ export function ShareResultImageButton({
               />
             )}
           </div>
+          {previewBlob && (
+            <SocialShareButtons
+              file={new File([previewBlob], `${safeName}.png`, { type: "image/png" })}
+              caption={caption}
+              onDone={() => setPreviewOpen(false)}
+            />
+          )}
           <DialogFooter className="gap-2 sm:gap-2">
             <Button variant="outline" onClick={handleConfirmDownload} disabled={sharing}>
               <Download className="w-4 h-4 mr-2" />
@@ -289,7 +297,7 @@ export function ShareResultImageButton({
               ) : (
                 <Share2 className="w-4 h-4 mr-2" />
               )}
-              Compartilhar
+              Outros apps
             </Button>
           </DialogFooter>
         </DialogContent>
