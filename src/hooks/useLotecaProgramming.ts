@@ -14,10 +14,14 @@ export function useLotecaProgramming(fallback: LotecaProgramming) {
   return useQuery<LotecaProgramming>({
     queryKey: ["loteca-programming"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("fetch-loteca-programming");
-      if (error) throw error;
-      if (!data?.success || !data?.data) throw new Error("Resposta inválida");
-      return data.data as LotecaProgramming;
+      try {
+        const { data, error } = await supabase.functions.invoke("fetch-loteca-programming");
+        if (error) return fallback;
+        if (!data?.success || !data?.data) return fallback;
+        return data.data as LotecaProgramming;
+      } catch {
+        return fallback;
+      }
     },
     placeholderData: fallback,
     staleTime: 30 * 60 * 1000,
