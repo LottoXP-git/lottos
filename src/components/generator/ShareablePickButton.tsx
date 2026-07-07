@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Share2, Loader2 } from "lucide-react";
+import { Share2, Loader2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { formatLotteryNumber } from "@/lib/formatNumber";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { SocialShareButtons } from "@/components/SocialShareButtons";
 
 interface ShareablePickButtonProps {
   lotteryName: string;
@@ -264,8 +273,13 @@ function buildCard(props: ShareablePickButtonProps): HTMLCanvasElement {
 
 export function ShareablePickButton(props: ShareablePickButtonProps) {
   const [busy, setBusy] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
 
-  const handleShare = async () => {
+  const caption = `Meu palpite da sorte para ${props.lotteryName} 🍀\n\n#PalpiteDaSorte · grupolottoxp.com`;
+
+  const handleGenerate = async () => {
     setBusy(true);
     try {
       const canvas = buildCard(props);
@@ -273,36 +287,32 @@ export function ShareablePickButton(props: ShareablePickButtonProps) {
         canvas.toBlob((b) => resolve(b), "image/png", 0.95)
       );
       if (!blob) throw new Error("Falha ao gerar imagem");
-
       const file = new File([blob], "lottos-palpite.png", { type: "image/png" });
-
-      const navAny = navigator as any;
-      if (navAny.canShare && navAny.canShare({ files: [file] })) {
-        await navAny.share({
-          files: [file],
-          title: "Meu palpite Lottos",
-          text: `Meu palpite da sorte para ${props.lotteryName} 🍀`,
-        });
-        toast.success("Compartilhado!");
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "lottos-palpite.png";
-        a.click();
-        URL.revokeObjectURL(url);
-        toast.success("Imagem baixada!");
-      }
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewFile(file);
+      setPreviewUrl(URL.createObjectURL(blob));
+      setPreviewOpen(true);
     } catch {
-      toast.error("Não foi possível compartilhar agora");
+      toast.error("Não foi possível gerar a imagem");
     } finally {
       setBusy(false);
     }
   };
 
+  const handleDownload = () => {
+    if (!previewUrl) return;
+    const a = document.createElement("a");
+    a.href = previewUrl;
+    a.download = "lottos-palpite.png";
+    a.click();
+    toast.success("Imagem baixada!");
+    setPreviewOpen(false);
+  };
+
   return (
+    <>
     <Button
-      onClick={handleShare}
+      onClick={handleGenerate}
       variant="outline"
       size="lg"
       disabled={busy}
@@ -315,5 +325,39 @@ export function ShareablePickButton(props: ShareablePickButtonProps) {
       )}
       Compartilhar como imagem
     </Button>
+
+    <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Compartilhar palpite</DialogTitle>
+          <DialogDescription>
+            Escolha onde publicar sua imagem.
+          </DialogDescription>
+        </DialogHeader>
+        {previewUrl && (
+          <div className="flex justify-center rounded-lg bg-muted/40 p-3">
+            <img
+              src={previewUrl}
+              alt="Pré-visualização do palpite"
+              className="max-h-[55vh] w-auto rounded-md shadow-md"
+            />
+          </div>
+        )}
+        {previewFile && (
+          <SocialShareButtons
+            file={previewFile}
+            caption={caption}
+            onDone={() => setPreviewOpen(false)}
+          />
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={handleDownload} className="w-full">
+            <Download className="w-4 h-4 mr-2" />
+            Baixar PNG
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
