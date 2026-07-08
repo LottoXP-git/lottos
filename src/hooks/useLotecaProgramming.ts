@@ -53,6 +53,10 @@ function isBreakerOpen(): boolean {
   return readBreaker().openUntil > Date.now();
 }
 
+export function resetLotecaBreaker() {
+  writeBreaker({ failures: 0, openUntil: 0 });
+}
+
 export function useLotecaProgramming(fallback: LotecaProgramming) {
   return useQuery<LotecaProgramming>({
     queryKey: ["loteca-programming"],
@@ -72,9 +76,10 @@ export function useLotecaProgramming(fallback: LotecaProgramming) {
       }
     },
     placeholderData: fallback,
-    staleTime: 30 * 60 * 1000,
-    refetchInterval: 30 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 10 * 60 * 1000,
     refetchOnWindowFocus: true,
+    refetchOnMount: "always",
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
