@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { UpcomingMatch } from "@/components/LotecaUpcomingMatches";
+import { fetchLotecaProgrammingFromBrowser } from "@/lib/fetchLotecaProgrammingBrowser";
 
 export interface LotecaProgramming {
   concurso: number;
@@ -61,6 +62,19 @@ export function useLotecaProgramming(fallback: LotecaProgramming) {
   return useQuery<LotecaProgramming>({
     queryKey: ["loteca-programming"],
     queryFn: async () => {
+      // 1) Primary: browser fetch — Caixa allows browser origins even when it 403's
+      //    the edge function's data-center IPs.
+      try {
+        const browserData = await fetchLotecaProgrammingFromBrowser();
+        if (browserData) {
+          recordSuccess();
+          return browserData as LotecaProgramming;
+        }
+      } catch (err) {
+        console.warn("[useLotecaProgramming] browser fetch falhou", err);
+      }
+
+      // 2) Fallback: edge function (may return cached fallback on 403).
       if (isBreakerOpen()) return fallback;
       try {
         const { data, error } = await supabase.functions.invoke("fetch-loteca-programming");
