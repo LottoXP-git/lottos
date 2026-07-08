@@ -27,6 +27,7 @@ export function useLotecaProgramming(fallback: LotecaProgramming) {
     staleTime: 30 * 60 * 1000,
     refetchInterval: 30 * 60 * 1000,
     refetchOnWindowFocus: true,
-    retry: 1,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
 }
