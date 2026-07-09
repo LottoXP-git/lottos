@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LotecaVolante } from "./LotecaVolante";
-import { LotecaUpcomingMatchesLive } from "./LotecaUpcomingMatchesLive";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
