@@ -65,12 +65,15 @@ export function ShareResultImageButton({
       position: fixed;
       top: 0;
       left: -10000px;
-      width: 720px;
-      padding: 24px;
+      width: 960px;
+      padding: 32px;
       background: ${bg};
       color: ${fg};
       z-index: -1;
       font-family: Inter, system-ui, sans-serif;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
     `;
 
     // Header
@@ -79,16 +82,26 @@ export function ShareResultImageButton({
       display:flex;align-items:center;justify-content:space-between;
       padding:0 4px 12px 4px;margin-bottom:12px;
       border-bottom:1px solid rgba(127,127,127,0.25);
+      flex-wrap:wrap;gap:8px;
     `;
     header.innerHTML = `
-      <img src="${lottosLogo}" alt="Lottos" style="height:36px;width:auto;display:block;" crossorigin="anonymous" />
-      <div style="font-weight:600;font-size:14px;opacity:0.75;">${lotteryName} · Concurso ${concurso}</div>
+      <img src="${lottosLogo}" alt="Lottos" style="height:44px;width:auto;display:block;" crossorigin="anonymous" />
+      <div style="font-weight:600;font-size:18px;opacity:0.85;max-width:70%;text-align:right;line-height:1.25;">${lotteryName} · Concurso ${concurso}</div>
     `;
     container.appendChild(header);
 
     // Cloned content
     const clone = node.cloneNode(true) as HTMLElement;
     clone.style.width = "100%";
+    clone.style.whiteSpace = "normal";
+    clone.style.wordBreak = "break-word";
+    (clone.style as any).overflowWrap = "anywhere";
+    // Allow inner text nodes to wrap naturally
+    clone.querySelectorAll<HTMLElement>("*").forEach((el) => {
+      const cs = getComputedStyle(el);
+      if (cs.whiteSpace === "nowrap") el.style.whiteSpace = "normal";
+      el.style.maxWidth = "100%";
+    });
     container.appendChild(clone);
 
     // Footer
@@ -97,7 +110,7 @@ export function ShareResultImageButton({
       margin-top:16px;padding-top:12px;
       border-top:1px solid rgba(127,127,127,0.25);
       display:flex;align-items:center;justify-content:space-between;
-      font-size:12px;opacity:0.8;
+      font-size:14px;opacity:0.8;flex-wrap:wrap;gap:6px;
     `;
     footer.innerHTML = `
       <span>grupolottoxp.com</span>
@@ -172,12 +185,17 @@ export function ShareResultImageButton({
       sctx.fillRect(0, 0, STORY_W, STORY_H);
       // Fit source canvas inside with side padding, centered vertically
       const padX = 40;
+      const padY = 120;
       const maxW = STORY_W - padX * 2;
-      const scale = Math.min(maxW / canvas.width, (STORY_H - 160) / canvas.height);
+      const maxH = STORY_H - padY * 2;
+      // Fit while allowing upscaling for short content and downscaling for long
+      const scale = Math.min(maxW / canvas.width, maxH / canvas.height);
       const drawW = canvas.width * scale;
       const drawH = canvas.height * scale;
       const dx = (STORY_W - drawW) / 2;
       const dy = (STORY_H - drawH) / 2;
+      sctx.imageSmoothingEnabled = true;
+      sctx.imageSmoothingQuality = "high";
       sctx.drawImage(canvas, dx, dy, drawW, drawH);
       const blob: Blob | null = await new Promise((resolve) =>
         story.toBlob((b) => resolve(b), "image/png", 0.95),
