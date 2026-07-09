@@ -476,12 +476,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
 
-            {lottery.id === "loteca" && (
-              <TabsContent value="upcoming" className="mt-2 sm:mt-4">
-                <LotecaUpcomingMatchesLive />
-              </TabsContent>
-            )}
-
             {lottery.id !== "loteca" && (
               <>
                 <TabsContent value="stats" className="mt-2 sm:mt-4 space-y-3 sm:space-y-4">
