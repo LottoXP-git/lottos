@@ -157,8 +157,30 @@ export function ShareResultImageButton({
         useCORS: true,
         logging: false,
       });
+      // Compose into Instagram Story format (1080x1920, 9:16)
+      const STORY_W = 1080;
+      const STORY_H = 1920;
+      const story = document.createElement("canvas");
+      story.width = STORY_W;
+      story.height = STORY_H;
+      const sctx = story.getContext("2d")!;
+      // Background gradient matching body bg
+      const grad = sctx.createLinearGradient(0, 0, 0, STORY_H);
+      grad.addColorStop(0, bg);
+      grad.addColorStop(1, bg);
+      sctx.fillStyle = grad;
+      sctx.fillRect(0, 0, STORY_W, STORY_H);
+      // Fit source canvas inside with side padding, centered vertically
+      const padX = 40;
+      const maxW = STORY_W - padX * 2;
+      const scale = Math.min(maxW / canvas.width, (STORY_H - 160) / canvas.height);
+      const drawW = canvas.width * scale;
+      const drawH = canvas.height * scale;
+      const dx = (STORY_W - drawW) / 2;
+      const dy = (STORY_H - drawH) / 2;
+      sctx.drawImage(canvas, dx, dy, drawW, drawH);
       const blob: Blob | null = await new Promise((resolve) =>
-        canvas.toBlob((b) => resolve(b), "image/png", 0.95),
+        story.toBlob((b) => resolve(b), "image/png", 0.95),
       );
       if (!blob) throw new Error("BLOB_FAILED");
       if (previewUrl) URL.revokeObjectURL(previewUrl);
