@@ -170,9 +170,9 @@ export function ShareResultImageButton({
         useCORS: true,
         logging: false,
       });
-      // Compose into Instagram Story format (1080x1920, 9:16)
+      // Compose into Instagram Feed format (1080x1080, 1:1)
       const STORY_W = 1080;
-      const STORY_H = 1920;
+      const STORY_H = 1080;
       const story = document.createElement("canvas");
       story.width = STORY_W;
       story.height = STORY_H;
