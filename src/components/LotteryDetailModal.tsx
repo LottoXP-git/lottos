@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LotecaVolante } from "./LotecaVolante";
-import { LotecaUpcomingMatchesLive } from "./LotecaUpcomingMatchesLive";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LotteryResult, NumberFrequency, generateFrequencyData, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
 import { FrequencyChart } from "./FrequencyChart";
@@ -459,12 +458,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
                 <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Histórico</span>
               </TabsTrigger>
-              {lottery.id === "loteca" && (
-                <TabsTrigger value="upcoming" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
-                  <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                  <span>Próximo Concurso</span>
-                </TabsTrigger>
-              )}
               {lottery.id !== "loteca" && (
                 <>
                   <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 min-w-fit text-[10px] sm:text-sm rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">
@@ -482,12 +475,6 @@ export function LotteryDetailModal({ lottery, open, onOpenChange }: LotteryDetai
             <TabsContent value="history" className="mt-2 sm:mt-4">
               <DrawHistory lottery={lottery} variant={variantMap[lottery.color]} />
             </TabsContent>
-
-            {lottery.id === "loteca" && (
-              <TabsContent value="upcoming" className="mt-2 sm:mt-4">
-                <LotecaUpcomingMatchesLive />
-              </TabsContent>
-            )}
 
             {lottery.id !== "loteca" && (
               <>
