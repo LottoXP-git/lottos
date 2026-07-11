@@ -18,6 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { SocialShareButtons } from "./SocialShareButtons";
+import { isNativePlatform, saveImageNative, shareImageNative } from "@/lib/nativeShare";
 
 interface ShareResultImageButtonProps {
   targetRef: RefObject<HTMLElement>;
@@ -226,8 +227,19 @@ export function ShareResultImageButton({
 
   const caption = `🎰 ${lotteryName} - Concurso ${concurso}\n📅 ${date}${nextPrize ? `\n💰 Próximo: ${nextPrize}` : ""}\n\ngrupolottoxp.com`;
 
-  const handleConfirmDownload = () => {
+  const handleConfirmDownload = async () => {
     if (!previewUrl) return;
+    if (isNativePlatform() && previewBlob) {
+      const file = new File([previewBlob], `${safeName}.png`, { type: "image/png" });
+      const ok = await saveImageNative(file);
+      toast({
+        title: ok ? "Imagem salva!" : "Não foi possível salvar",
+        description: ok ? "Salvo na pasta Documentos do dispositivo." : "Tente compartilhar em outro app.",
+        variant: ok ? "default" : "destructive",
+      });
+      if (ok) setPreviewOpen(false);
+      return;
+    }
     const a = document.createElement("a");
     a.href = previewUrl;
     a.download = `${safeName}.png`;
@@ -243,6 +255,20 @@ export function ShareResultImageButton({
     setSharing(true);
     try {
       const file = new File([previewBlob], `${safeName}.png`, { type: "image/png" });
+      if (isNativePlatform()) {
+        const outcome = await shareImageNative(file, caption, `${lotteryName} - Concurso ${concurso}`);
+        if (outcome === "shared") {
+          toast({ title: "Compartilhado!" });
+          setPreviewOpen(false);
+        } else if (outcome === "error") {
+          toast({
+            title: "Compartilhamento falhou",
+            description: "Tente pelo botão do WhatsApp/Instagram.",
+            variant: "destructive",
+          });
+        }
+        return;
+      }
       const canShareFiles =
         typeof navigator.share === "function" &&
         typeof navigator.canShare === "function" &&
