@@ -1,46 +1,47 @@
-## Objetivo
-Exibir um banner adaptativo AdMob (Android) fixo no rodapé do `LotteryDetailModal` enquanto ele estiver aberto. iOS e web ignoram (sem impacto).
+## Problema
 
-## Ad Unit
-- Android: `ca-app-pub-2147498950861352/1152796535` (banner adaptativo, produção)
-- iOS/web: nenhum (early-return)
+Na versão nativa (Android/iOS via Capacitor) o compartilhamento de imagens não funciona porque o código atual depende só de APIs web:
 
-## Mudanças
+- `navigator.canShare({ files })` retorna `false` em muitas WebViews do Capacitor → cai no fallback.
+- O fallback usa `<a download>` para "baixar" a imagem, mas a WebView do Android não salva blobs assim — o arquivo simplesmente desaparece.
+- `window.open("https://wa.me/...")` dentro da WebView abre uma aba em branco em vez de o app do WhatsApp/Instagram.
 
-### 1. `src/lib/admobUnits.ts` (novo)
-Centralizar IDs por plataforma para evitar strings soltas:
-```ts
-export const ADMOB_UNITS = {
-  lotteryDetailBanner: { android: "ca-app-pub-2147498950861352/1152796535" },
-};
-```
+Resultado: usuário toca em "WhatsApp"/"Instagram"/"Outros apps" e nada acontece (ou abre um popup vazio), sem imagem anexada.
 
-### 2. `src/hooks/useNativeBannerAd.ts` (ajuste mínimo)
-Já suporta banner adaptativo com refCount global. Adicionar margem inferior configurável — o banner nativo é renderizado FORA da WebView (overlay do sistema), então precisamos empurrar o conteúdo do modal para não ficar coberto. Duas opções:
+## Solução
 
-- **A (escolhida):** manter `position: BOTTOM_CENTER` e adicionar padding-bottom dinâmico ao `DialogContent` do modal (via prop/estado) quando o banner estiver ativo em nativo. Simples, sem mexer em posicionamento do AdMob.
+Usar os plugins nativos do Capacitor para escrever o arquivo no dispositivo e disparar o share sheet nativo, mantendo o fluxo web atual como fallback no navegador.
 
-### 3. `src/components/LotteryDetailModal.tsx`
-- Importar `useNativeBannerAd`, `isNativeAndroid` (novo helper) e `ADMOB_UNITS`.
-- Chamar o hook condicionalmente apenas quando `open === true` E `isNativeAndroid()`. Como hooks não podem ser condicionais, criamos um wrapper `<LotteryDetailAdSlot />` renderizado só quando `open` — ele monta/desmonta e o hook cuida do show/remove.
-- Aplicar `pb-20` (safe area + altura do banner) ao container do modal só em Android nativo, para o conteúdo não ficar oculto pelo banner do sistema.
+### Passos
 
-### 4. `src/lib/platform.ts`
-Adicionar helper `isNativeAndroid()` (já existe `isNativeIOS` e `isNative`).
+1. **Instalar plugins** (padrão Capacitor):
+   - `@capacitor/share` — share sheet nativo com anexo de arquivo.
+   - `@capacitor/filesystem` — grava a imagem em cache para gerar um `file://` URI compartilhável.
 
-### 5. `src/lib/admob.ts`
-Trocar `initializeForTesting: true` por `false` — estamos usando IDs de produção. Mantém idempotência via flag `initialized`.
+2. **Criar helper `src/lib/nativeShare.ts`** com:
+   - `isNativePlatform()` (via `Capacitor.isNativePlatform()`).
+   - `shareImageNative(file, caption, title?)` — converte o `Blob` em base64, escreve em `Directory.Cache` com `Filesystem.writeFile`, pega o `uri` com `Filesystem.getUri` e chama `Share.share({ title, text: caption, url: uri, dialogTitle })`. Retorna outcome (`shared` | `aborted` | `error`).
+   - `shareTextNative(text, url?)` — chama `Share.share({ text, url })`.
 
-## O que NÃO muda
-- `NativeBannerMount` global (banner do app inteiro) continua igual — este novo slot é independente e o refCount do hook garante que só um banner esteja ativo por vez. Quando o modal abre, o refCount já estará ≥ 1 pelo banner global, então o modal NÃO disparará um segundo `showBanner`. **Ajuste necessário:** o modal precisa forçar seu próprio banner por cima do global. Solução: parametrizar o hook com uma `key`/`slot` e manter refCount POR slot, empilhando shows (o AdMob permite trocar via novo `showBanner`; ele substitui o atual). O modal chama `showBanner` do seu slot ao abrir e, no unmount, re-exibe o banner global.
+3. **Refatorar `src/lib/socialShare.ts`** para, em plataforma nativa:
+   - `shareImageToWhatsApp` / `shareImageToInstagram`: chamar `shareImageNative` (share sheet nativo já lista WhatsApp/Instagram diretamente com a imagem anexa). Não abrir `wa.me` nem `instagram.com` na WebView.
+   - `shareTextToWhatsApp`: usar o plugin `Share` no nativo.
+   - No web, manter exatamente o comportamento atual (Web Share API + `wa.me` + download).
 
-Detalhe técnico simplificado: adicionar suporte a "stack" no hook — guardar o último `adId` global e restaurá-lo quando o modal fechar.
+4. **Ajustar `ShareResultImageButton`, `ShareCardImageButton`, `SharePreviewDialog`, `ShareablePickButton`, `ResultsSummaryModal`**:
+   - Botão "Outros apps" e handlers de `navigator.share`: encaminhar para `shareImageNative` quando `isNativePlatform()`.
+   - O botão "Baixar PNG" no nativo: usar `Filesystem.writeFile` em `Directory.Documents` (ou `Directory.Cache` + `Share`) — evitar o `<a download>` que não funciona na WebView.
 
-## Validação
-- `npm run build` local (não roda AdMob na web).
-- Verificar em device Android: abrir modal → banner aparece no rodapé com o novo unit; fechar → banner global volta.
-- iOS/web: nenhum banner extra, sem erros no console.
+5. **Não mexer em nada de UI/estilo** — só a camada de compartilhamento.
 
-## Fora de escopo
-- iOS AdMob (mantém desativado, conforme plano iOS v1).
-- Intersticiais e frequência capping.
+### Detalhes técnicos
+
+- Import dinâmico dos plugins (`await import("@capacitor/share")`) para não quebrar o preview web nem aumentar o bundle inicial.
+- `Filesystem.writeFile` precisa de string base64 sem o prefixo `data:`; conversão feita com `FileReader.readAsDataURL` + `split(",")[1]`.
+- No iOS o `Share.share({ url })` aceita `file://` URIs gerados pelo Filesystem.
+- Após o `sync`, o usuário precisa rodar `npx cap sync android` uma vez para os plugins nativos serem registrados.
+
+### Verificação
+
+- `tsgo` para checagem de tipos.
+- Instruir o usuário: `git pull`, `npm ci`, `npx cap sync android`, rebuild — testar tocar "WhatsApp"/"Instagram" no modal de resultado no aparelho.
