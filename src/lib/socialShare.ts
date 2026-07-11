@@ -13,6 +13,8 @@
 
 export type SocialShareOutcome = "shared" | "aborted" | "fallback" | "error";
 
+import { isNativePlatform, shareImageNative, shareTextNative } from "./nativeShare";
+
 function openExternal(url: string) {
   window.open(url, "_blank", "noopener,noreferrer");
 }
@@ -50,6 +52,10 @@ function canShareFiles(file: File) {
 
 /** Share a text (optionally with URL) directly on WhatsApp. */
 export function shareTextToWhatsApp(text: string, url?: string) {
+  if (isNativePlatform()) {
+    void shareTextNative(url ? `${text}\n\n${url}` : text);
+    return;
+  }
   const message = url ? `${text}\n\n${url}` : text;
   openExternal(`https://wa.me/?text=${encodeURIComponent(message)}`);
 }
@@ -64,6 +70,12 @@ export async function shareImageToWhatsApp(
   file: File,
   caption: string,
 ): Promise<SocialShareOutcome> {
+  if (isNativePlatform()) {
+    const outcome = await shareImageNative(file, caption, "Compartilhar no WhatsApp");
+    if (outcome === "shared") return "shared";
+    if (outcome === "aborted") return "aborted";
+    return "error";
+  }
   if (canShareFiles(file)) {
     try {
       await (navigator as Navigator).share({
@@ -92,6 +104,12 @@ export async function shareImageToInstagram(
   caption: string,
 ): Promise<SocialShareOutcome> {
   await copyToClipboard(caption);
+  if (isNativePlatform()) {
+    const outcome = await shareImageNative(file, caption, "Compartilhar no Instagram");
+    if (outcome === "shared") return "shared";
+    if (outcome === "aborted") return "aborted";
+    return "error";
+  }
   if (canShareFiles(file)) {
     try {
       await (navigator as Navigator).share({
@@ -111,5 +129,9 @@ export async function shareImageToInstagram(
 /** Copy text and open Instagram (no image variant). */
 export async function shareTextToInstagram(text: string) {
   await copyToClipboard(text);
+  if (isNativePlatform()) {
+    await shareTextNative(text);
+    return;
+  }
   openExternal("https://www.instagram.com/");
 }
