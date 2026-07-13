@@ -12,6 +12,7 @@
     "build:android": "bash scripts/build-android.sh",
     "build:android:win": "powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1",
     "check:aab": "node scripts/check-aab-version.mjs",
+    "publish:version": "node scripts/publish-app-version.mjs",
     "build:android:checked": "bash scripts/build-android.sh && node scripts/check-aab-version.mjs",
     "build:android:checked:win": "powershell -ExecutionPolicy Bypass -File scripts/build-android.ps1 && node scripts/check-aab-version.mjs",
     "lint": "eslint .",
