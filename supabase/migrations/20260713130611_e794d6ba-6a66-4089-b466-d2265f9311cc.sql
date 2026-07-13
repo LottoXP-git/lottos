@@ -1,0 +1,1 @@
+ALTER TABLE public.app_version_config ADD COLUMN IF NOT EXISTS latest_version_name text NOT NULL DEFAULT '1.0.0';
