@@ -48,18 +48,21 @@ export type Database = {
         Row: {
           force_update: boolean
           id: string
+          latest_version_name: string
           min_version_name: string
           updated_at: string
         }
         Insert: {
           force_update?: boolean
           id?: string
+          latest_version_name?: string
           min_version_name?: string
           updated_at?: string
         }
         Update: {
           force_update?: boolean
           id?: string
+          latest_version_name?: string
           min_version_name?: string
           updated_at?: string
         }

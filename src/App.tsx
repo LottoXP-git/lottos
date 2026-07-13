@@ -22,6 +22,7 @@ import About from "./pages/About";
 import ResponsibleGambling from "./pages/ResponsibleGambling";
 import { CookieConsent } from "@/components/CookieConsent";
 import { TestVersionBanner } from "@/components/TestVersionBanner";
+import { UpdateAvailableBanner } from "@/components/UpdateAvailableBanner";
 import { NativeBannerMount } from "@/components/NativeBannerMount";
 import { useNativeInsets } from "@/hooks/useNativeInsets";
 
@@ -69,6 +70,7 @@ const App = () => {
           ) : (
             <BrowserRouter>
               <TestVersionBanner />
+              <UpdateAvailableBanner />
               <NativeBannerMount />
               <Routes>
                 <Route path="/" element={<Index />} />
