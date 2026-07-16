@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "lottos-mcp",
+      "version": "0.1.0",
+      "title": "Lottos MCP"
+    },
+    "tools": [
+      {
+        "name": "list_lotteries",
+        "title": "List lotteries",
+        "description": "List all Caixa lottery modalities supported by this app, with their machine id and display name.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_lottery_result",
+        "title": "Get lottery result",
+        "description": "Fetch the latest official result for a Caixa lottery, or a specific past draw when `concurso` is provided. Returns numbers drawn, prizes, winners, next draw date and estimated prize.",
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "lottery": {
+              "type": "string",
+              "enum": [
+                "megasena",
+                "lotofacil",
+                "quina",
+                "lotomania",
+                "duplasena",
+                "diadesorte",
+                "supersete",
+                "maismilionaria",
+                "timemania",
+                "federal",
+                "loteca"
+              ],
+              "description": "Lottery id (use list_lotteries to discover valid ids)."
+            },
+            "concurso": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "Optional draw number. Omit to get the latest draw."
+            }
+          },
+          "required": [
+            "lottery"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_lottery_history",
+        "title": "Get lottery history",
+        "description": "Fetch a batch of recent official draws for a Caixa lottery (most recent first). Useful for statistics, hot/cold analysis and frequency computations.",
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "lottery": {
+              "type": "string",
+              "enum": [
+                "megasena",
+                "lotofacil",
+                "quina",
+                "lotomania",
+                "duplasena",
+                "diadesorte",
+                "supersete",
+                "maismilionaria",
+                "timemania",
+                "federal",
+                "loteca"
+              ],
+              "description": "Lottery id."
+            },
+            "count": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "How many recent draws to return. Server caps this at 200; defaults to 100."
+            }
+          },
+          "required": [
+            "lottery"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
