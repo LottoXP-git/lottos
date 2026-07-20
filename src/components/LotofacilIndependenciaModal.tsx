@@ -50,7 +50,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-500/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-500/10 to-transparent" />
         <AnimatePresence mode="popLayout">
           <motion.span
             key={value}
@@ -58,7 +58,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-green-600"
+            className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-pink-600"
           >
             {String(value).padStart(2, "0")}
           </motion.span>
