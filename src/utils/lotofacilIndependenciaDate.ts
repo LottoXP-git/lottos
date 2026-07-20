@@ -1,13 +1,12 @@
 export const LOTOFACIL_INDEPENDENCIA_DATE = new Date("2026-09-15T11:00:00-03:00");
+// Apostas abrem em 19/07/2026 — banner ativo a partir dessa data.
+export const LOTOFACIL_INDEPENDENCIA_START = new Date("2026-07-19T00:00:00-03:00");
 
-// Active from 45 days before the draw until 1 day after.
 export function isLotofacilIndependenciaActive(): boolean {
   const now = new Date();
-  const start = new Date(LOTOFACIL_INDEPENDENCIA_DATE);
-  start.setDate(start.getDate() - 45);
   const end = new Date(LOTOFACIL_INDEPENDENCIA_DATE);
   end.setDate(end.getDate() + 1);
-  return now >= start && now <= end;
+  return now >= LOTOFACIL_INDEPENDENCIA_START && now <= end;
 }
 
 export type LotofacilIndependenciaStatus = "upcoming" | "one-day" | "live" | "finished";
