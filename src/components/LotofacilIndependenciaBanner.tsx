@@ -11,11 +11,11 @@ interface Props {
 export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "R$ 300" }: Props) {
   const statusBadge =
     status === "live"
-      ? { label: "AO VIVO", cls: "bg-rose-500 text-white animate-pulse" }
+      ? { label: "AO VIVO", cls: "bg-white text-pink-700 animate-pulse" }
       : status === "one-day"
-      ? { label: "FALTA 1 DIA", cls: "bg-amber-400 text-emerald-950 animate-pulse" }
+      ? { label: "FALTA 1 DIA", cls: "bg-pink-200 text-pink-900 animate-pulse" }
       : status === "finished"
-      ? { label: "REALIZADO", cls: "bg-emerald-400 text-emerald-950" }
+      ? { label: "REALIZADO", cls: "bg-white text-pink-700" }
       : null;
 
   return (
@@ -23,10 +23,10 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
       onClick={onClick}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
-      className="group w-full relative overflow-hidden rounded-3xl border border-yellow-400/30 shadow-[0_20px_60px_-20px_rgba(22,101,52,0.6)] text-left"
+      className="group w-full relative overflow-hidden rounded-3xl border border-pink-300/40 shadow-[0_20px_60px_-20px_rgba(190,24,93,0.6)] text-left"
       style={{
         background:
-          "radial-gradient(ellipse at 30% 20%, hsl(310 80% 45%) 0%, hsl(310 80% 35%) 40%, hsl(310 85% 25%) 80%, hsl(310 90% 15%) 100%)",
+          "radial-gradient(ellipse at 30% 20%, hsl(310 80% 48%) 0%, hsl(310 80% 38%) 40%, hsl(310 85% 28%) 80%, hsl(310 90% 16%) 100%)",
       }}
     >
       {/* Pattern overlay */}
@@ -34,13 +34,13 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         className="absolute inset-0 opacity-25 mix-blend-overlay pointer-events-none"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 18% 28%, rgba(255,255,255,0.25), transparent 35%), radial-gradient(circle at 82% 72%, rgba(255,182,193,0.4), transparent 45%)",
+            "radial-gradient(circle at 18% 28%, rgba(255,255,255,0.25), transparent 35%), radial-gradient(circle at 82% 72%, rgba(255,192,203,0.4), transparent 45%)",
         }}
       />
       <div className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] pointer-events-none mega30-glint bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
       <motion.div
-        className="absolute top-3 left-[10%] text-pink-200/70 pointer-events-none"
+        className="absolute top-3 left-[10%] text-pink-100/70 pointer-events-none"
         animate={{ rotate: [0, 15, 0], scale: [1, 1.1, 1] }}
         transition={{ duration: 4, repeat: Infinity }}
         aria-hidden
@@ -48,7 +48,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
       </motion.div>
       <motion.div
-        className="absolute top-2 right-[14%] text-pink-100/70 pointer-events-none"
+        className="absolute top-2 right-[14%] text-white/70 pointer-events-none"
         animate={{ rotate: [0, -20, 0], scale: [1, 1.15, 1] }}
         transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
         aria-hidden
@@ -56,7 +56,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
       </motion.div>
       <motion.div
-        className="absolute bottom-3 right-[8%] text-pink-200/60 pointer-events-none"
+        className="absolute bottom-3 right-[8%] text-pink-100/60 pointer-events-none"
         animate={{ y: [-2, 3, -2] }}
         transition={{ duration: 4.5, repeat: Infinity }}
         aria-hidden
@@ -87,17 +87,17 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
 
           <div className="font-black text-white leading-[0.95] drop-shadow-[0_2px_0_rgba(0,0,0,0.4)]">
             <div className="text-2xl sm:text-4xl tracking-tight">lotofácil da</div>
-            <div className="text-3xl sm:text-5xl tracking-tight italic" style={{ color: "#FEF08A" }}>
+            <div className="text-3xl sm:text-5xl tracking-tight italic" style={{ color: "#FFD1E8" }}>
               INDEPENDÊNCIA
             </div>
           </div>
 
           <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 backdrop-blur">
-            <Sparkles className="w-3 h-3 text-yellow-300" />
+            <Sparkles className="w-3 h-3 text-white" />
             <span className="text-[10px] sm:text-xs font-bold text-white tracking-wider">CELEBRE O 7 DE SETEMBRO</span>
           </div>
 
-          <div className="mt-3 hidden sm:block text-xs text-yellow-100/80 italic">
+          <div className="mt-3 hidden sm:block text-xs text-pink-50/80 italic">
             {status === "live"
               ? "Sorteio acontecendo agora — acompanhe os números!"
               : status === "finished"
@@ -113,21 +113,21 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
             className="absolute -inset-2 sm:-inset-3 pointer-events-none opacity-90"
             style={{
               background:
-                "radial-gradient(circle, rgba(250,204,21,0.5) 0%, rgba(250,204,21,0.22) 50%, transparent 70%)",
+                "radial-gradient(circle, rgba(255,182,203,0.5) 0%, rgba(255,182,203,0.22) 50%, transparent 70%)",
               filter: "blur(2px)",
             }}
           />
           <div className="relative">
-            <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] text-yellow-100">
+            <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] text-pink-50">
               Prêmio Estimado
             </div>
             <div className="font-black text-white text-3xl sm:text-5xl leading-none mt-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
               {prizeCompact}
             </div>
-            <div className="font-black text-yellow-100 text-base sm:text-2xl leading-none mt-0.5 italic">
+            <div className="font-black text-pink-100 text-base sm:text-2xl leading-none mt-0.5 italic">
               MILHÕES
             </div>
-            <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 shadow">
+            <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-pink-700 shadow">
               NÃO ACUMULA
             </div>
             <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/10 border border-white/20 backdrop-blur ml-1">
@@ -138,7 +138,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         </div>
       </div>
 
-      <div className="relative h-1 bg-gradient-to-r from-yellow-400 via-green-300 to-yellow-500" />
+      <div className="relative h-1 bg-gradient-to-r from-pink-300 via-pink-200 to-pink-400" />
     </motion.button>
   );
 }
