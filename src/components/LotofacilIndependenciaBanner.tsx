@@ -73,18 +73,16 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
       </motion.div>
 
       <div className="relative px-4 py-4 sm:px-7 sm:py-6 flex flex-col sm:flex-row items-center sm:items-center gap-3 sm:gap-6 text-center sm:text-left">
-        {/* Status badge: top-right on mobile, inline on desktop */}
-        {statusBadge && (
-          <span className={`absolute top-3 right-3 sm:static sm:order-last px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wider ${statusBadge.cls}`}>
-            {statusBadge.label}
-          </span>
-        )}
-
         <div className="w-full sm:flex-1 sm:min-w-0">
           <div className="flex items-center justify-center sm:justify-start gap-2 mb-1.5 sm:mb-2 flex-wrap">
             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-pink-100">
               Concurso Especial · #3780
             </span>
+            {statusBadge && (
+              <span className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wider ${statusBadge.cls}`}>
+                {statusBadge.label}
+              </span>
+            )}
           </div>
 
           <div className="font-black text-white leading-[0.95] drop-shadow-[0_2px_0_rgba(0,0,0,0.4)]">
