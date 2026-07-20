@@ -26,7 +26,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
       className="group w-full relative overflow-hidden rounded-3xl border border-yellow-400/30 shadow-[0_20px_60px_-20px_rgba(22,101,52,0.6)] text-left"
       style={{
         background:
-          "radial-gradient(ellipse at 30% 20%, #16a34a 0%, #15803d 40%, #14532d 80%, #052e16 100%)",
+          "radial-gradient(ellipse at 30% 20%, hsl(310 80% 45%) 0%, hsl(310 80% 35%) 40%, hsl(310 85% 25%) 80%, hsl(310 90% 15%) 100%)",
       }}
     >
       {/* Pattern overlay */}
@@ -34,13 +34,13 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         className="absolute inset-0 opacity-25 mix-blend-overlay pointer-events-none"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 18% 28%, rgba(255,255,255,0.25), transparent 35%), radial-gradient(circle at 82% 72%, rgba(250,204,21,0.35), transparent 45%)",
+            "radial-gradient(circle at 18% 28%, rgba(255,255,255,0.25), transparent 35%), radial-gradient(circle at 82% 72%, rgba(255,182,193,0.4), transparent 45%)",
         }}
       />
       <div className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] pointer-events-none mega30-glint bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
       <motion.div
-        className="absolute top-3 left-[10%] text-yellow-300/70 pointer-events-none"
+        className="absolute top-3 left-[10%] text-pink-200/70 pointer-events-none"
         animate={{ rotate: [0, 15, 0], scale: [1, 1.1, 1] }}
         transition={{ duration: 4, repeat: Infinity }}
         aria-hidden
@@ -48,7 +48,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
       </motion.div>
       <motion.div
-        className="absolute top-2 right-[14%] text-yellow-200/70 pointer-events-none"
+        className="absolute top-2 right-[14%] text-pink-100/70 pointer-events-none"
         animate={{ rotate: [0, -20, 0], scale: [1, 1.15, 1] }}
         transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
         aria-hidden
@@ -56,7 +56,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
       </motion.div>
       <motion.div
-        className="absolute bottom-3 right-[8%] text-yellow-300/60 pointer-events-none"
+        className="absolute bottom-3 right-[8%] text-pink-200/60 pointer-events-none"
         animate={{ y: [-2, 3, -2] }}
         transition={{ duration: 4.5, repeat: Infinity }}
         aria-hidden
@@ -75,7 +75,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
       <div className="relative px-4 py-5 sm:px-7 sm:py-6 flex items-center gap-4 sm:gap-6">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-yellow-300">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-pink-100">
               Concurso Especial · #3780
             </span>
             {statusBadge && (
