@@ -72,43 +72,51 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
         <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
       </motion.div>
 
-      <div className="relative px-4 py-5 sm:px-7 sm:py-6 flex items-center gap-4 sm:gap-6">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
+      <div className="relative px-4 py-4 sm:px-7 sm:py-6 flex flex-col sm:flex-row items-center sm:items-center gap-3 sm:gap-6 text-center sm:text-left">
+        {/* Status badge: top-right on mobile, inline on desktop */}
+        {statusBadge && (
+          <span className={`absolute top-3 right-3 sm:static sm:order-last px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wider ${statusBadge.cls}`}>
+            {statusBadge.label}
+          </span>
+        )}
+
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <div className="flex items-center justify-center sm:justify-start gap-2 mb-1.5 sm:mb-2 flex-wrap">
             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-pink-100">
               Concurso Especial · #3780
             </span>
-            {statusBadge && (
-              <span className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wider ${statusBadge.cls}`}>
-                {statusBadge.label}
-              </span>
-            )}
           </div>
 
           <div className="font-black text-white leading-[0.95] drop-shadow-[0_2px_0_rgba(0,0,0,0.4)]">
-            <div className="text-2xl sm:text-4xl tracking-tight">lotofácil da</div>
-            <div className="text-3xl sm:text-5xl tracking-tight italic" style={{ color: "#FFD1E8" }}>
+            <div className="text-xl sm:text-4xl tracking-tight">lotofácil da</div>
+            <div className="text-2xl sm:text-5xl tracking-tight italic" style={{ color: "#FFD1E8" }}>
               INDEPENDÊNCIA
             </div>
           </div>
 
-          <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 backdrop-blur">
-            <Sparkles className="w-3 h-3 text-white" />
-            <span className="text-[10px] sm:text-xs font-bold text-white tracking-wider">CELEBRE O 7 DE SETEMBRO</span>
+          <div className="mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
+            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 backdrop-blur">
+              <Sparkles className="w-3 h-3 text-white" />
+              <span className="text-[10px] sm:text-xs font-bold text-white tracking-wider">7 DE SETEMBRO</span>
+            </div>
+            <div className="sm:hidden inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 border border-white/20 backdrop-blur">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-white/80">Sorteio</span>
+              <span className="text-[10px] font-extrabold text-white">15/09</span>
+            </div>
           </div>
 
-          <div className="mt-3 hidden sm:block text-xs text-pink-50/80 italic">
+          <div className="mt-2 text-[10px] sm:text-xs text-pink-50/80 italic">
             {status === "live"
               ? "Sorteio acontecendo agora — acompanhe os números!"
               : status === "finished"
               ? "Sorteio realizado · Confira o resultado"
               : status === "one-day"
               ? "Última chance — sorteio amanhã às 11h"
-              : "Terça, 15 de Setembro · 11h · Não acumula"}
+              : "Ter, 15 de Setembro · 11h · Não acumula"}
           </div>
         </div>
 
-        <div className="shrink-0 text-right relative">
+        <div className="w-full sm:w-auto sm:shrink-0 text-center sm:text-right relative">
           <div
             className="absolute -inset-2 sm:-inset-3 pointer-events-none opacity-90"
             style={{
@@ -117,22 +125,24 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
               filter: "blur(2px)",
             }}
           />
-          <div className="relative">
+          <div className="relative flex flex-col items-center sm:items-end">
             <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] text-pink-50">
               Prêmio Estimado
             </div>
-            <div className="font-black text-white text-3xl sm:text-5xl leading-none mt-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+            <div className="font-black text-white text-2xl sm:text-5xl leading-none mt-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
               {prizeCompact}
             </div>
-            <div className="font-black text-pink-100 text-base sm:text-2xl leading-none mt-0.5 italic">
+            <div className="font-black text-pink-100 text-sm sm:text-2xl leading-none mt-0.5 italic">
               MILHÕES
             </div>
-            <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-pink-700 shadow">
-              NÃO ACUMULA
-            </div>
-            <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/10 border border-white/20 backdrop-blur ml-1">
-              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-white/80">Sorteio</span>
-              <span className="text-xs sm:text-sm font-extrabold text-white">15/09</span>
+            <div className="mt-2 flex flex-wrap items-center justify-center sm:justify-end gap-1.5">
+              <div className="inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-pink-700 shadow">
+                NÃO ACUMULA
+              </div>
+              <div className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/10 border border-white/20 backdrop-blur">
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-white/80">Sorteio</span>
+                <span className="text-xs sm:text-sm font-extrabold text-white">15/09</span>
+              </div>
             </div>
           </div>
         </div>
