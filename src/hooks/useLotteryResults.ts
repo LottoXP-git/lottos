@@ -295,16 +295,32 @@ async function fetchLotteryResults(): Promise<LotteryResult[]> {
    return responseData?.results || [];
  }
  
- export function useLotteryResults() {
-   return useQuery({
-     queryKey: ["lottery-results"],
-     queryFn: fetchLotteryResults,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    refetchInterval: 1000 * 60 * 30, // Refetch every 30 minutes
+/**
+ * Sunday >= 11:00 (São Paulo) is the new "results window" — sorteios que
+ * antes ocorriam no sábado passaram para domingo às 11h. Nesse período
+ * fazemos polling agressivo (5 min) até que novos resultados cheguem.
+ * Fora dessa janela mantemos o intervalo padrão de 30 min.
+ */
+function isSundayResultsWindow(now: Date = new Date()): boolean {
+  // Convert to America/Sao_Paulo regardless of the device timezone.
+  const sp = new Date(
+    now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }),
+  );
+  // Poll aggressively on Sunday from 11:00 until end of day.
+  return sp.getDay() === 0 && sp.getHours() >= 11;
+}
+
+export function useLotteryResults() {
+  return useQuery({
+    queryKey: ["lottery-results"],
+    queryFn: fetchLotteryResults,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchInterval: () =>
+      isSundayResultsWindow() ? 1000 * 60 * 5 : 1000 * 60 * 30,
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
-   });
- }
+  });
+}
  
  export function useLotteryHistory(lotteryId: string, count: number = 100) {
    return useQuery({
