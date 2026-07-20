@@ -95,7 +95,7 @@ export function LotofacilIndependenciaBanner({ status, onClick, prizeCompact = "
           <div className="mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 backdrop-blur">
               <Sparkles className="w-3 h-3 text-white" />
-              <span className="text-[10px] sm:text-xs font-bold text-white tracking-wider">7 DE SETEMBRO</span>
+              <span className="text-[10px] sm:text-xs font-bold text-white tracking-wider">CELEBRE O 7 DE SETEMBRO</span>
             </div>
             <div className="sm:hidden inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 border border-white/20 backdrop-blur">
               <span className="text-[9px] font-bold uppercase tracking-wider text-white/80">Sorteio</span>
