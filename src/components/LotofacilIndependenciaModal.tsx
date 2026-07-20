@@ -109,35 +109,35 @@ export function LotofacilIndependenciaModal({
           className="relative overflow-hidden rounded-t-lg"
           style={{
             background:
-              "radial-gradient(ellipse at 30% 20%, #16a34a 0%, #15803d 40%, #14532d 80%, #052e16 100%)",
+              "radial-gradient(ellipse at 30% 20%, hsl(310 80% 48%) 0%, hsl(310 80% 38%) 40%, hsl(310 85% 28%) 80%, hsl(310 90% 16%) 100%)",
           }}
         >
           <div className="relative px-4 sm:px-6 pt-5 sm:pt-7 pb-5 sm:pb-7 flex flex-col items-center gap-2 text-center">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-yellow-400/95 border border-yellow-300 shadow">
-              <Trophy className="w-3.5 h-3.5 text-emerald-900" />
-              <span className="text-[10px] font-bold text-emerald-900 uppercase tracking-[0.18em]">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-pink-200 shadow">
+              <Trophy className="w-3.5 h-3.5 text-pink-700" />
+              <span className="text-[10px] font-bold text-pink-700 uppercase tracking-[0.18em]">
                 Concurso Especial #3780
               </span>
             </div>
             <div className="font-black text-white leading-[0.95] mt-1">
               <div className="text-2xl sm:text-3xl">lotofácil da</div>
-              <div className="text-3xl sm:text-4xl italic" style={{ color: "#FEF08A" }}>
+              <div className="text-3xl sm:text-4xl italic" style={{ color: "#FFD1E8" }}>
                 INDEPENDÊNCIA
               </div>
             </div>
             <div className="mt-2">
-              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] text-yellow-100">
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] text-pink-50">
                 Prêmio Estimado
               </div>
               <div className="font-black text-white text-4xl sm:text-5xl leading-none mt-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                 {prizeCompact} Milhões
               </div>
-              <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 shadow">
+              <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-pink-700 shadow">
                 NÃO ACUMULA
               </div>
             </div>
           </div>
-          <div className="relative h-1 bg-gradient-to-r from-yellow-400 via-green-300 to-yellow-500" />
+          <div className="relative h-1 bg-gradient-to-r from-pink-300 via-pink-200 to-pink-400" />
         </div>
 
         <div className="px-4 sm:px-6 pt-4 pb-4 sm:pb-6 space-y-3 sm:space-y-4">
