@@ -50,7 +50,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-xl bg-secondary border border-border flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-500/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-500/10 to-transparent" />
         <AnimatePresence mode="popLayout">
           <motion.span
             key={value}
@@ -58,7 +58,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-green-600"
+            className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-pink-600"
           >
             {String(value).padStart(2, "0")}
           </motion.span>
@@ -109,35 +109,35 @@ export function LotofacilIndependenciaModal({
           className="relative overflow-hidden rounded-t-lg"
           style={{
             background:
-              "radial-gradient(ellipse at 30% 20%, #16a34a 0%, #15803d 40%, #14532d 80%, #052e16 100%)",
+              "radial-gradient(ellipse at 30% 20%, hsl(310 80% 48%) 0%, hsl(310 80% 38%) 40%, hsl(310 85% 28%) 80%, hsl(310 90% 16%) 100%)",
           }}
         >
           <div className="relative px-4 sm:px-6 pt-5 sm:pt-7 pb-5 sm:pb-7 flex flex-col items-center gap-2 text-center">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-yellow-400/95 border border-yellow-300 shadow">
-              <Trophy className="w-3.5 h-3.5 text-emerald-900" />
-              <span className="text-[10px] font-bold text-emerald-900 uppercase tracking-[0.18em]">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-pink-200 shadow">
+              <Trophy className="w-3.5 h-3.5 text-pink-700" />
+              <span className="text-[10px] font-bold text-pink-700 uppercase tracking-[0.18em]">
                 Concurso Especial #3780
               </span>
             </div>
             <div className="font-black text-white leading-[0.95] mt-1">
               <div className="text-2xl sm:text-3xl">lotofácil da</div>
-              <div className="text-3xl sm:text-4xl italic" style={{ color: "#FEF08A" }}>
+              <div className="text-3xl sm:text-4xl italic" style={{ color: "#FFD1E8" }}>
                 INDEPENDÊNCIA
               </div>
             </div>
             <div className="mt-2">
-              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] text-yellow-100">
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] text-pink-50">
                 Prêmio Estimado
               </div>
               <div className="font-black text-white text-4xl sm:text-5xl leading-none mt-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                 {prizeCompact} Milhões
               </div>
-              <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 shadow">
+              <div className="mt-2 inline-block px-2 py-0.5 rounded-md bg-white/95 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-pink-700 shadow">
                 NÃO ACUMULA
               </div>
             </div>
           </div>
-          <div className="relative h-1 bg-gradient-to-r from-yellow-400 via-green-300 to-yellow-500" />
+          <div className="relative h-1 bg-gradient-to-r from-pink-300 via-pink-200 to-pink-400" />
         </div>
 
         <div className="px-4 sm:px-6 pt-4 pb-4 sm:pb-6 space-y-3 sm:space-y-4">
@@ -169,7 +169,7 @@ export function LotofacilIndependenciaModal({
           </div>
 
           <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg sm:rounded-xl bg-secondary/50 border border-border">
-            <Calendar className="w-4 h-4 text-green-600" />
+            <Calendar className="w-4 h-4 text-pink-600" />
             <span className="text-xs sm:text-sm text-foreground font-medium text-center">
               <span className="sm:hidden">Ter, 15/09/2026 · 11h</span>
               <span className="hidden sm:inline">Sorteio: Terça, 15 de Setembro de 2026 às 11h</span>
@@ -187,13 +187,13 @@ export function LotofacilIndependenciaModal({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + idx * 0.1 }}
-                className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-green-500/5 border border-green-500/10"
+                className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-pink-500/5 border border-pink-500/10"
               >
-                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                  {idx === 0 ? <TrendingUp className="w-3.5 h-3.5 text-green-600" /> :
-                   idx === 1 ? <PartyPopper className="w-3.5 h-3.5 text-green-600" /> :
-                   idx === 2 ? <Sparkles className="w-3.5 h-3.5 text-green-600" /> :
-                   <Gift className="w-3.5 h-3.5 text-green-600" />}
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-pink-500/10 flex items-center justify-center shrink-0">
+                  {idx === 0 ? <TrendingUp className="w-3.5 h-3.5 text-pink-600" /> :
+                   idx === 1 ? <PartyPopper className="w-3.5 h-3.5 text-pink-600" /> :
+                   idx === 2 ? <Sparkles className="w-3.5 h-3.5 text-pink-600" /> :
+                   <Gift className="w-3.5 h-3.5 text-pink-600" />}
                 </div>
                 <span className="text-xs sm:text-sm text-foreground leading-snug">{item}</span>
               </motion.div>
@@ -201,7 +201,7 @@ export function LotofacilIndependenciaModal({
           </div>
 
           <Button
-            className="w-full h-11 sm:h-12 text-sm sm:text-base font-bold gap-2 bg-gradient-to-r from-green-600 via-emerald-600 to-yellow-500 hover:from-green-700 hover:via-emerald-700 hover:to-yellow-600 text-white shadow-lg"
+            className="w-full h-11 sm:h-12 text-sm sm:text-base font-bold gap-2 bg-gradient-to-r from-pink-600 via-pink-500 to-pink-400 hover:from-pink-700 hover:via-pink-600 hover:to-pink-500 text-white shadow-lg"
             onClick={() => onGeneratePicks ? onGeneratePicks() : onOpenChange(false)}
           >
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
