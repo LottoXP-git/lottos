@@ -15,8 +15,8 @@ function parseBR(date?: string): Date | null {
   const m = date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
   if (!m) return null;
   const [, d, mo, y] = m;
-  // Default 20:00 local time as draw time
-  return new Date(parseInt(y, 10), parseInt(mo, 10) - 1, parseInt(d, 10), 20, 0, 0);
+  // Default 21:00 local time (horário-base oficial Caixa para loterias numéricas)
+  return new Date(parseInt(y, 10), parseInt(mo, 10) - 1, parseInt(d, 10), 21, 0, 0);
 }
 
 function formatDelta(ms: number) {
