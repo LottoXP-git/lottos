@@ -68,6 +68,27 @@ export type Database = {
         }
         Relationships: []
       }
+      lottery_latest: {
+        Row: {
+          concurso: number
+          id: string
+          payload: Json
+          updated_at: string
+        }
+        Insert: {
+          concurso: number
+          id: string
+          payload: Json
+          updated_at?: string
+        }
+        Update: {
+          concurso?: number
+          id?: string
+          payload?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_registrations: {
         Row: {
           accept_email_marketing: boolean
