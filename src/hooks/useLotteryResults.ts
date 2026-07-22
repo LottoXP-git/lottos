@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { LotteryResult } from "@/data/lotteryData";
+import { getRefetchIntervalMs } from "@/lib/drawSchedule";
 
 interface LotteryApiResponse {
   results?: LotteryResult[];
@@ -47,9 +48,11 @@ const formatPrize = (value: number) => {
 async function fetchLotteryFromCaixa(
   cfg: (typeof BROWSER_FETCH_CONFIGS)[number],
 ): Promise<LotteryResult | null> {
-  const url = `https://servicebus2.caixa.gov.br/portaldeloterias/api/${cfg.apiName}`;
+  // Cache-bust query param + no-store to defeat any CDN caching between the
+  // official draw publication and the user's browser.
+  const url = `https://servicebus2.caixa.gov.br/portaldeloterias/api/${cfg.apiName}?_=${Date.now()}`;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) return null;
     const data = await response.json();
 
@@ -142,12 +145,13 @@ async function fetchLotteryFromCaixa(
 
 // Fetch Loteca directly from browser (Caixa API blocks server IPs but allows browsers)
 async function fetchLotecaFromBrowser(concurso?: number): Promise<LotteryResult | null> {
-  const caixaUrl = concurso
+  const base = concurso
     ? `https://servicebus2.caixa.gov.br/portaldeloterias/api/loteca/${concurso}`
     : "https://servicebus2.caixa.gov.br/portaldeloterias/api/loteca";
+  const caixaUrl = `${base}?_=${Date.now()}`;
 
   try {
-    const response = await fetch(caixaUrl);
+    const response = await fetch(caixaUrl, { cache: "no-store" });
     if (!response.ok) {
       console.error(`Loteca browser fetch failed: ${response.status}`);
       return null;
@@ -295,30 +299,19 @@ async function fetchLotteryResults(): Promise<LotteryResult[]> {
    return responseData?.results || [];
  }
  
-/**
- * Sunday >= 11:00 (São Paulo) is the new "results window" — sorteios que
- * antes ocorriam no sábado passaram para domingo às 11h. Nesse período
- * fazemos polling agressivo (5 min) até que novos resultados cheguem.
- * Fora dessa janela mantemos o intervalo padrão de 30 min.
- */
-function isSundayResultsWindow(now: Date = new Date()): boolean {
-  // Convert to America/Sao_Paulo regardless of the device timezone.
-  const sp = new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }),
-  );
-  // Poll aggressively on Sunday from 11:00 until end of day.
-  return sp.getDay() === 0 && sp.getHours() >= 11;
-}
-
 export function useLotteryResults() {
   return useQuery({
     queryKey: ["lottery-results"],
     queryFn: fetchLotteryResults,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    refetchInterval: () =>
-      isSundayResultsWindow() ? 1000 * 60 * 5 : 1000 * 60 * 30,
+    // Keep data considered "fresh" only briefly so window focus / resume
+    // events actually trigger a refetch when the user comes back to the app.
+    staleTime: 1000 * 30,
+    // Interval adapts to whether we're near a draw time: 20s inside a
+    // draw window, 30min outside. See src/lib/drawSchedule.ts.
+    refetchInterval: () => getRefetchIntervalMs(),
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 }
  
