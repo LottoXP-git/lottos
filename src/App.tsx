@@ -26,6 +26,7 @@ import { UpdateAvailableBanner } from "@/components/UpdateAvailableBanner";
 import { NativeBannerMount } from "@/components/NativeBannerMount";
 import { useNativeInsets } from "@/hooks/useNativeInsets";
 import { useAppResumeRefetch } from "@/hooks/useAppResumeRefetch";
+import { useLotteryRealtime } from "@/hooks/useLotteryRealtime";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,7 @@ const AppInner = ({
   checkAgain: () => void;
 }) => {
   useAppResumeRefetch();
+  useLotteryRealtime();
 
   // Defense-in-depth: re-verify the stored age token's HMAC signature with
   // the edge function. A forged token that passes the local structural check
