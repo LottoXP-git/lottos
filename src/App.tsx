@@ -25,6 +25,7 @@ import { TestVersionBanner } from "@/components/TestVersionBanner";
 import { UpdateAvailableBanner } from "@/components/UpdateAvailableBanner";
 import { NativeBannerMount } from "@/components/NativeBannerMount";
 import { useNativeInsets } from "@/hooks/useNativeInsets";
+import { useAppResumeRefetch } from "@/hooks/useAppResumeRefetch";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,34 @@ const App = () => {
   const [verified, setVerified] = useState(isAgeVerified());
   const { needsUpdate, isLoading, checkAgain } = useForceUpdate();
   useNativeInsets();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppInner
+        verified={verified}
+        setVerified={setVerified}
+        needsUpdate={needsUpdate}
+        isLoading={isLoading}
+        checkAgain={checkAgain}
+      />
+    </QueryClientProvider>
+  );
+};
+
+const AppInner = ({
+  verified,
+  setVerified,
+  needsUpdate,
+  isLoading,
+  checkAgain,
+}: {
+  verified: boolean;
+  setVerified: (v: boolean) => void;
+  needsUpdate: boolean;
+  isLoading: boolean;
+  checkAgain: () => void;
+}) => {
+  useAppResumeRefetch();
 
   // Defense-in-depth: re-verify the stored age token's HMAC signature with
   // the edge function. A forged token that passes the local structural check
@@ -60,8 +89,7 @@ const App = () => {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+    <ThemeProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -93,8 +121,7 @@ const App = () => {
             </BrowserRouter>
           )}
         </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 
