@@ -6,16 +6,18 @@
 type Schedule = { days: number[]; hour: number; minute: number };
 
 const SCHEDULES: Record<string, Schedule> = {
-  megasena: { days: [3, 6], hour: 20, minute: 0 }, // qua/sáb
-  lotofacil: { days: [1, 2, 3, 4, 5, 6], hour: 20, minute: 0 }, // seg-sáb
-  quina: { days: [1, 2, 3, 4, 5, 6], hour: 20, minute: 0 },
-  lotomania: { days: [1, 3, 5], hour: 20, minute: 0 }, // seg/qua/sex
-  duplasena: { days: [2, 4, 6], hour: 20, minute: 0 }, // ter/qui/sáb
-  timemania: { days: [2, 4, 6], hour: 20, minute: 0 },
-  diadesorte: { days: [2, 4, 6], hour: 20, minute: 0 },
-  supersete: { days: [1, 3, 5], hour: 15, minute: 0 }, // seg/qua/sex
-  maismilionaria: { days: [3, 6], hour: 20, minute: 0 }, // qua/sáb
-  federal: { days: [3, 6], hour: 19, minute: 0 },
+  // Cronograma oficial Caixa (regras-sorteios): sorteios "a partir das 21h",
+  // Federal 20h. Fonte: loterias.caixa.gov.br/Paginas/regras-sorteios.aspx
+  megasena: { days: [2, 4, 6], hour: 21, minute: 0 }, // ter/qui/sáb
+  lotofacil: { days: [1, 2, 3, 4, 5, 6], hour: 21, minute: 0 }, // seg-sáb
+  quina: { days: [1, 2, 3, 4, 5, 6], hour: 21, minute: 0 }, // seg-sáb
+  lotomania: { days: [1, 3, 5], hour: 21, minute: 0 }, // seg/qua/sex
+  duplasena: { days: [1, 3, 5], hour: 21, minute: 0 }, // seg/qua/sex
+  timemania: { days: [2, 4, 6], hour: 21, minute: 0 }, // ter/qui/sáb
+  diadesorte: { days: [2, 4, 6], hour: 21, minute: 0 }, // ter/qui/sáb
+  supersete: { days: [1, 3, 5], hour: 21, minute: 0 }, // seg/qua/sex
+  maismilionaria: { days: [3, 6], hour: 21, minute: 0 }, // qua/sáb
+  federal: { days: [3, 6], hour: 20, minute: 0 }, // qua/sáb
   loteca: { days: [0], hour: 14, minute: 0 }, // dom
 };
 
