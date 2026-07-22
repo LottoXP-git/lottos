@@ -3,10 +3,10 @@
 // supabase function: mcp
 // Bundled from src/lib/mcp/index.ts by @lovable.dev/mcp-js.
 // src/lib/mcp/index.ts
-import { defineMcp } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { defineMcp } from "npm:@lovable.dev/mcp-js@0.24.0";
 
 // src/lib/mcp/tools/list-lotteries.ts
-import { defineTool } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { defineTool } from "npm:@lovable.dev/mcp-js@0.24.0";
 var LOTTERIES = [
   { id: "megasena", name: "Mega-Sena" },
   { id: "lotofacil", name: "Lotof\xE1cil" },
@@ -33,7 +33,7 @@ var list_lotteries_default = defineTool({
 });
 
 // src/lib/mcp/tools/get-lottery-result.ts
-import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.24.0";
 import { z } from "npm:zod@^3.25.76";
 var LOTTERY_IDS = [
   "megasena",
@@ -92,7 +92,7 @@ var get_lottery_result_default = defineTool2({
 });
 
 // src/lib/mcp/tools/get-lottery-history.ts
-import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.24.0";
 import { z as z2 } from "npm:zod@^3.25.76";
 var LOTTERY_IDS2 = [
   "megasena",
@@ -158,5 +158,5 @@ var mcp_default = defineMcp({
 });
 
 // lovable-mcp-supabase-entry.ts
-import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.22.2/stacks/supabase";
+import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.24.0/stacks/supabase";
 Deno.serve(createSupabaseHandler(mcp_default, { functionName: "mcp" }));
