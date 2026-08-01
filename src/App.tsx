@@ -23,6 +23,7 @@ import ResponsibleGambling from "./pages/ResponsibleGambling";
 import { CookieConsent } from "@/components/CookieConsent";
 import { TestVersionBanner } from "@/components/TestVersionBanner";
 import { UpdateAvailableBanner } from "@/components/UpdateAvailableBanner";
+import { UpdateToast } from "@/components/UpdateToast";
 import { NativeBannerMount } from "@/components/NativeBannerMount";
 import { useNativeInsets } from "@/hooks/useNativeInsets";
 import { useAppResumeRefetch } from "@/hooks/useAppResumeRefetch";
@@ -101,6 +102,7 @@ const AppInner = ({
             <BrowserRouter>
               <TestVersionBanner />
               <UpdateAvailableBanner />
+              <UpdateToast />
               <NativeBannerMount />
               <Routes>
                 <Route path="/" element={<Index />} />
