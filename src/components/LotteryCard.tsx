@@ -132,6 +132,11 @@ export function LotteryCard({
             </Link>
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {result.winners === 0 && result.id !== "federal" && (
+              <Badge variant="outline" className="bg-amber-500/20 text-amber-300 border-amber-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 animate-pulse">
+                ACUMULOU
+              </Badge>
+            )}
             <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
           </div>
         </div>
