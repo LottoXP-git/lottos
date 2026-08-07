@@ -137,6 +137,11 @@ export function LotteryCard({
                 ACUMULOU
               </Badge>
             )}
+            {result.winners > 0 && result.id !== "federal" && (
+              <Badge variant="outline" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5">
+                {result.winners} {result.winners === 1 ? "ganhador" : "ganhadores"}
+              </Badge>
+            )}
             <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
           </div>
         </div>
