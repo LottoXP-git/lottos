@@ -106,10 +106,11 @@ async function fetchLotteryFromCaixa(
     } else {
       const mainTier = getMainTier(premiacoes);
       winners = getMainTierWinners(premiacoes);
-      // Com ganhadores na faixa principal, exibimos o valor pago por ganhador.
+      // Com ganhadores na faixa principal, exibimos o valor TOTAL da faixa
+      // (valor por ganhador x quantidade de ganhadores).
       prize =
         winners > 0 && (mainTier?.valorPremio || 0) > 0
-          ? formatPrize(mainTier!.valorPremio)
+          ? formatPrize(mainTier!.valorPremio * winners)
           : formatPrize(data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
       nextPrize = formatPrize(data.valorEstimadoProximoConcurso || 0);
       accumulated = !!data.acumulado;
