@@ -10,6 +10,7 @@
    id: string;
    name: string;
    apiName: string;
+</dummy>
    color: string;
    maxNumber: number;
    selectCount: number;
