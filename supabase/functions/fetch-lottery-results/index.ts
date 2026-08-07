@@ -184,8 +184,9 @@
         ganhadores: l.ganhadores || 0,
       }));
 
-      const firstPrize = premiacoes.length > 0 ? premiacoes[0].valorPremio : 0;
-      const firstPrizeWinners = premiacoes.length > 0 ? premiacoes[0].ganhadores : 0;
+      const lotecaMainTier = getMainTier(premiacoes);
+      const firstPrize = lotecaMainTier?.valorPremio ?? 0;
+      const firstPrizeWinners = lotecaMainTier?.ganhadores ?? 0;
 
       return {
         id: config.id,
@@ -401,7 +402,7 @@
             : numbers;
       } else {
         prize = formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
-        winners = data.ganhadores || data.quantidadeGanhadores || 0;
+        winners = getMainTier(premiacoes)?.ganhadores ?? data.ganhadores ?? data.quantidadeGanhadores ?? 0;
         nextPrize = formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0);
         nextDate = formatDate(data.dataProximoConcurso || "");
         accumulated = data.acumulado || data.acumulou || false;
