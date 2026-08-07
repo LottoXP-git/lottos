@@ -104,7 +104,7 @@ async function fetchLotteryFromCaixa(
       accumulated = false;
     } else {
       prize = formatPrize(data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
-      winners = premiacoes.length > 0 ? premiacoes[0].ganhadores : 0;
+      winners = getMainTierWinners(premiacoes);
       nextPrize = formatPrize(data.valorEstimadoProximoConcurso || 0);
       accumulated = !!data.acumulado;
     }
@@ -195,8 +195,9 @@ async function fetchLotecaFromBrowser(concurso?: number): Promise<LotteryResult 
       ganhadores: l.ganhadores || 0,
     }));
 
-    const firstPrize = premiacoes.length > 0 ? premiacoes[0].valorPremio : 0;
-    const firstPrizeWinners = premiacoes.length > 0 ? premiacoes[0].ganhadores : 0;
+    const mainTier = getMainTier(premiacoes);
+    const firstPrize = mainTier?.valorPremio ?? 0;
+    const firstPrizeWinners = mainTier?.ganhadores ?? 0;
 
     return {
       id: "loteca",
