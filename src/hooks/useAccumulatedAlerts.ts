@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import type { LotteryResult } from "@/data/lotteryData";
 import { isAccumulated } from "@/lib/accumulated";
+import { isNative } from "@/lib/platform";
 
 const STORAGE_KEY = "lottos_accumulated_notified";
 
@@ -10,6 +11,24 @@ function loadNotified(): Record<string, number> {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   } catch {
     return {};
+  }
+}
+
+/** Notificação local nativa (silenciosamente ignorada na web). */
+async function notifyNative(title: string, body: string, id: number) {
+  if (!isNative()) return;
+  try {
+    const { LocalNotifications } = await import("@capacitor/local-notifications");
+    const perm = await LocalNotifications.checkPermissions();
+    if (perm.display !== "granted") {
+      const req = await LocalNotifications.requestPermissions();
+      if (req.display !== "granted") return;
+    }
+    await LocalNotifications.schedule({
+      notifications: [{ id, title, body, schedule: { at: new Date(Date.now() + 1000) } }],
+    });
+  } catch {
+    /* plugin indisponível */
   }
 }
 
@@ -38,6 +57,12 @@ export function useAccumulatedAlerts(results: LotteryResult[] | undefined) {
         description: `Concurso ${result.concurso} sem ganhadores. Próximo prêmio: ${result.nextPrize}.`,
         duration: 9000,
       });
+
+      void notifyNative(
+        `💰 ${result.name} acumulou!`,
+        `Concurso ${result.concurso} sem ganhadores. Próximo prêmio: ${result.nextPrize}.`,
+        5000 + (result.concurso % 1000),
+      );
     }
 
     if (changed) {
