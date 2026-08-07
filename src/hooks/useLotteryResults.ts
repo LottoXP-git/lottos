@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { LotteryResult } from "@/data/lotteryData";
 import { getRefetchIntervalMs } from "@/lib/drawSchedule";
+import { getMainTier, getMainTierWinners } from "@/lib/prizeTiers";
 
 interface LotteryApiResponse {
   results?: LotteryResult[];
