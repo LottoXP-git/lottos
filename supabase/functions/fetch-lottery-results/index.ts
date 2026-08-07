@@ -419,8 +419,14 @@ function getMainTier<T extends PremiacaoLike>(premiacoes: T[] | undefined): T | 
             ? data.dezenasOrdemSorteio.map((d: string) => parseInt(d, 10))
             : numbers;
       } else {
-        prize = formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
-        winners = getMainTier(premiacoes)?.ganhadores ?? data.ganhadores ?? data.quantidadeGanhadores ?? 0;
+        const mainTier = getMainTier(premiacoes);
+        winners = mainTier?.ganhadores ?? data.ganhadores ?? data.quantidadeGanhadores ?? 0;
+        // Com ganhadores na faixa principal, o prêmio exibido é o valor pago
+        // por ganhador; sem ganhadores, mostramos o acumulado/estimado.
+        prize =
+          winners > 0 && (mainTier?.valorPremio || 0) > 0
+            ? formatPrize(mainTier!.valorPremio)
+            : formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
         nextPrize = formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0);
         nextDate = formatDate(data.dataProximoConcurso || "");
         accumulated = data.acumulado || data.acumulou || false;
