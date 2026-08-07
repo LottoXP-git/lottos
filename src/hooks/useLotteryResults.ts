@@ -104,8 +104,13 @@ async function fetchLotteryFromCaixa(
       nextPrize = "R$ 500.000,00";
       accumulated = false;
     } else {
-      prize = formatPrize(data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
+      const mainTier = getMainTier(premiacoes);
       winners = getMainTierWinners(premiacoes);
+      // Com ganhadores na faixa principal, exibimos o valor pago por ganhador.
+      prize =
+        winners > 0 && (mainTier?.valorPremio || 0) > 0
+          ? formatPrize(mainTier!.valorPremio)
+          : formatPrize(data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
       nextPrize = formatPrize(data.valorEstimadoProximoConcurso || 0);
       accumulated = !!data.acumulado;
     }
