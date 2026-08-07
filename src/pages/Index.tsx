@@ -9,6 +9,7 @@ import { RegistrationForm } from "@/components/RegistrationForm";
 import { QuickBetGenerator } from "@/components/QuickBetGenerator";
 import { LotteryResult, lotteryResults as fallbackResults } from "@/data/lotteryData";
 import { useLotteryResults } from "@/hooks/useLotteryResults";
+import { useAccumulatedAlerts } from "@/hooks/useAccumulatedAlerts";
 import { Sparkles, TrendingUp, Trophy, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,9 @@ const Index = () => {
   }, [lotteryResults]);
 
   const isLiveData = lotteryResults && lotteryResults.length > 0;
+
+  // Alerta quando uma loteria passa a atender a condição de "ACUMULOU".
+  useAccumulatedAlerts(lotteryResults);
 
   const handleCardClick = (lottery: LotteryResult) => {
     setSelectedLottery(lottery);

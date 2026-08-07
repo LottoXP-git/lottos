@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { isAccumulated, parsePrizeValue } from "@/lib/accumulated";
 import { Badge } from "@/components/ui/badge";
 import { LotteryBall } from "./LotteryBall";
 import { LotteryResult, WinnerLocation, LotecaMatch } from "@/data/lotteryData";
@@ -68,11 +69,7 @@ const variantMap: Record<string, LotteryVariant> = {
   "lottery-loteca": "loteca"
 };
 
-// Helper to parse prize value from string like "R$ 42.350.000,00"
-function parsePrizeValue(prize: string): number {
-  const cleaned = prize.replace(/[R$\s.]/g, '').replace(',', '.');
-  return parseFloat(cleaned) || 0;
-}
+
 
 
 // Check if concurso is a special draw
@@ -132,7 +129,7 @@ export function LotteryCard({
             </Link>
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {result.winners === 0 && result.id !== "federal" && parsePrizeValue(result.nextPrize) > parsePrizeValue(result.prize) && (
+            {isAccumulated(result) && (
               <Badge variant="outline" className="bg-amber-500/20 text-amber-300 border-amber-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 animate-pulse">
                 ACUMULOU
               </Badge>
