@@ -1,4 +1,4 @@
-import type { LotteryResult } from "@/hooks/useLotteryResults";
+import type { LotteryResult } from "@/data/lotteryData";
 
 /** Converte "R$ 42.350.000,00" em número. */
 export function parsePrizeValue(prize: string | undefined): number {
