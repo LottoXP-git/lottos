@@ -6,6 +6,24 @@
      "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
  };
  
+interface PremiacaoLike {
+  descricao?: string;
+  faixa?: number;
+  ganhadores?: number;
+  valorPremio?: number;
+}
+
+// A API da Caixa nem sempre devolve o rateio ordenado; a faixa principal é a
+// de menor número de faixa (1) — fallback: maior valor de prêmio.
+function getMainTier<T extends PremiacaoLike>(premiacoes: T[] | undefined): T | undefined {
+  if (!premiacoes || premiacoes.length === 0) return undefined;
+  const withFaixa = premiacoes.filter((p) => typeof p.faixa === "number" && (p.faixa as number) > 0);
+  if (withFaixa.length > 0) {
+    return withFaixa.reduce((best, p) => ((p.faixa as number) < (best.faixa as number) ? p : best));
+  }
+  return premiacoes.reduce((best, p) => ((p.valorPremio || 0) > (best.valorPremio || 0) ? p : best));
+}
+
  interface LotteryConfig {
    id: string;
    name: string;
@@ -184,8 +202,9 @@
         ganhadores: l.ganhadores || 0,
       }));
 
-      const firstPrize = premiacoes.length > 0 ? premiacoes[0].valorPremio : 0;
-      const firstPrizeWinners = premiacoes.length > 0 ? premiacoes[0].ganhadores : 0;
+      const lotecaMainTier = getMainTier(premiacoes);
+      const firstPrize = lotecaMainTier?.valorPremio ?? 0;
+      const firstPrizeWinners = lotecaMainTier?.ganhadores ?? 0;
 
       return {
         id: config.id,
@@ -401,7 +420,7 @@
             : numbers;
       } else {
         prize = formatPrize(data.valor_acumulado || data.valorAcumuladoProximoConcurso || data.valorEstimadoProximoConcurso || 0);
-        winners = data.ganhadores || data.quantidadeGanhadores || 0;
+        winners = getMainTier(premiacoes)?.ganhadores ?? data.ganhadores ?? data.quantidadeGanhadores ?? 0;
         nextPrize = formatPrize(data.valor_estimado_proximo_concurso || data.valorEstimadoProximoConcurso || data.valorAcumuladoProximoConcurso || 0);
         nextDate = formatDate(data.dataProximoConcurso || "");
         accumulated = data.acumulado || data.acumulou || false;
