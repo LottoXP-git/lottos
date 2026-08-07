@@ -6,11 +6,28 @@
      "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
  };
  
+interface PremiacaoLike {
+  descricao?: string;
+  faixa?: number;
+  ganhadores?: number;
+  valorPremio?: number;
+}
+
+// A API da Caixa nem sempre devolve o rateio ordenado; a faixa principal é a
+// de menor número de faixa (1) — fallback: maior valor de prêmio.
+function getMainTier<T extends PremiacaoLike>(premiacoes: T[] | undefined): T | undefined {
+  if (!premiacoes || premiacoes.length === 0) return undefined;
+  const withFaixa = premiacoes.filter((p) => typeof p.faixa === "number" && (p.faixa as number) > 0);
+  if (withFaixa.length > 0) {
+    return withFaixa.reduce((best, p) => ((p.faixa as number) < (best.faixa as number) ? p : best));
+  }
+  return premiacoes.reduce((best, p) => ((p.valorPremio || 0) > (best.valorPremio || 0) ? p : best));
+}
+
  interface LotteryConfig {
    id: string;
    name: string;
    apiName: string;
-</dummy>
    color: string;
    maxNumber: number;
    selectCount: number;
