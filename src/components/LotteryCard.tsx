@@ -132,7 +132,7 @@ export function LotteryCard({
             </Link>
           </CardTitle>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {result.winners === 0 && result.id !== "federal" && (
+            {result.winners === 0 && result.id !== "federal" && parsePrizeValue(result.nextPrize) > parsePrizeValue(result.prize) && (
               <Badge variant="outline" className="bg-amber-500/20 text-amber-300 border-amber-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 animate-pulse">
                 ACUMULOU
               </Badge>
