@@ -103,6 +103,9 @@ const Index = () => {
 
   const isLiveData = lotteryResults && lotteryResults.length > 0;
 
+  // Alerta quando uma loteria passa a atender a condição de "ACUMULOU".
+  useAccumulatedAlerts(lotteryResults);
+
   const handleCardClick = (lottery: LotteryResult) => {
     setSelectedLottery(lottery);
     setModalOpen(true);
