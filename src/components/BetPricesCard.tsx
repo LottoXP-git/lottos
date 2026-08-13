@@ -189,24 +189,43 @@ export function BetPricesCard() {
     if (modality === "milionaria") {
       return (
         <div className="max-h-[400px] overflow-y-auto rounded-lg border border-border">
-          <Table>
+          {/* Mobile: compact list */}
+          <ul className="sm:hidden divide-y divide-border">
+            {MILIONARIA_PRICES.map((row, i) => (
+              <li key={i} className="flex items-center justify-between gap-2 px-3 py-2">
+                <div className="flex items-center gap-1.5 text-[11px] leading-none">
+                  <span className="font-medium">{row.numeros} nº</span>
+                  <span className="text-muted-foreground">+</span>
+                  <span className="font-medium">{row.trevos} trevos</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    ({row.apostas.toLocaleString("pt-BR")} ap.)
+                  </span>
+                </div>
+                <span className={cn("text-[11px] font-semibold whitespace-nowrap", colors.text)}>
+                  R$ {row.price}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {/* Desktop: table */}
+          <Table className="hidden sm:table">
             <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow>
-                <TableHead className="text-xs sm:text-sm">Núm.</TableHead>
-                <TableHead className="text-xs sm:text-sm">Trevos</TableHead>
-                <TableHead className="text-xs sm:text-sm">Apostas</TableHead>
-                <TableHead className="text-right text-xs sm:text-sm">Valor (R$)</TableHead>
+                <TableHead className="text-sm">Núm.</TableHead>
+                <TableHead className="text-sm">Trevos</TableHead>
+                <TableHead className="text-sm">Apostas</TableHead>
+                <TableHead className="text-right text-sm">Valor (R$)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {MILIONARIA_PRICES.map((row, i) => (
                 <TableRow key={i}>
-                  <TableCell className="py-1.5 px-2 sm:px-4 text-xs sm:text-sm">{row.numeros}</TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-4 text-xs sm:text-sm">{row.trevos}</TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-4 text-xs sm:text-sm">
+                  <TableCell className="py-1.5 px-4 text-sm">{row.numeros}</TableCell>
+                  <TableCell className="py-1.5 px-4 text-sm">{row.trevos}</TableCell>
+                  <TableCell className="py-1.5 px-4 text-sm">
                     {row.apostas.toLocaleString("pt-BR")}
                   </TableCell>
-                  <TableCell className={cn("py-1.5 px-2 sm:px-4 text-right text-xs sm:text-sm font-semibold", colors.text)}>
+                  <TableCell className={cn("py-1.5 px-4 text-right text-sm font-semibold", colors.text)}>
                     {row.price}
                   </TableCell>
                 </TableRow>
