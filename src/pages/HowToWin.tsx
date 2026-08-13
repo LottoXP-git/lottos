@@ -204,7 +204,8 @@ export default function HowToWin() {
 
   const latest = history?.[0];
   const pageUrl = `${SITE_URL}/como-ganhar/${lotteryId}`;
-  const title = `Como ganhar na ${meta.name}: estratégias, dicas e números mais sorteados`;
+  const title = `Como ganhar na ${meta.name}: dicas e estatísticas`;
+  const headline = `Como ganhar na ${meta.name}: estratégias, dicas e números mais sorteados`;
   const description = `Guia completo de como ganhar na ${meta.name}: probabilidade, dezenas mais sorteadas, fechamento, bolão e estratégias atualizadas a partir dos últimos 100 concursos.`;
 
   return (
@@ -232,7 +233,7 @@ export default function HowToWin() {
           {
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: title,
+            headline,
             description,
             inLanguage: "pt-BR",
             mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },

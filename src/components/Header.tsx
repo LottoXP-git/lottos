@@ -20,6 +20,7 @@ export function Header() {
           <nav className="flex items-center gap-1">
             <NavLink
               to="/"
+              aria-label="Início"
               className={cn(
                 "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
@@ -32,6 +33,7 @@ export function Header() {
             
             <NavLink
               to="/historico"
+              aria-label="Histórico"
               className={cn(
                 "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
@@ -44,6 +46,7 @@ export function Header() {
 
             <NavLink
               to="/estatisticas"
+              aria-label="Estatísticas"
               className={cn(
                 "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
