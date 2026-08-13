@@ -143,7 +143,7 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Lottos. Todos os direitos reservados.
           </p>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
             <Link to="/sobre" className="hover:text-primary transition-colors">Sobre</Link>
             <span>•</span>
             <Link to="/jogo-responsavel" className="hover:text-primary transition-colors">Jogo Responsável</Link>
@@ -151,6 +151,8 @@ export function Footer() {
             <Link to="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link>
             <span>•</span>
             <Link to="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link>
+            <span>•</span>
+            <Link to="/conectar-agente" className="hover:text-primary transition-colors">Agente de IA</Link>
           </div>
           <p className="text-xs text-muted-foreground text-center font-bold">
             Este App não possui vínculo oficial com a Caixa Econômica Federal.

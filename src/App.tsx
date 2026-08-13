@@ -20,6 +20,7 @@ import LotteryDraw from "./pages/LotteryDraw";
 import HowToWin from "./pages/HowToWin";
 import About from "./pages/About";
 import ResponsibleGambling from "./pages/ResponsibleGambling";
+import AgentConnection from "./pages/AgentConnection";
 import { CookieConsent } from "@/components/CookieConsent";
 import { TestVersionBanner } from "@/components/TestVersionBanner";
 import { UpdateAvailableBanner } from "@/components/UpdateAvailableBanner";
@@ -113,6 +114,7 @@ const AppInner = ({
                 <Route path="/termos" element={<TermsOfUse />} />
                 <Route path="/sobre" element={<About />} />
                 <Route path="/jogo-responsavel" element={<ResponsibleGambling />} />
+                <Route path="/conectar-agente" element={<AgentConnection />} />
                 <Route path="/admin" element={<Admin />} />
                 {/* SEO: guide pages targeting "como ganhar na X" keywords */}
                 <Route path="/como-ganhar/:lotteryId" element={<HowToWin />} />
