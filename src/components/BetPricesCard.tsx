@@ -251,7 +251,7 @@ export function BetPricesCard() {
   };
 
   return (
-    <Card className={cn("animate-fade-in", colors.border)}>
+    <Card role="region" aria-labelledby="bet-prices-title" className={cn("animate-fade-in", colors.border)}>
       <CardHeader className="pb-3 sm:pb-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
