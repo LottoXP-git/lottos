@@ -71,6 +71,5 @@ export function TesterEngagementOptIn() {
         </button>
       </div>
     </aside>
-  )
   );
 }
