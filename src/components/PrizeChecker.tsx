@@ -709,7 +709,7 @@ export function PrizeChecker() {
         <div className="space-y-1.5">
           <Label className="text-xs sm:text-sm">Loteria</Label>
           <Select value={selectedLottery} onValueChange={(v) => { setSelectedLottery(v); setResult(null); }}>
-            <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+            <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm" aria-label="Selecione a loteria">
               <SelectValue placeholder="Selecione a loteria" />
             </SelectTrigger>
             <SelectContent>
@@ -845,7 +845,7 @@ export function PrizeChecker() {
               Mês da Sorte
             </Label>
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+              <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm" aria-label="Selecione o mês da sorte">
                 <SelectValue placeholder="Selecione o mês..." />
               </SelectTrigger>
               <SelectContent>

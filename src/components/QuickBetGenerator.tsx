@@ -391,7 +391,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
         />
 
         <Select value={selectedId} onValueChange={setSelectedId}>
-          <SelectTrigger className="w-full h-12 text-base">
+          <SelectTrigger className="w-full h-12 text-base" aria-label="Escolha a loteria">
             <SelectValue placeholder="Escolha a loteria" />
           </SelectTrigger>
           <SelectContent>
