@@ -144,7 +144,7 @@ export default function AgentConnection() {
                       href="https://chatgpt.com/#settings/Connectors/Advanced"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary hover:underline"
+                      className="text-primary underline underline-offset-2"
                     >
                       configurações avançadas de Conectores do ChatGPT
                     </a>{" "}
@@ -156,7 +156,7 @@ export default function AgentConnection() {
                       href="https://chatgpt.com/plugins#settings/Connectors?create-connector=true&redirectAfter=%2Fplugins"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary hover:underline"
+                      className="text-primary underline underline-offset-2"
                     >
                       criar novo conector
                     </a>
@@ -202,7 +202,7 @@ export default function AgentConnection() {
                       )}&connectorUrl=${encodeURIComponent(mcpUrl)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary hover:underline"
+                      className="text-primary underline underline-offset-2"
                     >
                       conectores personalizados do Claude
                     </a>{" "}

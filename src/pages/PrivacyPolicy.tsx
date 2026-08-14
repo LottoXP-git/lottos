@@ -84,11 +84,11 @@ export default function PrivacyPolicy() {
             </p>
             <p>
               Você pode gerenciar suas preferências de cookies nas configurações do seu navegador. Para mais informações sobre como o Google utiliza dados,
-              visite <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Políticas de Privacidade do Google</a>.
+              visite <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">Políticas de Privacidade do Google</a>.
             </p>
             <p>
               Para desativar anúncios personalizados do Google em qualquer site, acesse{" "}
-              <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
                 adssettings.google.com
               </a>
               . Ao recusar cookies não essenciais no banner exibido na sua primeira visita, sinalizamos ao Google AdSense para exibir apenas

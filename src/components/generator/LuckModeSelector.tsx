@@ -30,7 +30,7 @@ export function LuckModeSelector({ mode, onModeChange, input, onInputChange }: L
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="text-[11px] text-primary hover:underline"
+          className="text-[11px] text-primary underline underline-offset-2"
         >
           {open ? "Recolher" : "Ver todos"}
         </button>

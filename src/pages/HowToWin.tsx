@@ -294,7 +294,7 @@ export default function HowToWin() {
             <div className="p-3 rounded-xl bg-secondary/30 border border-border">
               <p className="text-[10px] uppercase text-muted-foreground">Último concurso</p>
               {latest ? (
-                <Link to={`/${lotteryId}/${latest.concurso}`} className="text-sm sm:text-base font-bold text-primary hover:underline">
+                <Link to={`/${lotteryId}/${latest.concurso}`} className="text-sm sm:text-base font-bold text-primary underline underline-offset-2">
                   #{latest.concurso}
                 </Link>
               ) : (

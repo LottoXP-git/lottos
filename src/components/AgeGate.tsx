@@ -225,9 +225,9 @@ export function AgeGate({ onVerified }: { onVerified: () => void }) {
 
         <p className="text-xs text-muted-foreground leading-relaxed">
           Ao continuar, você confirma ter 18 anos ou mais e concorda com nossos{" "}
-          <a href="/termos" className="text-primary hover:underline">Termos de Uso</a>{" "}
+          <a href="/termos" className="text-primary underline underline-offset-2">Termos de Uso</a>{" "}
           e{" "}
-          <a href="/privacidade" className="text-primary hover:underline">Política de Privacidade</a>.
+          <a href="/privacidade" className="text-primary underline underline-offset-2">Política de Privacidade</a>.
         </p>
       </div>
     </div>

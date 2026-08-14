@@ -91,7 +91,7 @@ export default function TermsOfUse() {
             <h2 className="text-lg font-semibold text-foreground">5. Publicidade</h2>
             <p>
               O site pode exibir anúncios de terceiros, incluindo anúncios veiculados pelo Google AdSense. Esses anúncios podem usar cookies
-              para personalizar o conteúdo exibido. Consulte nossa <a href="/privacidade" className="text-primary hover:underline">Política de Privacidade</a> para mais detalhes.
+              para personalizar o conteúdo exibido. Consulte nossa <a href="/privacidade" className="text-primary underline underline-offset-2">Política de Privacidade</a> para mais detalhes.
             </p>
           </section>
 
@@ -101,7 +101,7 @@ export default function TermsOfUse() {
               O acesso a este site é restrito a maiores de 18 anos, conforme legislação brasileira aplicável a loterias e jogos de azar.
               Os conteúdos aqui apresentados têm caráter exclusivamente informativo e estatístico — nenhuma estratégia, palpite ou ferramenta
               do Lottos garante premiação. Jogue apenas o que pode perder. Em caso de dificuldades, consulte nossa página de{" "}
-              <a href="/jogo-responsavel" className="text-primary hover:underline">Jogo Responsável</a> ou ligue para o CVV 188.
+              <a href="/jogo-responsavel" className="text-primary underline underline-offset-2">Jogo Responsável</a> ou ligue para o CVV 188.
             </p>
           </section>
 

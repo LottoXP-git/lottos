@@ -1107,7 +1107,7 @@ export function PrizeChecker() {
                   href="https://loterias.caixa.gov.br/Paginas/Bilhetes-Premiados-Federal.aspx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-primary hover:underline mt-1"
+                  className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-primary underline underline-offset-2 mt-1"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Ver bilhetes premiados do concurso {result.concurso} no site da Caixa
