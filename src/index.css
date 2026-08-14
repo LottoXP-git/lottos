@@ -394,26 +394,20 @@
   }
 }
 
-/* A11y: `--primary` (laranja vivo) reprova no contraste WCAG AA quando usado
-   como cor de texto sobre fundos claros. Mantemos o laranja da marca para
-   fundos/bordas e usamos um tom mais escuro apenas para texto. */
+/* A11y: o laranja da marca reprova no contraste WCAG AA quando usado como
+   cor de texto sobre fundos claros. Mantemos o laranja para fundos/bordas e
+   usamos um tom acessivel apenas para texto. (`:root` = tema escuro) */
 :root {
-  --primary-text: 22 100% 32%;
-}
-.dark {
   --primary-text: 28 100% 66%;
 }
-.text-primary {
-  color: hsl(var(--primary-text));
+.light {
+  --primary-text: 22 100% 32%;
+}
+.text-primary,
+[class~="!text-primary"] {
+  color: hsl(var(--primary-text)) !important;
 }
 
-/* Variantes com contraste AA das cores de marca das loterias quando usadas
-   como texto sobre fundos claros (chips `bg-lottery-*/20`). */
-.text-lottery-megasena { color: hsl(160 80% 24%); }
-.text-lottery-lotomania { color: hsl(28 100% 30%); }
-.dark .text-lottery-megasena { color: hsl(160 60% 62%); }
-.dark .text-lottery-lotomania { color: hsl(28 95% 62%); }
-
-/* Utilitário Tailwind com `!` (links de navegação ativos) precisa do mesmo
-   tom acessível. */
-.\!text-primary { color: hsl(var(--primary-text)) !important; }
+/* Variantes acessiveis das cores de marca das loterias usadas como texto. */
+.light .text-lottery-megasena { color: hsl(160 80% 24%); }
+.light .text-lottery-lotomania { color: hsl(28 100% 30%); }
