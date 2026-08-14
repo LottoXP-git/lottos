@@ -188,20 +188,28 @@ export function BetPricesCard() {
 
     if (modality === "milionaria") {
       return (
-        <div className="max-h-[400px] overflow-y-auto rounded-lg border border-border">
+        <div
+          className="max-h-[400px] overflow-y-auto rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          tabIndex={0}
+          role="group"
+          aria-label="Tabela de preços da +Milionária (rolável)"
+        >
           {/* Mobile: compact list */}
-          <ul className="sm:hidden divide-y divide-border">
+          <ul className="sm:hidden divide-y divide-border" aria-label="Preços da +Milionária">
             {MILIONARIA_PRICES.map((row, i) => (
-              <li key={i} className="flex items-center justify-between gap-2 px-3 py-2">
-                <div className="flex items-center gap-1.5 text-[11px] leading-none">
+              <li
+                key={i}
+                className="flex items-center justify-between gap-2 px-3 py-2.5"
+              >
+                <div className="flex items-center gap-1.5 text-xs leading-tight">
                   <span className="font-medium">{row.numeros} nº</span>
-                  <span className="text-muted-foreground">+</span>
+                  <span className="text-muted-foreground" aria-hidden="true">+</span>
                   <span className="font-medium">{row.trevos} trevos</span>
-                  <span className="text-[10px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     ({row.apostas.toLocaleString("pt-BR")} ap.)
                   </span>
                 </div>
-                <span className={cn("text-[11px] font-semibold whitespace-nowrap", colors.text)}>
+                <span className={cn("text-xs font-semibold whitespace-nowrap", colors.text)}>
                   R$ {row.price}
                 </span>
               </li>
@@ -209,12 +217,15 @@ export function BetPricesCard() {
           </ul>
           {/* Desktop: table */}
           <Table className="hidden sm:table">
+            <caption className="sr-only">
+              Preços das apostas da +Milionária por quantidade de números e trevos
+            </caption>
             <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow>
-                <TableHead className="text-sm">Núm.</TableHead>
-                <TableHead className="text-sm">Trevos</TableHead>
-                <TableHead className="text-sm">Apostas</TableHead>
-                <TableHead className="text-right text-sm">Valor (R$)</TableHead>
+                <TableHead scope="col" className="text-sm">Núm.</TableHead>
+                <TableHead scope="col" className="text-sm">Trevos</TableHead>
+                <TableHead scope="col" className="text-sm">Apostas</TableHead>
+                <TableHead scope="col" className="text-right text-sm">Valor (R$)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
