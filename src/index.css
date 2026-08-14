@@ -393,3 +393,16 @@
     }
   }
 }
+
+/* A11y: `--primary` (laranja vivo) reprova no contraste WCAG AA quando usado
+   como cor de texto sobre fundos claros. Mantemos o laranja da marca para
+   fundos/bordas e usamos um tom mais escuro apenas para texto. */
+:root {
+  --primary-text: 22 100% 32%;
+}
+.dark {
+  --primary-text: 28 100% 66%;
+}
+.text-primary {
+  color: hsl(var(--primary-text));
+}
