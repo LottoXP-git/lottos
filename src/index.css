@@ -18,7 +18,7 @@
 
     /* Caixa Orange as Primary */
     --primary: 25 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 20 100% 10%;
 
     --secondary: 220 20% 14%;
     --secondary-foreground: 0 0% 98%;
@@ -406,3 +406,14 @@
 .text-primary {
   color: hsl(var(--primary-text));
 }
+
+/* Variantes com contraste AA das cores de marca das loterias quando usadas
+   como texto sobre fundos claros (chips `bg-lottery-*/20`). */
+.text-lottery-megasena { color: hsl(160 80% 24%); }
+.text-lottery-lotomania { color: hsl(28 100% 30%); }
+.dark .text-lottery-megasena { color: hsl(160 60% 62%); }
+.dark .text-lottery-lotomania { color: hsl(28 95% 62%); }
+
+/* Utilitário Tailwind com `!` (links de navegação ativos) precisa do mesmo
+   tom acessível. */
+.\!text-primary { color: hsl(var(--primary-text)) !important; }

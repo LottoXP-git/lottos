@@ -142,7 +142,7 @@ export function AdBanner({ format = "leaderboard", className, slot }: AdBannerPr
         data-ad-format={config.format}
         data-full-width-responsive="true"
       />
-      <p className="text-[9px] text-muted-foreground/50 text-right uppercase tracking-wider mt-0.5">
+      <p className="text-[9px] text-muted-foreground text-right uppercase tracking-wider mt-0.5">
         Anúncio
       </p>
     </div>
