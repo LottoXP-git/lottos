@@ -256,10 +256,10 @@ export function BetPricesCard() {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <div className={cn("w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0", colors.iconBg, colors.iconBorder)}>
-              <DollarSign className={cn("w-4 h-4 sm:w-5 sm:h-5", colors.text)} />
+              <DollarSign className={cn("w-4 h-4 sm:w-5 sm:h-5", colors.text)} aria-hidden="true" />
             </div>
             <div>
-              <CardTitle className="text-base sm:text-lg">Preço das Apostas</CardTitle>
+              <CardTitle id="bet-prices-title" className="text-base sm:text-lg">Preço das Apostas</CardTitle>
               <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
                 Tabela de referência por modalidade
               </p>
@@ -272,7 +272,10 @@ export function BetPricesCard() {
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4">
         <Select value={modality} onValueChange={(v) => setModality(v as ModalityKey)}>
-          <SelectTrigger className={cn("w-full", colors.ring)}>
+          <SelectTrigger
+            aria-label="Selecionar modalidade de loteria"
+            className={cn("w-full min-h-11 focus:ring-0 focus:ring-offset-0", colors.ring)}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -287,7 +290,7 @@ export function BetPricesCard() {
         {renderTable()}
 
         <div className="flex items-start gap-2 text-[10px] sm:text-xs text-muted-foreground">
-          <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 mt-0.5" />
+          <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
           <p>
             Valores de referência (07/07/2025). Consulte{" "}
             <a
