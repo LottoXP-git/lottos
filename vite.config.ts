@@ -19,4 +19,11 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Alvo fixo: evita que o esbuild tente "rebaixar" sintaxe moderna
+    // (destructuring etc.) para browserslist herdado, o que quebra o
+    // build em algumas versões do esbuild. O WebView do Android/iOS
+    // usado pelo Capacitor suporta ES2020+ sem problemas.
+    target: "es2020",
+  },
 }));
