@@ -384,7 +384,8 @@ const History = () => {
                     <TableHead className="font-semibold">Números Sorteados</TableHead>
                     <TableHead className="font-semibold text-right">Prêmio</TableHead>
                     <TableHead className="font-semibold text-center">
-                      <Trophy className="w-4 h-4 inline" />
+                      <Trophy className="w-4 h-4 inline" aria-hidden="true" />
+                      <span className="sr-only">Ganhadores</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
