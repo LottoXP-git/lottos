@@ -466,7 +466,8 @@ const History = () => {
                       e.preventDefault();
                       if (currentPage > 1) setCurrentPage(currentPage - 1);
                     }}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    aria-disabled={currentPage === 1}
+                    className={currentPage === 1 ? "pointer-events-none opacity-60" : ""}
                   />
                 </PaginationItem>
 
@@ -505,7 +506,8 @@ const History = () => {
                       e.preventDefault();
                       if (currentPage < totalPages) setCurrentPage(currentPage + 1);
                     }}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    aria-disabled={currentPage === totalPages}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-60" : ""}
                   />
                 </PaginationItem>
               </PaginationContent>

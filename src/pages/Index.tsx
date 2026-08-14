@@ -282,6 +282,7 @@ const Index = () => {
           className="mb-8 sm:mb-12 animate-fade-in">
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
+            <h2 className="sr-only">Gerador de palpites</h2>
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
         </section>
