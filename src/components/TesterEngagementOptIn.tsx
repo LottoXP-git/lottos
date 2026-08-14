@@ -43,7 +43,7 @@ export function TesterEngagementOptIn() {
   };
 
   return (
-    <div className="mx-auto my-4 max-w-3xl px-3">
+    <aside aria-label="Lembretes do Lottos" className="mx-auto my-4 max-w-3xl px-3">
       <div className="relative flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 shadow-sm">
         <Bell className="h-5 w-5 shrink-0 text-primary" />
         <div className="min-w-0 flex-1">
@@ -70,6 +70,6 @@ export function TesterEngagementOptIn() {
           <X className="h-3.5 w-3.5" />
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

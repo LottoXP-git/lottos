@@ -164,11 +164,11 @@ export function Footer() {
           <ShieldAlert className="w-4 h-4 text-primary shrink-0" />
           <span>
             <strong className="text-foreground">+18.</strong> Jogue com responsabilidade. Se precisar de apoio, ligue para o{" "}
-            <a href="https://www.cvv.org.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            <a href="https://www.cvv.org.br" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
               CVV 188
             </a>
             {" "}ou consulte nossa página de{" "}
-            <Link to="/jogo-responsavel" className="text-primary hover:underline">Jogo Responsável</Link>.
+            <Link to="/jogo-responsavel" className="text-primary underline underline-offset-2">Jogo Responsável</Link>.
           </span>
         </div>
       </div>

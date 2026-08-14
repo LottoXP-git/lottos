@@ -134,7 +134,12 @@ export function BetPricesCard() {
     if (SIMPLE_TABLES[modality]) {
       const { numbersLabel, data } = SIMPLE_TABLES[modality]!;
       return (
-        <div className="max-h-[400px] overflow-y-auto rounded-lg border border-border">
+        <div
+          className="max-h-[400px] overflow-y-auto rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          tabIndex={0}
+          role="group"
+          aria-label="Tabela de preços (rolável)"
+        >
           <Table>
             <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow>
@@ -159,7 +164,12 @@ export function BetPricesCard() {
 
     if (modality === "loteca") {
       return (
-        <div className="max-h-[400px] overflow-y-auto rounded-lg border border-border">
+        <div
+          className="max-h-[400px] overflow-y-auto rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          tabIndex={0}
+          role="group"
+          aria-label="Tabela de preços (rolável)"
+        >
           <Table>
             <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow>

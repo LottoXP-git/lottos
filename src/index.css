@@ -18,7 +18,7 @@
 
     /* Caixa Orange as Primary */
     --primary: 25 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 20 100% 10%;
 
     --secondary: 220 20% 14%;
     --secondary-foreground: 0 0% 98%;
@@ -81,7 +81,7 @@
     --popover-foreground: 220 25% 10%;
 
     --primary: 25 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 20 100% 10%;
 
     --secondary: 220 15% 94%;
     --secondary-foreground: 220 25% 10%;
@@ -393,3 +393,21 @@
     }
   }
 }
+
+/* A11y: o laranja da marca reprova no contraste WCAG AA quando usado como
+   cor de texto sobre fundos claros. Mantemos o laranja para fundos/bordas e
+   usamos um tom acessivel apenas para texto. (`:root` = tema escuro) */
+:root {
+  --primary-text: 28 100% 66%;
+}
+.light {
+  --primary-text: 22 100% 32%;
+}
+.text-primary,
+[class~="!text-primary"] {
+  color: hsl(var(--primary-text)) !important;
+}
+
+/* Variantes acessiveis das cores de marca das loterias usadas como texto. */
+.light .text-lottery-megasena { color: hsl(160 80% 24%); }
+.light .text-lottery-lotomania { color: hsl(28 100% 30%); }

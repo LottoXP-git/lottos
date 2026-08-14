@@ -226,8 +226,8 @@ const Index = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-3 sm:mb-4">
              {isLiveData ?
             <>
-                 <Wifi className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
-                 <span className="text-xs text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
+                 <Wifi className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-700 dark:text-emerald-400" />
+                 <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
                </> :
 
             <>
@@ -261,16 +261,16 @@ const Index = () => {
             
             <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
-                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
-                <span className="text-lg sm:text-2xl font-bold text-emerald-400">11</span>
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-700 dark:text-emerald-400" />
+                <span className="text-lg sm:text-2xl font-bold text-emerald-700 dark:text-emerald-400">11</span>
               </div>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Loterias Disponíveis</p>
             </div>
             
             <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-                <span className="text-lg sm:text-2xl font-bold text-purple-400">100+</span>
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-700 dark:text-purple-400" />
+                <span className="text-lg sm:text-2xl font-bold text-purple-700 dark:text-purple-400">100+</span>
               </div>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Sorteios Analisados</p>
             </div>
@@ -282,6 +282,7 @@ const Index = () => {
           className="mb-8 sm:mb-12 animate-fade-in">
 
           <div id="quick-bet-generator" className="max-w-lg mx-auto px-1">
+            <h2 className="sr-only">Gerador de palpites</h2>
             <QuickBetGenerator lotteries={results} preselectedId={quickBetPreselect} />
           </div>
         </section>

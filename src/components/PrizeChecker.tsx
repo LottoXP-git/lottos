@@ -709,7 +709,7 @@ export function PrizeChecker() {
         <div className="space-y-1.5">
           <Label className="text-xs sm:text-sm">Loteria</Label>
           <Select value={selectedLottery} onValueChange={(v) => { setSelectedLottery(v); setResult(null); }}>
-            <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+            <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm" aria-label="Selecione a loteria">
               <SelectValue placeholder="Selecione a loteria" />
             </SelectTrigger>
             <SelectContent>
@@ -845,7 +845,7 @@ export function PrizeChecker() {
               Mês da Sorte
             </Label>
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm">
+              <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm" aria-label="Selecione o mês da sorte">
                 <SelectValue placeholder="Selecione o mês..." />
               </SelectTrigger>
               <SelectContent>
@@ -1107,7 +1107,7 @@ export function PrizeChecker() {
                   href="https://loterias.caixa.gov.br/Paginas/Bilhetes-Premiados-Federal.aspx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-primary hover:underline mt-1"
+                  className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-primary underline underline-offset-2 mt-1"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Ver bilhetes premiados do concurso {result.concurso} no site da Caixa

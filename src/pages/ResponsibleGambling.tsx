@@ -90,7 +90,7 @@ export default function ResponsibleGambling() {
                     href="https://www.cvv.org.br"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline inline-flex items-center gap-1"
+                    className="text-primary underline underline-offset-2 inline-flex items-center gap-1"
                   >
                     cvv.org.br <ExternalLink className="w-3 h-3" />
                   </a>
@@ -108,7 +108,7 @@ export default function ResponsibleGambling() {
                     href="https://jogadoresanonimos.com.br"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline inline-flex items-center gap-1"
+                    className="text-primary underline underline-offset-2 inline-flex items-center gap-1"
                   >
                     jogadoresanonimos.com.br <ExternalLink className="w-3 h-3" />
                   </a>

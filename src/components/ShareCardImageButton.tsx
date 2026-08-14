@@ -175,6 +175,7 @@ export function ShareCardImageButton({
             <Button
               variant="ghost"
               size="icon"
+              aria-label="Pré-visualizar e compartilhar imagem do resultado"
               onClick={handleGeneratePreview}
               disabled={busy}
               className={className}

@@ -60,7 +60,7 @@ export function CookieConsent() {
               Utilizamos cookies próprios e de parceiros (Google AdSense) para
               análise e exibição de anúncios. Você pode aceitar ou continuar
               apenas com cookies essenciais. Saiba mais em nossa{" "}
-              <Link to="/privacidade" className="text-primary hover:underline">
+              <Link to="/privacidade" className="text-primary underline underline-offset-2">
                 Política de Privacidade
               </Link>
               .

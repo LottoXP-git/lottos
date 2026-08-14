@@ -92,7 +92,7 @@ export default function About() {
             </p>
             <p>
               Acreditamos no jogo responsável. Consulte nossa página de{" "}
-              <Link to="/jogo-responsavel" className="text-primary hover:underline">
+              <Link to="/jogo-responsavel" className="text-primary underline underline-offset-2">
                 Jogo Responsável
               </Link>{" "}
               para orientações e canais de apoio.
