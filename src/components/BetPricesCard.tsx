@@ -37,80 +37,80 @@ const modalityColorMap: Record<
     border: "border-emerald-500/30",
     iconBg: "bg-emerald-500/10",
     iconBorder: "border-emerald-500/20",
-    text: "text-emerald-500",
-    ring: "focus:ring-emerald-500/20",
+    text: "text-emerald-700 dark:text-emerald-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-emerald-500/30",
   },
   lotofacil: {
     border: "border-purple-500/30",
     iconBg: "bg-purple-500/10",
     iconBorder: "border-purple-500/20",
-    text: "text-purple-500",
-    ring: "focus:ring-purple-500/20",
+    text: "text-purple-700 dark:text-purple-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-purple-600 dark:focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-purple-500/30",
   },
   quina: {
     border: "border-blue-500/30",
     iconBg: "bg-blue-500/10",
     iconBorder: "border-blue-500/20",
-    text: "text-blue-500",
-    ring: "focus:ring-blue-500/20",
+    text: "text-blue-700 dark:text-blue-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-blue-500/30",
   },
   lotomania: {
     border: "border-orange-500/30",
     iconBg: "bg-orange-500/10",
     iconBorder: "border-orange-500/20",
-    text: "text-orange-500",
-    ring: "focus:ring-orange-500/20",
+    text: "text-orange-700 dark:text-orange-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-orange-600 dark:focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-orange-500/30",
   },
   timemania: {
     border: "border-green-500/30",
     iconBg: "bg-green-500/10",
     iconBorder: "border-green-500/20",
-    text: "text-green-500",
-    ring: "focus:ring-green-500/20",
+    text: "text-green-700 dark:text-green-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-green-600 dark:focus-visible:ring-green-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-green-500/30",
   },
   duplasena: {
     border: "border-rose-500/30",
     iconBg: "bg-rose-500/10",
     iconBorder: "border-rose-500/20",
-    text: "text-rose-500",
-    ring: "focus:ring-rose-500/20",
+    text: "text-rose-700 dark:text-rose-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-rose-600 dark:focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-rose-500/30",
   },
   diadesorte: {
     border: "border-amber-500/30",
     iconBg: "bg-amber-500/10",
     iconBorder: "border-amber-500/20",
-    text: "text-amber-500",
-    ring: "focus:ring-amber-500/20",
+    text: "text-amber-700 dark:text-amber-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-amber-600 dark:focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-amber-500/30",
   },
   supersete: {
     border: "border-lime-500/30",
     iconBg: "bg-lime-500/10",
     iconBorder: "border-lime-500/20",
-    text: "text-lime-500",
-    ring: "focus:ring-lime-500/20",
+    text: "text-lime-700 dark:text-lime-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-lime-600 dark:focus-visible:ring-lime-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-lime-500/30",
   },
   milionaria: {
     border: "border-indigo-500/30",
     iconBg: "bg-indigo-500/10",
     iconBorder: "border-indigo-500/20",
-    text: "text-indigo-500",
-    ring: "focus:ring-indigo-500/20",
+    text: "text-indigo-700 dark:text-indigo-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-indigo-600 dark:focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-indigo-500/30",
   },
   loteca: {
     border: "border-red-500/30",
     iconBg: "bg-red-500/10",
     iconBorder: "border-red-500/20",
-    text: "text-red-500",
-    ring: "focus:ring-red-500/20",
+    text: "text-red-700 dark:text-red-300",
+    ring: "focus-visible:ring-2 focus-visible:ring-red-600 dark:focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     badgeBorder: "border-red-500/30",
   },
 };
@@ -188,20 +188,28 @@ export function BetPricesCard() {
 
     if (modality === "milionaria") {
       return (
-        <div className="max-h-[400px] overflow-y-auto rounded-lg border border-border">
+        <div
+          className="max-h-[400px] overflow-y-auto rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          tabIndex={0}
+          role="group"
+          aria-label="Tabela de preços da +Milionária (rolável)"
+        >
           {/* Mobile: compact list */}
-          <ul className="sm:hidden divide-y divide-border">
+          <ul className="sm:hidden divide-y divide-border" aria-label="Preços da +Milionária">
             {MILIONARIA_PRICES.map((row, i) => (
-              <li key={i} className="flex items-center justify-between gap-2 px-3 py-2">
-                <div className="flex items-center gap-1.5 text-[11px] leading-none">
+              <li
+                key={i}
+                className="flex items-center justify-between gap-2 px-3 py-2.5"
+              >
+                <div className="flex items-center gap-1.5 text-xs leading-tight">
                   <span className="font-medium">{row.numeros} nº</span>
-                  <span className="text-muted-foreground">+</span>
+                  <span className="text-muted-foreground" aria-hidden="true">+</span>
                   <span className="font-medium">{row.trevos} trevos</span>
-                  <span className="text-[10px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     ({row.apostas.toLocaleString("pt-BR")} ap.)
                   </span>
                 </div>
-                <span className={cn("text-[11px] font-semibold whitespace-nowrap", colors.text)}>
+                <span className={cn("text-xs font-semibold whitespace-nowrap", colors.text)}>
                   R$ {row.price}
                 </span>
               </li>
@@ -209,12 +217,15 @@ export function BetPricesCard() {
           </ul>
           {/* Desktop: table */}
           <Table className="hidden sm:table">
+            <caption className="sr-only">
+              Preços das apostas da +Milionária por quantidade de números e trevos
+            </caption>
             <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow>
-                <TableHead className="text-sm">Núm.</TableHead>
-                <TableHead className="text-sm">Trevos</TableHead>
-                <TableHead className="text-sm">Apostas</TableHead>
-                <TableHead className="text-right text-sm">Valor (R$)</TableHead>
+                <TableHead scope="col" className="text-sm">Núm.</TableHead>
+                <TableHead scope="col" className="text-sm">Trevos</TableHead>
+                <TableHead scope="col" className="text-sm">Apostas</TableHead>
+                <TableHead scope="col" className="text-right text-sm">Valor (R$)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -240,15 +251,15 @@ export function BetPricesCard() {
   };
 
   return (
-    <Card className={cn("animate-fade-in", colors.border)}>
+    <Card role="region" aria-labelledby="bet-prices-title" className={cn("animate-fade-in", colors.border)}>
       <CardHeader className="pb-3 sm:pb-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <div className={cn("w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0", colors.iconBg, colors.iconBorder)}>
-              <DollarSign className={cn("w-4 h-4 sm:w-5 sm:h-5", colors.text)} />
+              <DollarSign className={cn("w-4 h-4 sm:w-5 sm:h-5", colors.text)} aria-hidden="true" />
             </div>
             <div>
-              <CardTitle className="text-base sm:text-lg">Preço das Apostas</CardTitle>
+              <CardTitle id="bet-prices-title" className="text-base sm:text-lg">Preço das Apostas</CardTitle>
               <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
                 Tabela de referência por modalidade
               </p>
@@ -261,7 +272,10 @@ export function BetPricesCard() {
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4">
         <Select value={modality} onValueChange={(v) => setModality(v as ModalityKey)}>
-          <SelectTrigger className={cn("w-full", colors.ring)}>
+          <SelectTrigger
+            aria-label="Selecionar modalidade de loteria"
+            className={cn("w-full min-h-11 focus:ring-0 focus:ring-offset-0", colors.ring)}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -276,7 +290,7 @@ export function BetPricesCard() {
         {renderTable()}
 
         <div className="flex items-start gap-2 text-[10px] sm:text-xs text-muted-foreground">
-          <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 mt-0.5" />
+          <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
           <p>
             Valores de referência (07/07/2025). Consulte{" "}
             <a
