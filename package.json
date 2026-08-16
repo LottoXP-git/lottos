@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "sync:android": "node scripts/sync-android.mjs",
+    "sync:android:win": "node scripts/sync-android.mjs",
     "predev": "npx tsx scripts/generate-sitemap.ts",
     "prebuild": "npx tsx scripts/generate-sitemap.ts",
     "build:android": "bash scripts/build-android.sh",
@@ -101,7 +103,6 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
-    
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
