@@ -145,10 +145,71 @@ export function ShareCardImageButton({
     if (!targetRef.current || busy) return;
 
     setBusy(true);
+    let captureNode: HTMLElement | null = null;
     try {
-      const cardCanvas = await html2canvas(targetRef.current, {
+      // Capture a fixed-width clone instead of the responsive on-screen card.
+      // This prevents narrow grid cards from truncating titles and pushing badges/balls off-center.
+      captureNode = targetRef.current.cloneNode(true) as HTMLElement;
+      captureNode.style.position = "fixed";
+      captureNode.style.left = "-10000px";
+      captureNode.style.top = "0";
+      captureNode.style.width = "720px";
+      captureNode.style.maxWidth = "none";
+      captureNode.style.height = "auto";
+      captureNode.style.transform = "none";
+      captureNode.style.pointerEvents = "none";
+
+      captureNode.querySelectorAll<HTMLElement>("[data-share-hide='true']").forEach((el) => {
+        el.style.display = "none";
+      });
+      captureNode.querySelectorAll<HTMLElement>("*").forEach((el) => {
+        el.style.animation = "none";
+        el.style.transition = "none";
+      });
+
+      const headerRow = captureNode.querySelector<HTMLElement>("[data-share-header-row]");
+      if (headerRow) {
+        headerRow.style.flexDirection = "column";
+        headerRow.style.alignItems = "center";
+        headerRow.style.justifyContent = "center";
+        headerRow.style.gap = "14px";
+      }
+      const title = captureNode.querySelector<HTMLElement>("[data-share-title]");
+      if (title) {
+        title.style.width = "100%";
+        title.style.maxWidth = "100%";
+        title.style.justifyContent = "center";
+        title.style.overflow = "visible";
+        title.style.textAlign = "center";
+        title.style.flexWrap = "wrap";
+      }
+      const titleName = captureNode.querySelector<HTMLElement>("[data-share-title-name]");
+      if (titleName) {
+        titleName.style.overflow = "visible";
+        titleName.style.textOverflow = "clip";
+        titleName.style.whiteSpace = "normal";
+        titleName.style.minWidth = "0";
+      }
+      const badges = captureNode.querySelector<HTMLElement>("[data-share-badges]");
+      if (badges) {
+        badges.style.width = "100%";
+        badges.style.justifyContent = "center";
+        badges.style.alignItems = "center";
+        badges.style.flexWrap = "wrap";
+      }
+      captureNode.querySelectorAll<HTMLElement>("[data-share-results]").forEach((results) => {
+        results.style.width = "100%";
+        results.style.justifyContent = "center";
+        results.style.alignItems = "center";
+        results.style.columnGap = "10px";
+        results.style.rowGap = "10px";
+      });
+
+      document.body.appendChild(captureNode);
+
+      const cardCanvas = await html2canvas(captureNode, {
         backgroundColor: null,
-        scale: 3,
+        scale: 2,
         useCORS: true,
         logging: false,
         onclone: (doc) => {
@@ -194,44 +255,25 @@ export function ShareCardImageButton({
       ctx.fillStyle = glow2;
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-      // Header: logo + headline
-      let headerBottom = 90;
-      let logoRight = 64;
+       // Header: centered brand and a dedicated full-width title block.
+       let headerBottom = 60;
       if (logo) {
         const logoH = 78;
         const logoW = (logo.naturalWidth / logo.naturalHeight) * logoH;
-        ctx.drawImage(logo, 64, 60, logoW, logoH);
+         ctx.drawImage(logo, (CANVAS_W - logoW) / 2, 52, logoW, logoH);
         headerBottom = 60 + logoH;
-        logoRight = 64 + logoW;
       }
 
       const headlineText = headline ?? "Resultado oficial";
-      const sideWidth = CANVAS_W - 64 - (logoRight + 28);
-      const inlineFit = fitLines(ctx, headlineText, sideWidth, "600", 34, 24, 2);
-      const fitsBesideLogo =
-        inlineFit.lines.length <= 2 &&
-        inlineFit.lines.every((l) => ctx.measureText(l).width <= sideWidth);
-
+       const fullFit = fitLines(ctx, headlineText, CANVAS_W - 128, "700", 42, 26, 2);
+       const lineH = fullFit.size * 1.25;
       ctx.fillStyle = "rgba(255,255,255,0.94)";
-      if (fitsBesideLogo) {
-        ctx.textAlign = "right";
-        const lineH = inlineFit.size * 1.25;
-        const startY =
-          60 + (78 - lineH * (inlineFit.lines.length - 1)) / 2 + inlineFit.size / 2 + 8;
-        inlineFit.lines.forEach((line, i) => {
-          ctx.fillText(line, CANVAS_W - 64, startY + i * lineH);
-        });
-        ctx.textAlign = "left";
-      } else {
-        // Not enough room next to the logo: render full-width below it.
-        const fullFit = fitLines(ctx, headlineText, CANVAS_W - 128, "600", 40, 24, 3);
-        const lineH = fullFit.size * 1.25;
-        ctx.textAlign = "left";
-        fullFit.lines.forEach((line, i) => {
-          ctx.fillText(line, 64, headerBottom + 44 + i * lineH);
-        });
-        headerBottom += 20 + lineH * fullFit.lines.length;
-      }
+       ctx.textAlign = "center";
+       fullFit.lines.forEach((line, i) => {
+         ctx.fillText(line, CANVAS_W / 2, headerBottom + 42 + i * lineH);
+       });
+       ctx.textAlign = "left";
+       headerBottom += 24 + lineH * fullFit.lines.length;
 
       // Card artwork, centered with drop shadow
       const padX = 70;
@@ -297,6 +339,7 @@ export function ShareCardImageButton({
         variant: "destructive",
       });
     } finally {
+      captureNode?.remove();
       setBusy(false);
     }
   };

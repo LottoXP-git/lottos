@@ -129,9 +129,9 @@ export function LotteryCard({
         </div>}
 
       <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base sm:text-xl font-bold text-white drop-shadow flex items-baseline gap-2 flex-nowrap min-w-0 flex-1 overflow-hidden">
-            <span className="truncate min-w-0">{result.name}</span>
+        <div data-share-header-row className="flex items-center justify-between gap-2">
+          <CardTitle data-share-title className="text-base sm:text-xl font-bold text-white drop-shadow flex items-baseline gap-2 flex-nowrap min-w-0 flex-1 overflow-hidden">
+            <span data-share-title-name className="truncate min-w-0">{result.name}</span>
             <Link
               to={`/${result.id}/${result.concurso}`}
               onClick={(e) => e.stopPropagation()}
@@ -142,7 +142,7 @@ export function LotteryCard({
               #{result.concurso}
             </Link>
           </CardTitle>
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div data-share-badges className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {isAccumulated(result) && (
               <Badge variant="outline" className="bg-amber-500/20 text-amber-300 border-amber-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 animate-pulse">
                 ACUMULOU
@@ -162,7 +162,7 @@ export function LotteryCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
-        <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-1 sm:py-2">
+        <div data-share-results className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-1 sm:py-2">
           {result.id === "loteca" && result.jogos ? (
             <div className="w-full space-y-1.5">
               <div className="flex items-center justify-center gap-1.5 mb-2">
@@ -206,13 +206,13 @@ export function LotteryCard({
           ) : result.id === "duplasena" ? (
             <>
               <div className="w-full text-xs text-center text-white/85 font-medium mb-1">1º Sorteio</div>
-              <div className="flex flex-nowrap gap-1.5 justify-center">
+              <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.slice(0, 6).map((num, idx) => (
                   <LotteryBall key={`s1-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
               </div>
               <div className="w-full text-xs text-center text-white/85 font-medium mt-2 mb-1">2º Sorteio</div>
-              <div className="flex flex-nowrap gap-1.5 justify-center">
+              <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.slice(6).map((num, idx) => (
                   <LotteryBall key={`s2-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
                 ))}
@@ -220,7 +220,7 @@ export function LotteryCard({
             </>
           ) : result.id === "maismilionaria" ? (
             <>
-              <div className="flex flex-nowrap gap-1.5 justify-center">
+              <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.map((num, idx) => (
                   <LotteryBall key={`n-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
@@ -232,7 +232,7 @@ export function LotteryCard({
                     <span className="text-xs text-center text-white/90 font-medium">Trevos</span>
                     <Clover className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <div className="flex flex-nowrap gap-1.5 justify-center">
+                  <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                     {result.trevos.map((trevo, idx) => (
                       <div key={`t-${idx}`} className="w-8 h-8 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-xs font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
                         {trevo}
