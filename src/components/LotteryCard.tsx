@@ -43,6 +43,23 @@ const bgColorMap: Record<string, string> = {
 };
 const badgeColorMap: Record<string, string> = {
   "lottery-megasena": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+};
+// Hex pairs used to compose the shareable poster background
+const shareAccentMap: Record<string, [string, string]> = {
+  "lottery-megasena": ["#059669", "#064e3b"],
+  "lottery-lotofacil": ["#7e22ce", "#3b0764"],
+  "lottery-quina": ["#3730a3", "#0c1e4a"],
+  "lottery-lotomania": ["#f97316", "#9a3412"],
+  "lottery-duplasena": ["#be123c", "#7f1d1d"],
+  "lottery-diadesorte": ["#f59e0b", "#a16207"],
+  "lottery-supersete": ["#84cc16", "#3f6212"],
+  "lottery-maismilionaria": ["#4338ca", "#1e1b4b"],
+  "lottery-timemania": ["#facc15", "#a16207"],
+  "lottery-federal": ["#0284c7", "#1d4ed8"],
+  "lottery-loteca": ["#ef4444", "#7f1d1d"],
+};
+const badgeColorMapFull: Record<string, string> = {
+  "lottery-megasena": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   "lottery-lotofacil": "bg-purple-500/20 text-purple-400 border-purple-500/30",
   "lottery-quina": "bg-blue-500/20 text-blue-400 border-blue-500/30",
   "lottery-lotomania": "bg-orange-500/20 text-orange-400 border-orange-500/30",
