@@ -71,6 +71,46 @@ function roundedRectPath(
   ctx.closePath();
 }
 
+/** Wraps text into lines that fit maxWidth, shrinking the font if needed. */
+function fitLines(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  weight: string,
+  startSize: number,
+  minSize: number,
+  maxLines: number,
+): { lines: string[]; size: number } {
+  const font = (s: number) => `${weight} ${s}px Inter, system-ui, sans-serif`;
+  for (let size = startSize; size >= minSize; size -= 2) {
+    ctx.font = font(size);
+    const words = text.split(/\s+/).filter(Boolean);
+    const lines: string[] = [];
+    let current = "";
+    let ok = true;
+    for (const word of words) {
+      const candidate = current ? `${current} ${word}` : word;
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        current = candidate;
+      } else if (current) {
+        lines.push(current);
+        current = word;
+        if (ctx.measureText(word).width > maxWidth) ok = false;
+      } else {
+        ok = false;
+        current = word;
+      }
+    }
+    if (current) lines.push(current);
+    if (ok && lines.length <= maxLines) {
+      ctx.font = font(size);
+      return { lines, size };
+    }
+  }
+  ctx.font = font(minSize);
+  return { lines: [text], size: minSize };
+}
+
 /**
  * Captures the lottery card as a PNG (preserving its colored palette) and
  * shares it via the Web Share API, falling back to a download. Uses
