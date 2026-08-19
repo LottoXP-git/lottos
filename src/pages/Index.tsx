@@ -227,12 +227,12 @@ const Index = () => {
              {isLiveData ?
             <>
                  <Wifi className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-700 dark:text-emerald-400" />
-                 <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">Dados ao vivo da Caixa</span>
+                 <span className="text-sm text-emerald-700 dark:text-emerald-400 font-semibold">Dados ao vivo da Caixa</span>
                </> :
 
             <>
                  <WifiOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
-                 <span className="text-xs text-muted-foreground font-medium">Dados de exemplo</span>
+                 <span className="text-sm text-muted-foreground font-semibold">Dados de exemplo</span>
                </>
             }
           </div>
@@ -242,37 +242,37 @@ const Index = () => {
               <span className="sr-only"> — Resultados e Estatísticas das Loterias Caixa</span>
             </h1>
           
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2 leading-relaxed">
             Acompanhe os resultados de todas as loterias em tempo real, analise estatísticas de frequência 
-            e gere palpites inteligentes baseados em dados históricos. Aproveite também o nosso conferidor de apostas !
+            e gere palpites inteligentes baseados em dados históricos. Aproveite também o nosso conferidor de apostas!
           </p>
 
           {/* Stats Overview */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto">
-            <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
+          <div className="grid grid-cols-3 gap-3 sm:gap-5 max-w-3xl mx-auto">
+            <div className="p-3 sm:p-5 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
-                <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                <span className="text-lg sm:text-2xl font-bold text-gradient">
+                <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                <span className="text-xl sm:text-3xl font-bold text-gradient">
                   R$ {(totalPrize / 1000000).toFixed(0)}M+
                 </span>
               </div>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Prêmios Acumulados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-semibold">Prêmios Acumulados</p>
             </div>
             
-            <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
+            <div className="p-3 sm:p-5 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
-                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-700 dark:text-emerald-400" />
-                <span className="text-lg sm:text-2xl font-bold text-emerald-700 dark:text-emerald-400">11</span>
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-700 dark:text-emerald-400" />
+                <span className="text-xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400">11</span>
               </div>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Loterias Disponíveis</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-semibold">Loterias Disponíveis</p>
             </div>
             
-            <div className="p-2.5 sm:p-4 rounded-xl bg-card border border-border">
+            <div className="p-3 sm:p-5 rounded-xl bg-card border border-border">
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-700 dark:text-purple-400" />
-                <span className="text-lg sm:text-2xl font-bold text-purple-700 dark:text-purple-400">100+</span>
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-700 dark:text-purple-400" />
+                <span className="text-xl sm:text-3xl font-bold text-purple-700 dark:text-purple-400">100+</span>
               </div>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Sorteios Analisados</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-semibold">Sorteios Analisados</p>
             </div>
           </div>
         </section>
