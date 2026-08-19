@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { SocialShareButtons } from "./SocialShareButtons";
 import { isNativePlatform, saveImageNative, shareImageNative } from "@/lib/nativeShare";
+import lottosLogo from "@/assets/lottos-logo.png";
 
 interface ShareCardImageButtonProps {
   /** Ref to the DOM node that should be captured (the colored card). */
@@ -27,7 +28,47 @@ interface ShareCardImageButtonProps {
   fileName: string;
   /** Caption sent alongside the image when using Web Share. */
   caption: string;
+  /** Gradient colors of the lottery, used as the poster background. */
+  accentFrom?: string;
+  accentTo?: string;
+  /** Optional headline shown above the card in the generated poster. */
+  headline?: string;
   className?: string;
+}
+
+const CANVAS_W = 1080;
+const CANVAS_H = 1350;
+
+function loadImage(src: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+function roundedRectPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
+  const radius = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + w - radius, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+  ctx.lineTo(x + w, y + h - radius);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+  ctx.lineTo(x + radius, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
 }
 
 /**
@@ -40,6 +81,9 @@ export function ShareCardImageButton({
   targetRef,
   fileName,
   caption,
+  accentFrom = "#1e293b",
+  accentTo = "#0f172a",
+  headline,
   className,
 }: ShareCardImageButtonProps) {
   const [busy, setBusy] = useState(false);
@@ -62,15 +106,116 @@ export function ShareCardImageButton({
 
     setBusy(true);
     try {
-      const canvas = await html2canvas(targetRef.current, {
+      const cardCanvas = await html2canvas(targetRef.current, {
         backgroundColor: null,
-        scale: 2,
+        scale: 3,
         useCORS: true,
         logging: false,
+        onclone: (doc) => {
+          doc
+            .querySelectorAll<HTMLElement>("[data-share-hide='true']")
+            .forEach((el) => {
+              el.style.visibility = "hidden";
+            });
+        },
       });
 
+      const logo = await loadImage(lottosLogo);
+      const out = document.createElement("canvas");
+      out.width = CANVAS_W;
+      out.height = CANVAS_H;
+      const ctx = out.getContext("2d")!;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
+      // Background: diagonal gradient in the lottery colors
+      const grad = ctx.createLinearGradient(0, 0, CANVAS_W, CANVAS_H);
+      grad.addColorStop(0, accentFrom);
+      grad.addColorStop(1, accentTo);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+      // Soft light blobs for depth
+      const glow = ctx.createRadialGradient(180, 160, 20, 180, 160, 620);
+      glow.addColorStop(0, "rgba(255,255,255,0.22)");
+      glow.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      const glow2 = ctx.createRadialGradient(
+        CANVAS_W - 120,
+        CANVAS_H - 180,
+        20,
+        CANVAS_W - 120,
+        CANVAS_H - 180,
+        640,
+      );
+      glow2.addColorStop(0, "rgba(0,0,0,0.25)");
+      glow2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+      // Header: logo + headline
+      let headerBottom = 90;
+      if (logo) {
+        const logoH = 78;
+        const logoW = (logo.naturalWidth / logo.naturalHeight) * logoH;
+        ctx.drawImage(logo, 64, 60, logoW, logoH);
+        headerBottom = 60 + logoH;
+      }
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.font = "600 34px Inter, system-ui, sans-serif";
+      ctx.fillText(headline ?? "Resultado oficial", CANVAS_W - 64, 112);
+      ctx.textAlign = "left";
+
+      // Card artwork, centered with drop shadow
+      const padX = 70;
+      const top = headerBottom + 54;
+      const bottomReserved = 130;
+      const maxW = CANVAS_W - padX * 2;
+      const maxH = CANVAS_H - top - bottomReserved;
+      const scale = Math.min(maxW / cardCanvas.width, maxH / cardCanvas.height);
+      const drawW = cardCanvas.width * scale;
+      const drawH = cardCanvas.height * scale;
+      const dx = (CANVAS_W - drawW) / 2;
+      const dy = top + (maxH - drawH) / 2;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.45)";
+      ctx.shadowBlur = 48;
+      ctx.shadowOffsetY = 22;
+      roundedRectPath(ctx, dx, dy, drawW, drawH, 34);
+      ctx.fillStyle = "rgba(0,0,0,0.35)";
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      roundedRectPath(ctx, dx, dy, drawW, drawH, 34);
+      ctx.clip();
+      ctx.drawImage(cardCanvas, dx, dy, drawW, drawH);
+      ctx.restore();
+
+      ctx.save();
+      roundedRectPath(ctx, dx, dy, drawW, drawH, 34);
+      ctx.strokeStyle = "rgba(255,255,255,0.28)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.restore();
+
+      // Footer
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
+      ctx.font = "700 32px Inter, system-ui, sans-serif";
+      ctx.fillText("grupolottoxp.com", 64, CANVAS_H - 76);
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.font = "400 22px Inter, system-ui, sans-serif";
+      ctx.fillText(
+        "Sem vínculo oficial com a Caixa Econômica Federal",
+        64,
+        CANVAS_H - 40,
+      );
+
       const blob: Blob | null = await new Promise((resolve) =>
-        canvas.toBlob((b) => resolve(b), "image/png")
+        out.toBlob((b) => resolve(b), "image/png")
       );
       if (!blob) throw new Error("Falha ao gerar imagem");
 
@@ -175,6 +320,7 @@ export function ShareCardImageButton({
             <Button
               variant="ghost"
               size="icon"
+              data-share-hide="true"
               aria-label="Pré-visualizar e compartilhar imagem do resultado"
               onClick={handleGeneratePreview}
               disabled={busy}
