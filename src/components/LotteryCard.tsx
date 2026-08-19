@@ -41,6 +41,20 @@ const bgColorMap: Record<string, string> = {
   "lottery-federal": "bg-gradient-to-br from-sky-600 to-blue-700",
   "lottery-loteca": "bg-gradient-to-br from-red-500 to-red-700"
 };
+// Hex pairs used to compose the shareable poster background
+const shareAccentMap: Record<string, [string, string]> = {
+  "lottery-megasena": ["#059669", "#064e3b"],
+  "lottery-lotofacil": ["#7e22ce", "#3b0764"],
+  "lottery-quina": ["#3730a3", "#0c1e4a"],
+  "lottery-lotomania": ["#f97316", "#9a3412"],
+  "lottery-duplasena": ["#be123c", "#7f1d1d"],
+  "lottery-diadesorte": ["#f59e0b", "#a16207"],
+  "lottery-supersete": ["#84cc16", "#3f6212"],
+  "lottery-maismilionaria": ["#4338ca", "#1e1b4b"],
+  "lottery-timemania": ["#facc15", "#a16207"],
+  "lottery-federal": ["#0284c7", "#1d4ed8"],
+  "lottery-loteca": ["#ef4444", "#7f1d1d"],
+};
 const badgeColorMap: Record<string, string> = {
   "lottery-megasena": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   "lottery-lotofacil": "bg-purple-500/20 text-purple-400 border-purple-500/30",
@@ -139,7 +153,7 @@ export function LotteryCard({
                 {result.winners} {result.winners === 1 ? "ganhador" : "ganhadores"}
               </Badge>
             )}
-            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
+            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} accentFrom={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[0]} accentTo={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[1]} headline={`${result.name} · #${result.concurso}`} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
           </div>
         </div>
         <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/85">
