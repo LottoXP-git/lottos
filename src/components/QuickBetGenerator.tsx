@@ -373,10 +373,10 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/15 border border-primary/20 mx-auto mb-3">
           <Dices className="w-7 h-7 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold">
+        <CardTitle className="text-2xl sm:text-3xl font-bold">
           Gerador de Palpites Inteligentes
         </CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-base text-muted-foreground mt-2">
           Escolha a loteria e gere seus números da sorte
         </p>
       </CardHeader>
@@ -407,18 +407,18 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
 
         {/* Strategy selector (dezenas) */}
         {!isFederal && (
-        <div className="space-y-2">
-          <div className="text-xs font-semibold text-muted-foreground text-center">
+        <div className="space-y-3">
+          <div className="text-sm font-semibold text-muted-foreground text-center">
             Estratégia de recomendação
           </div>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-3 gap-2">
             {strategyOptions.map((s) => (
               <button
                 key={s.id}
                 type="button"
                 onClick={() => setStrategy(s.id)}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-2 py-2 rounded-xl border-2 transition-all",
+                  "flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl border-2 transition-all",
                   strategy === s.id
                     ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)/0.2)]"
                     : "border-border bg-secondary/30 hover:border-primary/40"
@@ -427,7 +427,7 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
                 <span className={strategy === s.id ? s.color : "text-muted-foreground"}>
                   {s.icon}
                 </span>
-                <span className="text-xs font-medium text-foreground">{s.label}</span>
+                <span className="text-sm font-semibold text-foreground">{s.label}</span>
               </button>
             ))}
           </div>
@@ -445,32 +445,32 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
 
         {/* Painel Federal */}
         {isFederal && (
-          <div className="space-y-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3">
+          <div className="space-y-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
             <div className="flex items-center gap-2">
-              <Ticket className="w-4 h-4 text-emerald-500" />
-              <span className="text-sm font-semibold text-foreground">Modo Federal</span>
-              <Badge variant="outline" className="text-[10px] ml-auto">Bilhetes 6 dígitos</Badge>
+              <Ticket className="w-5 h-5 text-emerald-500" />
+              <span className="text-base font-semibold text-foreground">Modo Federal</span>
+              <Badge variant="outline" className="text-xs ml-auto">Bilhetes 6 dígitos</Badge>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               {loadingFedHistory ? (
-                <span className="flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> Carregando histórico...</span>
+                <span className="flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Carregando histórico...</span>
               ) : fedHistoryError ? (
                 <span className="text-destructive">{fedHistoryError}</span>
               ) : (
                 <span>Base: <strong className="text-foreground">{fedConcursos}</strong> concursos · <strong className="text-foreground">{fedHistory?.length ?? 0}</strong> bilhetes</span>
               )}
-              <Button variant="ghost" size="sm" onClick={loadFedHistory} disabled={loadingFedHistory} className="h-6 px-2 text-[11px]">
-                <RefreshCw className={cn("w-3 h-3", loadingFedHistory && "animate-spin")} />
+              <Button variant="ghost" size="sm" onClick={loadFedHistory} disabled={loadingFedHistory} className="h-7 px-2 text-xs">
+                <RefreshCw className={cn("w-3.5 h-3.5", loadingFedHistory && "animate-spin")} />
               </Button>
             </div>
 
             {!loadingFedHistory && !fedHistoryError && fedHistory && (
-              <div className="rounded-lg bg-secondary/40 border border-border p-2">
-                <p className="text-[10px] text-muted-foreground mb-1">Dígito mais frequente por posição:</p>
-                <div className="flex items-center justify-center gap-1.5 font-mono">
+              <div className="rounded-lg bg-secondary/40 border border-border p-3">
+                <p className="text-xs text-muted-foreground mb-2">Dígito mais frequente por posição:</p>
+                <div className="flex items-center justify-center gap-2 font-mono">
                   {fedHottest.map((d, i) => (
-                    <span key={i} className="inline-flex items-center justify-center w-7 h-9 rounded-md bg-primary/10 border border-primary/30 text-primary font-bold text-sm">
+                    <span key={i} className="inline-flex items-center justify-center w-8 h-10 rounded-md bg-primary/10 border border-primary/30 text-primary font-bold text-base">
                       {d}
                     </span>
                   ))}
@@ -478,34 +478,34 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 gap-2">
               {federalStrategyOptions.map((s) => (
                 <button
                   key={s.id}
                   type="button"
                   onClick={() => setFedStrategy(s.id)}
                   className={cn(
-                    "flex items-center gap-1.5 px-2 py-2 rounded-lg border text-left transition-all",
+                    "flex items-center gap-2 px-3 py-3 rounded-lg border text-left transition-all",
                     fedStrategy === s.id
                       ? "border-primary bg-primary/10"
                       : "border-border bg-secondary/30 hover:bg-secondary/60"
                   )}
                 >
                   <span className={fedStrategy === s.id ? s.color : "text-muted-foreground"}>{s.icon}</span>
-                  <span className="text-xs font-semibold text-foreground">{s.label}</span>
+                  <span className="text-sm font-semibold text-foreground">{s.label}</span>
                 </button>
               ))}
             </div>
 
-            <div className="space-y-1">
-              <Label className="text-xs">Quantidade de bilhetes (1 a 10)</Label>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium">Quantidade de bilhetes (1 a 10)</Label>
               <Input
                 type="number"
                 min={1}
                 max={10}
                 value={fedCount}
                 onChange={(e) => setFedCount(e.target.value)}
-                className="h-9 text-xs"
+                className="h-10 text-sm"
               />
             </div>
           </div>
@@ -526,25 +526,25 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
         </Button>
 
         {freeGenerations <= 0 && (numbers.length > 0 || federalPicks.length > 0) && (
-          <p className="text-xs text-center text-muted-foreground animate-pulse">
+          <p className="text-sm text-center text-muted-foreground animate-pulse">
             🎬 Assista um anúncio rápido para liberar mais 2 palpites gratuitos
           </p>
         )}
 
         {/* Resultado Federal */}
         {isFederal && federalPicks.length > 0 && (
-          <div className="space-y-2 pt-2 border-t border-border animate-fade-in">
-            <p className="text-sm font-semibold text-foreground">Seus bilhetes:</p>
-            <div className="space-y-1.5">
+          <div className="space-y-3 pt-3 border-t border-border animate-fade-in">
+            <p className="text-base font-semibold text-foreground">Seus bilhetes:</p>
+            <div className="space-y-2">
               {federalPicks.map((b, idx) => (
                 <div
                   key={`${b}-${idx}`}
-                  className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-primary/5 border border-emerald-500/30 animate-fade-in"
+                  className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg bg-gradient-to-r from-emerald-500/10 to-primary/5 border border-emerald-500/30 animate-fade-in"
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   <div className="flex items-center gap-2 min-w-0">
-                    <Ticket className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span className="font-mono font-bold text-base sm:text-lg tracking-wider text-foreground">{b}</span>
+                    <Ticket className="w-5 h-5 text-emerald-500 shrink-0" />
+                    <span className="font-mono font-bold text-lg sm:text-xl tracking-wider text-foreground">{b}</span>
                   </div>
                   <Button
                     size="sm"
@@ -559,14 +559,14 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
                         toast.error("Não foi possível copiar");
                       }
                     }}
-                    className="h-7 px-2"
+                    className="h-8 px-2"
                   >
-                    {copiedFedIdx === idx ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedFedIdx === idx ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
                   </Button>
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-muted-foreground italic text-center pt-1">
+            <p className="text-xs text-muted-foreground italic text-center pt-1">
               ⚠️ Palpites são apenas indicativos e não garantem prêmios.
             </p>
           </div>
@@ -605,20 +605,20 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
 
             {/* Legend */}
             {analysis && (
-              <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground -mt-2">
-                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-orange-400" /> Quente</span>
-                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-yellow-300" /> Morna</span>
-                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-400" /> Fria</span>
+              <div className="flex items-center justify-center gap-4 text-xs sm:text-sm text-muted-foreground -mt-2">
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-orange-400" /> Quente</span>
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-yellow-300" /> Morna</span>
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-sky-400" /> Fria</span>
               </div>
             )}
 
             {/* Trevos - +Milionária */}
             {trevos.length > 0 && (
               <div className="flex items-center justify-center gap-2 py-3 px-2 rounded-xl bg-background/50 border border-border/50">
-                <Clover className="w-4 h-4 text-emerald-500" />
-                <span className="text-sm font-semibold text-muted-foreground">Trevos:</span>
+                <Clover className="w-5 h-5 text-emerald-500" />
+                <span className="text-base font-semibold text-muted-foreground">Trevos:</span>
                 {trevos.map((t, idx) => (
-                  <div key={`trevo-${idx}`} className="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-sm font-bold text-emerald-400 animate-fade-in" style={{ animationDelay: `${(numbers.length + idx) * 80}ms` }}>
+                  <div key={`trevo-${idx}`} className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-base font-bold text-emerald-400 animate-fade-in" style={{ animationDelay: `${(numbers.length + idx) * 80}ms` }}>
                     {t}
                   </div>
                 ))}
@@ -628,18 +628,18 @@ export function QuickBetGenerator({ lotteries, preselectedId }: QuickBetGenerato
             {/* Time do Coração - Timemania */}
             {timeCoracao && (
               <div className="flex items-center justify-center gap-2 py-3 px-2 rounded-xl bg-background/50 border border-border/50 animate-fade-in">
-                <Heart className="w-4 h-4 text-green-400 fill-green-400" />
-                <span className="text-sm font-semibold text-muted-foreground">Time do Coração:</span>
-                <span className="text-sm font-bold text-green-400">{timeCoracao}</span>
+                <Heart className="w-5 h-5 text-green-400 fill-green-400" />
+                <span className="text-base font-semibold text-muted-foreground">Time do Coração:</span>
+                <span className="text-base font-bold text-green-400">{timeCoracao}</span>
               </div>
             )}
 
             {/* Mês da Sorte - Dia de Sorte */}
             {mesSorte && (
               <div className="flex items-center justify-center gap-2 py-3 px-2 rounded-xl bg-background/50 border border-border/50 animate-fade-in">
-                <CalendarDays className="w-4 h-4 text-amber-400" />
-                <span className="text-sm font-semibold text-muted-foreground">Mês da Sorte:</span>
-                <span className="text-sm font-bold text-amber-400">{mesSorte}</span>
+                <CalendarDays className="w-5 h-5 text-amber-400" />
+                <span className="text-base font-semibold text-muted-foreground">Mês da Sorte:</span>
+                <span className="text-base font-bold text-amber-400">{mesSorte}</span>
               </div>
             )}
 

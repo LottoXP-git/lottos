@@ -116,64 +116,66 @@ export function LotteryCard({
   const shareCaption = `🎰 ${result.name} - Concurso ${result.concurso}\n📅 ${result.date}\n🏆 Prêmio: ${result.prize}\n💰 Próximo: ${result.nextPrize}`;
   return <Card ref={cardRef} className={cn("border-2 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-white", bgColorMap[result.color], colorMap[result.color], isHighPrize && "ring-2 ring-yellow-500/70 shadow-[0_0_30px_rgba(234,179,8,0.4)]", isSpecial && !isHighPrize && "ring-2 ring-cyan-400/70 shadow-[0_0_20px_rgba(6,182,212,0.3)]")} onClick={onClick}>
       {/* Special Draw Banner */}
-      {isSpecial && !isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2">
-          <Sparkles className="w-3.5 h-3.5" />
+      {isSpecial && !isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white text-sm font-bold py-2 px-3 flex items-center justify-center gap-2">
+          <Sparkles className="w-4 h-4" />
           <span>{getSpecialDrawLabel(result.id)}</span>
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-4 h-4" />
         </div>}
       {/* High Prize Banner */}
-      {isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-500 text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2 animate-pulse">
-          <Flame className="w-3.5 h-3.5" />
+      {isHighPrize && <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-500 text-white text-sm font-bold py-2 px-3 flex items-center justify-center gap-2 animate-pulse">
+          <Flame className="w-4 h-4" />
           <span>{isSpecial ? `ESPECIAL ACUMULADO!` : "PRÊMIO ACUMULADO!"}</span>
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-4 h-4" />
         </div>}
 
-      <CardHeader className={cn("pb-2 sm:pb-3 px-3 sm:px-6", (isHighPrize || isSpecial) && "pt-10")}>
-        <div data-share-header-row className="flex items-center justify-between gap-2">
-          <CardTitle data-share-title className="text-base sm:text-xl font-bold text-white drop-shadow flex items-baseline gap-2 flex-nowrap min-w-0 flex-1 overflow-hidden">
-            <span data-share-title-name className="truncate min-w-0">{result.name}</span>
-            <Link
-              to={`/${result.id}/${result.concurso}`}
-              onClick={(e) => e.stopPropagation()}
-              className="font-mono font-bold text-base sm:text-2xl text-white/95 drop-shadow shrink-0 whitespace-nowrap hover:underline"
-              title={`Ver página do concurso ${result.concurso}`}
-              aria-label={`Abrir página do concurso ${result.concurso} da ${result.name}`}
-            >
-              #{result.concurso}
-            </Link>
-          </CardTitle>
-          <div data-share-badges className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <CardHeader className={cn("pb-3 sm:pb-4 px-4 sm:px-6", (isHighPrize || isSpecial) && "pt-11")}>
+        <div data-share-header-row className="flex flex-col gap-2">
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle data-share-title className="text-xl sm:text-2xl md:text-3xl font-bold text-white drop-shadow flex flex-wrap items-baseline gap-x-2 gap-y-0 min-w-0">
+              <span data-share-title-name className="whitespace-normal break-words leading-tight">{result.name}</span>
+              <Link
+                to={`/${result.id}/${result.concurso}`}
+                onClick={(e) => e.stopPropagation()}
+                className="font-mono font-bold text-xl sm:text-2xl md:text-3xl text-white/95 drop-shadow shrink-0 whitespace-nowrap hover:underline"
+                title={`Ver página do concurso ${result.concurso}`}
+                aria-label={`Abrir página do concurso ${result.concurso} da ${result.name}`}
+              >
+                #{result.concurso}
+              </Link>
+            </CardTitle>
+            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} accentFrom={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[0]} accentTo={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[1]} headline={`${result.name} · #${result.concurso}`} className="h-8 w-8 sm:h-9 sm:w-9 text-white hover:bg-white/20 shrink-0" />
+          </div>
+          <div data-share-badges className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             {isAccumulated(result) && (
-              <Badge variant="outline" className="bg-amber-500/20 text-amber-300 border-amber-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 animate-pulse">
+              <Badge variant="outline" className="bg-amber-500/20 text-amber-300 border-amber-400/40 text-xs sm:text-sm font-bold px-2 py-0.5 animate-pulse">
                 ACUMULOU
               </Badge>
             )}
             {result.winners > 0 && result.id !== "federal" && (
-              <Badge variant="outline" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40 text-[10px] sm:text-xs font-bold px-1.5 py-0.5">
+              <Badge variant="outline" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40 text-xs sm:text-sm font-bold px-2 py-0.5">
                 {result.winners} {result.winners === 1 ? "ganhador" : "ganhadores"}
               </Badge>
             )}
-            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} accentFrom={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[0]} accentTo={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[1]} headline={`${result.name} · #${result.concurso}`} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/85">
-          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        <div className="flex items-center gap-1.5 text-sm sm:text-base text-white/85 mt-1">
+          <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
           <span>{result.date}</span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
+      <CardContent className="space-y-4 sm:space-y-5 px-4 sm:px-6">
         <div data-share-results className="flex flex-wrap gap-1.5 sm:gap-2 justify-center py-1 sm:py-2">
           {result.id === "loteca" && result.jogos ? (
-            <div className="w-full space-y-1.5">
+            <div className="w-full space-y-2">
               <div className="flex items-center justify-center gap-1.5 mb-2">
-                <Dribbble className="w-3.5 h-3.5 text-white" />
-                <span className="text-xs font-semibold text-white/90">{result.jogos.length} Jogos</span>
+                <Dribbble className="w-4 h-4 text-white" />
+                <span className="text-sm font-semibold text-white/90">{result.jogos.length} Jogos</span>
               </div>
               {result.jogos.slice(0, 5).map((jogo, idx) => {
                 const isHomeWin = jogo.golEquipeUm > jogo.golEquipeDois;
                 const isDraw = jogo.golEquipeUm === jogo.golEquipeDois;
                 return (
-                  <div key={idx} className="flex items-center justify-between px-2 py-1 rounded-md bg-white/10 border border-white/20 text-xs">
+                  <div key={idx} className="flex items-center justify-between px-2.5 py-1.5 rounded-md bg-white/10 border border-white/20 text-sm">
                     <span className={`truncate max-w-[80px] ${isHomeWin ? "font-bold text-white" : "text-white/75"}`}>{jogo.equipeUm}</span>
                     <span className="font-mono font-bold text-white px-2">{jogo.golEquipeUm} x {jogo.golEquipeDois}</span>
                     <span className={`truncate max-w-[80px] text-right ${!isHomeWin && !isDraw ? "font-bold text-white" : "text-white/75"}`}>{jogo.equipeDois}</span>
@@ -181,7 +183,7 @@ export function LotteryCard({
                 );
               })}
               {result.jogos.length > 5 && (
-                <p className="text-[10px] text-center text-white/75 mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
+                <p className="text-xs text-center text-white/75 mt-1">+{result.jogos.length - 5} jogos • clique para ver todos</p>
               )}
             </div>
           ) : result.id === "federal" ? (
@@ -189,29 +191,29 @@ export function LotteryCard({
               {result.numbers.map((num, idx) => {
                 const location = result.localGanhadores?.find(l => l.posicao === idx + 1);
                 return (
-                  <div key={idx} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
+                  <div key={idx} className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/10 border border-white/20">
                     <div className="flex flex-col">
-                      <span className="text-xs font-medium text-white/85">{idx + 1}º Prêmio</span>
+                      <span className="text-sm font-semibold text-white/85">{idx + 1}º Prêmio</span>
                       {location && (
-                        <span className="text-[10px] text-white/70 truncate max-w-[140px]">
+                        <span className="text-xs text-white/70 truncate max-w-[140px]">
                           {location.municipio}/{location.uf}
                         </span>
                       )}
                     </div>
-                    <span className="font-mono font-bold text-white text-sm">{String(num).padStart(5, '0')}</span>
+                    <span className="font-mono font-bold text-white text-base">{String(num).padStart(5, '0')}</span>
                   </div>
                 );
               })}
             </div>
           ) : result.id === "duplasena" ? (
             <>
-              <div className="w-full text-xs text-center text-white/85 font-medium mb-1">1º Sorteio</div>
+              <div className="w-full text-sm text-center text-white/85 font-semibold mb-1">1º Sorteio</div>
               <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.slice(0, 6).map((num, idx) => (
                   <LotteryBall key={`s1-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={idx * 80} />
                 ))}
               </div>
-              <div className="w-full text-xs text-center text-white/85 font-medium mt-2 mb-1">2º Sorteio</div>
+              <div className="w-full text-sm text-center text-white/85 font-semibold mt-2 mb-1">2º Sorteio</div>
               <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                 {result.numbers.slice(6).map((num, idx) => (
                   <LotteryBall key={`s2-${idx}`} number={num} size="sm" variant={variantMap[result.color]} delay={(idx + 6) * 80} />
@@ -228,13 +230,13 @@ export function LotteryCard({
               {result.trevos && result.trevos.length > 0 && (
                 <>
                   <div className="w-full flex items-center justify-center gap-1.5 mt-2 mb-1">
-                    <Clover className="w-3.5 h-3.5 text-white" />
-                    <span className="text-xs text-center text-white/90 font-medium">Trevos</span>
-                    <Clover className="w-3.5 h-3.5 text-white" />
+                    <Clover className="w-4 h-4 text-white" />
+                    <span className="text-sm text-center text-white/90 font-semibold">Trevos</span>
+                    <Clover className="w-4 h-4 text-white" />
                   </div>
                   <div data-share-results className="flex flex-nowrap gap-1.5 justify-center">
                     {result.trevos.map((trevo, idx) => (
-                      <div key={`t-${idx}`} className="w-8 h-8 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-xs font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
+                      <div key={`t-${idx}`} className="w-9 h-9 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-sm font-bold text-white animate-in fade-in zoom-in" style={{ animationDelay: `${(result.numbers.length + idx) * 80}ms` }}>
                         {trevo}
                       </div>
                     ))}
@@ -243,15 +245,15 @@ export function LotteryCard({
               )}
             </>
           ) : (
-            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "xs" : "sm"} variant={variantMap[result.color]} delay={idx * 80} />)
+            result.numbers.map((num, idx) => <LotteryBall key={`${idx}-${num}`} number={num} size={result.numbers.length > 10 ? "sm" : "md"} variant={variantMap[result.color]} delay={idx * 80} />)
           )}
         </div>
 
         {/* Time do Coração - Timemania */}
         {result.id === "timemania" && result.timeCoracao && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
-            <Heart className="w-4 h-4 text-white fill-white" />
-            <span className="text-sm font-semibold text-white">{result.timeCoracao}</span>
+          <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/15 border border-white/30">
+            <Heart className="w-5 h-5 text-white fill-white" />
+            <span className="text-base font-semibold text-white">{result.timeCoracao}</span>
           </div>
         )}
 
@@ -259,49 +261,49 @@ export function LotteryCard({
         {result.id === "diadesorte" && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-white/15 border border-white/30 cursor-help">
-                <Repeat className="w-3.5 h-3.5 text-white" />
-                <span className="text-xs font-semibold text-white">Sorteios diários de segunda a sábado</span>
-                <Info className="w-3 h-3 text-white/70" />
+              <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30 cursor-help">
+                <Repeat className="w-4 h-4 text-white" />
+                <span className="text-sm font-semibold text-white">Sorteios diários de segunda a sábado</span>
+                <Info className="w-3.5 h-3.5 text-white/70" />
               </div>
             </TooltipTrigger>
             <TooltipContent side="top" className="max-w-[260px] text-center">
-              <p className="text-xs">O Dia de Sorte realiza concursos de segunda a sábado, exceto domingos e feriados. A cada dia há um novo sorteio com prêmios variados.</p>
+              <p className="text-sm">O Dia de Sorte realiza concursos de segunda a sábado, exceto domingos e feriados. A cada dia há um novo sorteio com prêmios variados.</p>
             </TooltipContent>
           </Tooltip>
         )}
 
         {/* Mês da Sorte - Dia de Sorte */}
         {result.id === "diadesorte" && result.mesSorte && (
-          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/15 border border-white/30">
-            <CalendarDays className="w-4 h-4 text-white" />
-            <span className="text-sm text-white/85">Mês da Sorte:</span>
-            <span className="text-sm font-semibold text-white">{result.mesSorte}</span>
+          <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/15 border border-white/30">
+            <CalendarDays className="w-5 h-5 text-white" />
+            <span className="text-base text-white/85">Mês da Sorte:</span>
+            <span className="text-base font-semibold text-white">{result.mesSorte}</span>
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2 text-xs sm:text-sm">
-          <div className="flex items-center gap-2 text-sm">
-            <Trophy className="w-4 h-4 text-white" />
-            <span className="text-white/85">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2 text-sm sm:text-base">
+          <div className="flex items-center gap-2 text-base">
+            <Trophy className="w-5 h-5 text-white" />
+            <span className="text-white/85 font-medium">{result.id === "federal" ? "1º Prêmio:" : "Prêmio:"}</span>
           </div>
-          <span className="font-semibold text-white text-right text-base drop-shadow">{result.prize}</span>
+          <span className="font-semibold text-white text-right text-lg drop-shadow">{result.prize}</span>
 
           {result.id !== "federal" && (
             <>
-              <div className="flex items-center gap-2 text-sm">
-                <Users className="w-4 h-4 text-white" />
-                <span className="text-white/85">Ganhadores:</span>
+              <div className="flex items-center gap-2 text-base">
+                <Users className="w-5 h-5 text-white" />
+                <span className="text-white/85 font-medium">Ganhadores:</span>
               </div>
-              <span className="text-sm font-semibold text-right text-white">
+              <span className="text-base font-semibold text-right text-white">
                 {result.winners === 0 ? "Acumulou!" : result.winners}
               </span>
 
-              <div className="flex items-center gap-2 text-sm">
-                <TrendingUp className={cn("w-4 h-4", isHighPrize ? "text-yellow-300" : "text-white")} />
-                <span className="text-white/85">Próximo:</span>
+              <div className="flex items-center gap-2 text-base">
+                <TrendingUp className={cn("w-5 h-5", isHighPrize ? "text-yellow-300" : "text-white")} />
+                <span className="text-white/85 font-medium">Próximo:</span>
               </div>
-              <span className={cn("text-sm font-bold text-right", isHighPrize ? "text-yellow-300 text-base animate-pulse drop-shadow" : "text-white drop-shadow")}>
+              <span className={cn("text-base font-bold text-right", isHighPrize ? "text-yellow-300 text-lg animate-pulse drop-shadow" : "text-white drop-shadow")}>
                 {result.nextPrize}
               </span>
             </>
@@ -309,15 +311,15 @@ export function LotteryCard({
         </div>
 
         {/* High Prize Highlight */}
-        {isHighPrize && <div className="mt-3 p-2 rounded-lg bg-yellow-300/20 border border-yellow-200/40">
-            <p className="text-xs text-center text-yellow-100 font-medium drop-shadow">
+        {isHighPrize && <div className="mt-3 p-2.5 rounded-lg bg-yellow-300/20 border border-yellow-200/40">
+            <p className="text-sm text-center text-yellow-100 font-semibold drop-shadow">
               💰 Acima de R$ 20 milhões! Não perca!
             </p>
           </div>}
 
         {/* Click hint footer */}
-        <div className="mt-3 pt-2 border-t border-white/15 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-white/75">
-          <MousePointerClick className="w-3.5 h-3.5" />
+        <div className="mt-3 pt-2 border-t border-white/15 flex items-center justify-center gap-1.5 text-xs sm:text-sm text-white/75">
+          <MousePointerClick className="w-4 h-4" />
           <span>Clique para mais detalhes</span>
         </div>
       </CardContent>

@@ -17,10 +17,10 @@ const sizeClasses = {
   // - Normal phones (375-413px): medium balls
   // - Large phones (≥414px): larger balls
   // - Tablets/desktop (sm+): even larger
-  xs: "w-6 h-6 text-[10px] min-[375px]:w-7 min-[375px]:h-7 min-[375px]:text-xs min-[414px]:w-8 min-[414px]:h-8 min-[414px]:text-sm sm:w-8 sm:h-8 sm:text-sm",
-  sm: "w-8 h-8 text-xs min-[375px]:w-10 min-[375px]:h-10 min-[375px]:text-sm min-[414px]:w-11 min-[414px]:h-11 min-[414px]:text-base sm:w-11 sm:h-11 sm:text-base",
-  md: "w-10 h-10 text-sm min-[375px]:w-12 min-[375px]:h-12 min-[375px]:text-base min-[414px]:w-14 min-[414px]:h-14 min-[414px]:text-lg sm:w-14 sm:h-14 sm:text-lg",
-  lg: "w-12 h-12 text-base min-[375px]:w-14 min-[375px]:h-14 min-[375px]:text-lg min-[414px]:w-16 min-[414px]:h-16 min-[414px]:text-xl sm:w-16 sm:h-16 sm:text-xl",
+  xs: "w-7 h-7 text-xs min-[375px]:w-8 min-[375px]:h-8 min-[375px]:text-sm min-[414px]:w-9 min-[414px]:h-9 min-[414px]:text-base sm:w-9 sm:h-9 sm:text-base",
+  sm: "w-9 h-9 text-sm min-[375px]:w-10 min-[375px]:h-10 min-[375px]:text-base min-[414px]:w-12 min-[414px]:h-12 min-[414px]:text-lg sm:w-12 sm:h-12 sm:text-lg",
+  md: "w-11 h-11 text-base min-[375px]:w-13 min-[375px]:h-13 min-[375px]:text-lg min-[414px]:w-14 min-[414px]:h-14 min-[414px]:text-xl sm:w-14 sm:h-14 sm:text-xl",
+  lg: "w-13 h-13 text-lg min-[375px]:w-14 min-[375px]:h-14 min-[375px]:text-xl min-[414px]:w-16 min-[414px]:h-16 min-[414px]:text-2xl sm:w-16 sm:h-16 sm:text-2xl",
 };
 
 const variantClasses = {
