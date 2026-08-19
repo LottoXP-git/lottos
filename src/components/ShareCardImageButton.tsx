@@ -71,6 +71,46 @@ function roundedRectPath(
   ctx.closePath();
 }
 
+/** Wraps text into lines that fit maxWidth, shrinking the font if needed. */
+function fitLines(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  weight: string,
+  startSize: number,
+  minSize: number,
+  maxLines: number,
+): { lines: string[]; size: number } {
+  const font = (s: number) => `${weight} ${s}px Inter, system-ui, sans-serif`;
+  for (let size = startSize; size >= minSize; size -= 2) {
+    ctx.font = font(size);
+    const words = text.split(/\s+/).filter(Boolean);
+    const lines: string[] = [];
+    let current = "";
+    let ok = true;
+    for (const word of words) {
+      const candidate = current ? `${current} ${word}` : word;
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        current = candidate;
+      } else if (current) {
+        lines.push(current);
+        current = word;
+        if (ctx.measureText(word).width > maxWidth) ok = false;
+      } else {
+        ok = false;
+        current = word;
+      }
+    }
+    if (current) lines.push(current);
+    if (ok && lines.length <= maxLines) {
+      ctx.font = font(size);
+      return { lines, size };
+    }
+  }
+  ctx.font = font(minSize);
+  return { lines: [text], size: minSize };
+}
+
 /**
  * Captures the lottery card as a PNG (preserving its colored palette) and
  * shares it via the Web Share API, falling back to a download. Uses
@@ -156,17 +196,42 @@ export function ShareCardImageButton({
 
       // Header: logo + headline
       let headerBottom = 90;
+      let logoRight = 64;
       if (logo) {
         const logoH = 78;
         const logoW = (logo.naturalWidth / logo.naturalHeight) * logoH;
         ctx.drawImage(logo, 64, 60, logoW, logoH);
         headerBottom = 60 + logoH;
+        logoRight = 64 + logoW;
       }
-      ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "600 34px Inter, system-ui, sans-serif";
-      ctx.fillText(headline ?? "Resultado oficial", CANVAS_W - 64, 112);
-      ctx.textAlign = "left";
+
+      const headlineText = headline ?? "Resultado oficial";
+      const sideWidth = CANVAS_W - 64 - (logoRight + 28);
+      const inlineFit = fitLines(ctx, headlineText, sideWidth, "600", 34, 24, 2);
+      const fitsBesideLogo =
+        inlineFit.lines.length <= 2 &&
+        inlineFit.lines.every((l) => ctx.measureText(l).width <= sideWidth);
+
+      ctx.fillStyle = "rgba(255,255,255,0.94)";
+      if (fitsBesideLogo) {
+        ctx.textAlign = "right";
+        const lineH = inlineFit.size * 1.25;
+        const startY =
+          60 + (78 - lineH * (inlineFit.lines.length - 1)) / 2 + inlineFit.size / 2 + 8;
+        inlineFit.lines.forEach((line, i) => {
+          ctx.fillText(line, CANVAS_W - 64, startY + i * lineH);
+        });
+        ctx.textAlign = "left";
+      } else {
+        // Not enough room next to the logo: render full-width below it.
+        const fullFit = fitLines(ctx, headlineText, CANVAS_W - 128, "600", 40, 24, 3);
+        const lineH = fullFit.size * 1.25;
+        ctx.textAlign = "left";
+        fullFit.lines.forEach((line, i) => {
+          ctx.fillText(line, 64, headerBottom + 44 + i * lineH);
+        });
+        headerBottom += 20 + lineH * fullFit.lines.length;
+      }
 
       // Card artwork, centered with drop shadow
       const padX = 70;
