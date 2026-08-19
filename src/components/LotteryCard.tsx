@@ -153,7 +153,7 @@ export function LotteryCard({
                 {result.winners} {result.winners === 1 ? "ganhador" : "ganhadores"}
               </Badge>
             )}
-            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
+            <ShareCardImageButton targetRef={cardRef} fileName={`${result.id}-concurso-${result.concurso}`} caption={shareCaption} accentFrom={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[0]} accentTo={(shareAccentMap[result.color] ?? ["#1e293b", "#0f172a"])[1]} headline={`${result.name} · #${result.concurso}`} className="h-7 w-7 sm:h-8 sm:w-8 text-white hover:bg-white/20" />
           </div>
         </div>
         <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/85">
