@@ -18,8 +18,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { SocialShareButtons } from "./SocialShareButtons";
+import { PosterPreview } from "./PosterPreview";
 import { isNativePlatform, saveImageNative, shareImageNative } from "@/lib/nativeShare";
 import lottosLogo from "@/assets/lottos-logo.png";
+
 
 interface ShareCardImageButtonProps {
   /** Ref to the DOM node that should be captured (the colored card). */
