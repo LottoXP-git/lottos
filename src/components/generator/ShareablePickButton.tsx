@@ -12,6 +12,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { SocialShareButtons } from "@/components/SocialShareButtons";
+import { PosterPreview } from "@/components/PosterPreview";
+
 
 interface ShareablePickButtonProps {
   lotteryName: string;
