@@ -18,8 +18,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { SocialShareButtons } from "./SocialShareButtons";
+import { PosterPreview } from "./PosterPreview";
 import { isNativePlatform, saveImageNative, shareImageNative } from "@/lib/nativeShare";
 import lottosLogo from "@/assets/lottos-logo.png";
+
 
 interface ShareCardImageButtonProps {
   /** Ref to the DOM node that should be captured (the colored card). */
@@ -458,15 +460,10 @@ export function ShareCardImageButton({
               Confira a imagem antes de compartilhar ou baixar.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-center rounded-lg bg-muted/40 p-3">
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Pré-visualização do card"
-                className="max-h-[60vh] w-auto rounded-md shadow-md"
-              />
-            )}
-          </div>
+          {previewUrl && (
+            <PosterPreview src={previewUrl} alt="Pré-visualização do card" caption={caption} />
+          )}
+
           {previewBlob && (
             <SocialShareButtons
               file={new File([previewBlob], `${safeName}.png`, { type: "image/png" })}

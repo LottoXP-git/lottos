@@ -12,6 +12,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { SocialShareButtons } from "@/components/SocialShareButtons";
+import { PosterPreview } from "@/components/PosterPreview";
+
 
 interface ShareablePickButtonProps {
   lotteryName: string;
@@ -335,14 +337,9 @@ export function ShareablePickButton(props: ShareablePickButtonProps) {
           </DialogDescription>
         </DialogHeader>
         {previewUrl && (
-          <div className="flex justify-center rounded-lg bg-muted/40 p-3">
-            <img
-              src={previewUrl}
-              alt="Pré-visualização do palpite"
-              className="max-h-[55vh] w-auto rounded-md shadow-md"
-            />
-          </div>
+          <PosterPreview src={previewUrl} alt="Pré-visualização do palpite" caption={caption} />
         )}
+
         {previewFile && (
           <SocialShareButtons
             file={previewFile}
